@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Indoor Navigation - Single File</title>
+  <style>
+    :root{--bg:#0f1724;--panel:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--success:#34d399}
+    html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, sans-serif;background:linear-gradient(180deg,#071028 0%,#081122 100%);color:#e6eef6}
+    .app{display:flex;gap:12px;height:100%;padding:12px;box-sizing:border-box}
+    .canvas-wrap{flex:1;background:linear-gradient(180deg,#071a2b, #04202a);border-radius:12px;padding:12px;display:flex;flex-direction:column}
+    canvas{background:transparent;border-radius:8px;flex:1;cursor:crosshair}
+    .panel{width:360px;background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+    h1{margin:4px 0 10px;font-size:18px}
+    .controls{display:grid;gap:8px}
+    label{font-size:12px;color:var(--muted)}
+    input,select,button,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    button{cursor:pointer;background:linear-gradient(90deg,rgba(6,182,212,0.12), rgba(52,211,153,0.06));border:1px solid rgba(6,182,212,0.14)}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    .small{font-size:12px;padding:6px}
+    .list{max-height:160px;overflow:auto;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
+    .hint{font-size:12px;color:var(--muted)}
+    .toolbar{display:flex;gap:8px;margin-bottom:8px}
+    .node-badge{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="canvas-wrap">
+      <div class="toolbar">
+        <div class="node-badge">Click canvas to add a room (name prompt)</div>
+        <div class="node-badge">Drag nodes to reposition</div>
+        <div class="node-badge">Shift+Click two nodes to select them, then Connect</div>
+      </div>
+      <canvas id="graphCanvas"></canvas>
+      <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select</div>
+    </div>
+
+    <div class="panel">
+      <h1>Indoor Navigation Editor</h1>
+      <div class="controls">
+        <div>
+          <label>Start room name</label>
+          <input id="startName" placeholder="e.g. Room A" />
+        </div>
+        <div>
+          <label>End room name</label>
+          <input id="endName" placeholder="e.g. Room B" />
+        </div>
+        <div class="row">
+          <button id="findPathBtn">Find shortest path</button>
+          <button id="clearHighlightBtn">Clear highlight</button>
+        </div>
+
+        <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
+
+        <div>
+          <label>Selected nodes (click nodes in canvas)</label>
+          <div id="selectedList" class="list">(none)</div>
+        </div>
+        <div class="row">
+          <button id="connectSelectedBtn">Connect selected</button>
+          <button id="removeSelectedBtn">Remove selected</button>
+        </div>
+
+        <div>
+          <label>Connect manually (from → to)</label>
+          <div class="row">
+            <select id="fromSelect"></select>
+            <select id="toSelect"></select>
+          </div>
+          <label style="margin-top:6px">Weight (leave empty to auto distance)</label>
+          <input id="edgeWeight" placeholder="auto" />
+          <div class="row" style="margin-top:6px">
+            <button id="connectBtn">Connect</button>
+            <button id="removeEdgeBtn">Remove edge</button>
+          </div>
+        </div>
+
+        <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
+
+        <div>
+          <label>Import / Export JSON</label>
+          <textarea id="jsonBox" rows="6" placeholder='Paste JSON here or press "Export"'></textarea>
+          <div class="row" style="margin-top:6px">
+                      <button id="exportBtn">Export</button>
+          <button id="importBtn">Import</button>
+        </div>
+        <div class="row" style="margin-top:6px">
+          <button id="loadRoomsBtn">Load rooms.json</button>
+        </div>
+        <input type="file" id="roomsFileInput" accept=".json,application/json" style="display:none" />
+        </div>
+
+        <div>
+          <label>Info / Path result</label>
+          <div id="info" class="list">No path computed yet.</div>
+        </div>
+
+        <div style="display:flex;gap:8px">
+          <button id="resetBtn" class="small">Reset all</button>
+          <button id="zoomFitBtn" class="small">Fit view</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Simple indoor navigation editor + Dijkstra shortest path in a single HTML file
+// Data model: nodes: {id,x,y,name}, edges: {from,to,weight}
+
+const canvas = document.getElementById('graphCanvas');
+const ctx = canvas.getContext('2d');
+let DPR = window.devicePixelRatio || 1;
+function resize() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.floor(rect.width * DPR);
+  canvas.height = Math.floor(rect.height * DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  draw();
+}
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', resize);
+window.addEventListener('load', resize);
+requestAnimationFrame(resize);
+
+// State
+let nodes = [];
+let edges = [];
+let nodeIdCounter = 1;
+let selected = new Set();
+let dragging = null;
+let dragOffset = {x:0,y:0};
+let hovered = null;
+let highlightedPath = {nodes:[], edges:[]};
+
+// UI elements
+const startNameInput = document.getElementById('startName');
+const endNameInput = document.getElementById('endName');
+const findPathBtn = document.getElementById('findPathBtn');
+const infoBox = document.getElementById('info');
+const selectedList = document.getElementById('selectedList');
+const connectSelectedBtn = document.getElementById('connectSelectedBtn');
+const removeSelectedBtn = document.getElementById('removeSelectedBtn');
+const fromSelect = document.getElementById('fromSelect');
+const toSelect = document.getElementById('toSelect');
+const edgeWeightInput = document.getElementById('edgeWeight');
+const connectBtn = document.getElementById('connectBtn');
+const removeEdgeBtn = document.getElementById('removeEdgeBtn');
+const jsonBox = document.getElementById('jsonBox');
+const exportBtn = document.getElementById('exportBtn');
+const importBtn = document.getElementById('importBtn');
+const loadRoomsBtn = document.getElementById('loadRoomsBtn');
+const roomsFileInput = document.getElementById('roomsFileInput');
+const resetBtn = document.getElementById('resetBtn');
+const zoomFitBtn = document.getElementById('zoomFitBtn');
+const clearHighlightBtn = document.getElementById('clearHighlightBtn');
+
+// Helpers
+function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+function getNodeAt(x,y){ for(let i=nodes.length-1;i>=0;i--){ const n=nodes[i]; if(Math.hypot(n.x-x,n.y-y) <= 16) return n; } return null }
+function addNode(x,y,name,longName){ const n={id:nodeIdCounter++,x,y,name: name||('Room '+(nodeIdCounter-1)), longName: (longName && String(longName).trim()) || (name && String(name).trim()) || ('Room '+(nodeIdCounter-1))}; nodes.push(n); rebuildSelects(); draw(); return n }
+function removeNode(node){ nodes = nodes.filter(n=>n.id!==node.id); edges = edges.filter(e=>e.from!==node.id && e.to!==node.id); selected.delete(node.id); rebuildSelects(); draw(); }
+function addEdge(aId,bId,w){ if(aId===bId) return; // no self-edge
+  // avoid duplicate undirected edges
+  const exists = edges.find(e => (e.from===aId && e.to===bId) || (e.from===bId && e.to===aId));
+  if(exists) return;
+  const a = nodes.find(n=>n.id===aId), b = nodes.find(n=>n.id===bId);
+  const weight = (w!==undefined && w!==null && w!=='') ? Number(w) : Math.round(dist(a,b));
+  edges.push({from:aId,to:bId,weight}); draw(); }
+function removeEdgeBetween(aId,bId){ edges = edges.filter(e=>!((e.from===aId&&e.to===bId)||(e.from===bId&&e.to===aId))); draw(); }
+function rebuildSelects(){ fromSelect.innerHTML=''; toSelect.innerHTML='';
+  for(const n of nodes){ const opt=document.createElement('option'); opt.value=n.id; opt.textContent=n.name||('Room '+n.id); fromSelect.appendChild(opt.cloneNode(true)); toSelect.appendChild(opt.cloneNode(true)); }
+  updateSelectedList(); }
+function updateSelectedList(){ if(selected.size===0){ selectedList.innerHTML='(none)'; return; }
+  selectedList.innerHTML = Array.from(selected).map(id=>{ const n=nodes.find(x=>x.id===id); const label = n.longName || n.name; return `<div>${label} <small style=\"color:var(--muted)\">(id:${n.id})</small></div>` }).join(''); }
+
+// Drawing
+function draw(){ ctx.clearRect(0,0,canvas.width/DPR,canvas.height/DPR);
+  // edges
+  for(const e of edges){ const a = nodes.find(n=>n.id===e.from); const b = nodes.find(n=>n.id===e.to);
+    const isHighlighted = highlightedPath.edges.some(p=> (p.from===e.from && p.to===e.to) || (p.from===e.to && p.to===e.from));
+    ctx.lineWidth = isHighlighted ? 4 : 2;
+    ctx.strokeStyle = isHighlighted ? '#34d399' : 'rgba(255,255,255,0.12)';
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    // weight label
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.font='12px sans-serif'; ctx.fillText(e.weight, mx+6, my-6);
+  }
+  // nodes
+  for(const n of nodes){ const isSel = selected.has(n.id); const isHover = hovered && hovered.id===n.id;
+    ctx.beginPath(); ctx.arc(n.x,n.y,16,0,Math.PI*2);
+    ctx.fillStyle = isSel ? '#06b6d4' : (isHover ? 'rgba(6,182,212,0.6)' : 'rgba(255,255,255,0.15)');
+    ctx.fill();
+    ctx.strokeStyle = isSel ? '#38bdf8' : 'rgba(0,0,0,0)';
+    ctx.lineWidth = isSel ? 3 : 0;
+    ctx.stroke();
+    ctx.fillStyle = '#e6eef6';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const label = isSel ? (n.longName || n.name) : n.name;
+ctx.fillText(label, n.x, n.y);
+  }
+}
+
+// Interaction
+canvas.addEventListener('mousedown', e=>{
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left);
+  const y = (e.clientY - rect.top);
+  const node = getNodeAt(x,y);
+  if(node){
+    dragging = node;
+    dragOffset.x = x - node.x;
+    dragOffset.y = y - node.y;
+  }
+});
+
+canvas.addEventListener('mouseup', e=>{
+  dragging = null;
+});
+
+canvas.addEventListener('mousemove', e=>{
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left);
+  const y = (e.clientY - rect.top);
+
+  if(dragging){
+    dragging.x = x - dragOffset.x;
+    dragging.y = y - dragOffset.y;
+    draw();
+    return;
+  }
+
+  // hover detection
+  const node = getNodeAt(x,y);
+  if(node !== hovered){
+    hovered = node;
+    draw();
+  }
+});
+
+canvas.addEventListener('click', e=>{
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left);
+  const y = (e.clientY - rect.top);
+  const node = getNodeAt(x,y);
+
+  if(node){
+    if(e.shiftKey){
+      if(selected.has(node.id)) selected.delete(node.id);
+      else selected.add(node.id);
+      updateSelectedList();
+      draw();
+    } else {
+      selected.clear();
+      selected.add(node.id);
+      updateSelectedList();
+      draw();
+    }
+  } else {
+    // Clicked empty space → add new node
+    const name = prompt('Enter room name:');
+    const finalName = (name && name.trim()) ? name.trim() : ('Room ' + nodeIdCounter);
+    addNode(x, y, finalName, finalName);
+  }
+});
+
+// Buttons
+connectSelectedBtn.addEventListener('click', () => {
+  if(selected.size !== 2) {
+    alert('Select exactly two nodes with Shift+Click');
+    return;
+  }
+  const [a,b] = Array.from(selected);
+  addEdge(a,b);
+});
+removeSelectedBtn.addEventListener('click', () => {
+  Array.from(selected).forEach(id => {
+    const node = nodes.find(n=>n.id===id);
+    if(node) removeNode(node);
+  });
+  selected.clear();
+  updateSelectedList();
+  draw();
+});
+connectBtn.addEventListener('click', () => {
+  const fromId = Number(fromSelect.value);
+  const toId = Number(toSelect.value);
+  const w = edgeWeightInput.value;
+  addEdge(fromId,toId,w);
+});
+removeEdgeBtn.addEventListener('click', () => {
+  const fromId = Number(fromSelect.value);
+  const toId = Number(toSelect.value);
+  removeEdgeBetween(fromId,toId);
+});
+exportBtn.addEventListener('click', () => {
+  const data = {nodes, edges};
+  jsonBox.value = JSON.stringify(data, null, 2);
+});
+importBtn.addEventListener('click', () => {
+  try {
+    const data = JSON.parse(jsonBox.value);
+    if(Array.isArray(data.nodes) && Array.isArray(data.edges)){
+      nodes = data.nodes.map(n => ({...n}));
+      edges = data.edges.map(e => ({...e}));
+      nodeIdCounter = nodes.reduce((max, n) => Math.max(max, n.id), 0) + 1;
+      selected.clear();
+      highlightedPath.nodes = [];
+      highlightedPath.edges = [];
+      rebuildSelects();
+      draw();
+      infoBox.textContent = 'Data imported successfully.';
+    } else {
+      alert('Invalid JSON format');
+    }
+  } catch(e){
+    alert('Invalid JSON');
+  }
+});
+
+// Load rooms.json → import as nodes without connections
+async function loadRoomsJson(){
+  // Use file input to load locally without fetch restrictions
+  roomsFileInput.click();
+}
+
+function importRoomsFromArray(arr){
+  if(!Array.isArray(arr) || arr.length===0){
+    infoBox.textContent = 'rooms.json: no rooms found.';
+    return;
+  }
+  // Reset graph state
+  nodes = [];
+  edges = [];
+  selected.clear();
+  highlightedPath.nodes = [];
+  highlightedPath.edges = [];
+  nodeIdCounter = 1;
+
+  // Layout positions if x/y missing
+  const rect = canvas.getBoundingClientRect();
+  const width = rect.width || 800;
+  const height = rect.height || 600;
+  const count = arr.length;
+  const cols = Math.ceil(Math.sqrt(count));
+  const rows = Math.ceil(count / cols);
+  const padding = 48;
+  const cellW = Math.max(1, (width - padding*2) / cols);
+  const cellH = Math.max(1, (height - padding*2) / rows);
+
+  let i = 0;
+  for(const item of arr){
+    const name = (item && item.name) ? String(item.name) : ('Room ' + (i+1));
+    const longName = (item && (item.longName || item.longname || item.fullName || item.title)) ? String(item.longName || item.longname || item.fullName || item.title) : name;
+    let x = Number(item && item.x);
+    let y = Number(item && item.y);
+    if(!Number.isFinite(x) || !Number.isFinite(y)){
+      const c = i % cols;
+      const r = Math.floor(i / cols);
+      x = Math.round(padding + c*cellW + cellW/2);
+      y = Math.round(padding + r*cellH + cellH/2);
+    }
+    addNode(x, y, name, longName);
+    i++;
+  }
+  infoBox.textContent = `Loaded ${count} rooms from rooms.json.`;
+  rebuildSelects();
+  draw();
+}
+
+loadRoomsBtn.addEventListener('click', () => {
+  loadRoomsJson();
+});
+resetBtn.addEventListener('click', () => {
+  if(confirm('Reset all nodes and edges?')){
+    nodes = [];
+    edges = [];
+    selected.clear();
+    highlightedPath.nodes = [];
+    highlightedPath.edges = [];
+    nodeIdCounter = 1;
+    rebuildSelects();
+    draw();
+    infoBox.textContent = 'Reset done.';
+  }
+});
+clearHighlightBtn.addEventListener('click', () => {
+  highlightedPath.nodes = [];
+  highlightedPath.edges = [];
+  infoBox.textContent = 'Highlight cleared.';
+  draw();
+});
+zoomFitBtn.addEventListener('click', () => {
+  alert('Zoom Fit not implemented yet.');
+});
+
+// Dijkstra shortest path
+function findShortestPath(startName, endName){
+  const startNode = nodes.find(n=>n.name.toLowerCase() === startName.toLowerCase());
+  const endNode = nodes.find(n=>n.name.toLowerCase() === endName.toLowerCase());
+  if(!startNode || !endNode){
+    infoBox.textContent = 'Start or end room not found.';
+    return;
+  }
+  // Dijkstra's algorithm
+  const distMap = new Map();
+  const prevMap = new Map();
+  const Q = new Set(nodes.map(n=>n.id));
+  nodes.forEach(n=>distMap.set(n.id, Infinity));
+  distMap.set(startNode.id, 0);
+
+  while(Q.size){
+    // node in Q with smallest dist
+    let u = null, uDist = Infinity;
+    for(const id of Q){
+      const d = distMap.get(id);
+      if(d < uDist){ u = id; uDist = d; }
+    }
+    if(u === null) break;
+    Q.delete(u);
+    if(u === endNode.id) break;
+
+    const neighbors = edges.filter(e => e.from === u || e.to === u);
+    for(const e of neighbors){
+      const v = (e.from === u) ? e.to : e.from;
+      if(!Q.has(v)) continue;
+      const alt = distMap.get(u) + e.weight;
+      if(alt < distMap.get(v)){
+        distMap.set(v, alt);
+        prevMap.set(v, u);
+      }
+    }
+  }
+
+  // reconstruct path
+  const pathNodes = [];
+  const pathEdges = [];
+  let current = endNode.id;
+  while(current !== undefined && current !== startNode.id){
+    pathNodes.unshift(current);
+    const prev = prevMap.get(current);
+    if(prev !== undefined){
+      pathEdges.unshift({from: prev, to: current});
+    }
+    current = prev;
+  }
+  if(current === startNode.id) pathNodes.unshift(startNode.id);
+  else {
+    infoBox.textContent = 'No path found.';
+    highlightedPath.nodes = [];
+    highlightedPath.edges = [];
+    draw();
+    return;
+  }
+
+  highlightedPath.nodes = pathNodes;
+  highlightedPath.edges = pathEdges;
+  infoBox.textContent = `Shortest path found (${distMap.get(endNode.id)} units)`;
+  draw();
+}
+
+findPathBtn.addEventListener('click', () => {
+  findShortestPath(startNameInput.value.trim(), endNameInput.value.trim());
+});
+
+roomsFileInput.addEventListener('change', (e) => {
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(String(reader.result));
+      const roomsArray = Array.isArray(data) ? data : (Array.isArray(data.rooms) ? data.rooms : null);
+      if(!roomsArray){
+        infoBox.textContent = 'rooms.json format unsupported. Use an array or {"rooms": [...] }';
+        return;
+      }
+      const normalized = roomsArray.map((r,i)=>{
+        if(typeof r === 'string') return { name: r };
+        if(r && typeof r === 'object') return r;
+        return { name: 'Room ' + (i+1) };
+      });
+      importRoomsFromArray(normalized);
+      roomsFileInput.value = '';
+    } catch(err){
+      console.error(err);
+      alert('Invalid JSON in selected file.');
+    }
+  };
+  reader.onerror = () => {
+    alert('Failed to read file.');
+  };
+  reader.readAsText(file);
+});
+
+</script>
+</body>
+</html>
