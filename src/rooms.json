@@ -1,0 +1,947 @@
+[
+    {
+        "id": 4,
+        "name": "Ph1",
+        "longName": "Physik-Saal 1 (R136)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 9,
+        "name": "Ph2",
+        "longName": "Physik-Saal 2 (R133)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 14,
+        "name": "Ph-Üb",
+        "longName": "Physik-Übung (R132)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 19,
+        "name": "Comp1",
+        "longName": "Computerraum 1 (Erdgeschoß)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 24,
+        "name": "Comp2",
+        "longName": "Computerraum 2 (R313)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 29,
+        "name": "Comp3",
+        "longName": "Computerraum 3 (EW)",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 34,
+        "name": "NuT",
+        "longName": "Natur und Technik (EW)",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 39,
+        "name": "C1",
+        "longName": "Chemie-Saal 1 (R140)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 44,
+        "name": "C2",
+        "longName": "Chemie-Saal 2 (R129)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 49,
+        "name": "C-Üb",
+        "longName": "Chemie-Übung (R142)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 54,
+        "name": "C-Lab",
+        "longName": "C-Labor",
+        "active": true,
+        "building": "KG"
+    },
+    {
+        "id": 59,
+        "name": "Bio1",
+        "longName": "Biologie 1 (EW)",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 64,
+        "name": "Bio2",
+        "longName": "Biologie 2 (EW)",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 69,
+        "name": "Bio-Üb",
+        "longName": "Biologie-Übung (EW)",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 74,
+        "name": "Mus1",
+        "longName": "Musiksaal 1 (R227)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 79,
+        "name": "Mus2",
+        "longName": "Musiksaal 2 (R225)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 84,
+        "name": "Mus3",
+        "longName": "Musiksaal 3 (R217)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 89,
+        "name": "Zei1",
+        "longName": "Zeichensaal 1 (R401)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 94,
+        "name": "Zei2",
+        "longName": "Zeichensaal 2 (R403)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 99,
+        "name": "Zei3",
+        "longName": "Zeichensaal 3 (R216)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 104,
+        "name": "Werk1",
+        "longName": "Werkraum (R030)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 109,
+        "name": "Werk2",
+        "longName": "Keramikraum (R028)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 114,
+        "name": "TH1",
+        "longName": "Spo-West",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 119,
+        "name": "TH2",
+        "longName": "Spo-Ost",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 124,
+        "name": "THA",
+        "longName": "MTVA",
+        "active": true,
+        "building": "TH extern"
+    },
+    {
+        "id": 129,
+        "name": "THB",
+        "longName": "MTVB",
+        "active": true,
+        "building": "TH extern"
+    },
+    {
+        "id": 134,
+        "name": "THC",
+        "longName": "MTVC",
+        "active": true,
+        "building": "TH extern"
+    },
+    {
+        "id": 139,
+        "name": "THS",
+        "longName": "Schwimmbad",
+        "active": true,
+        "building": "TH extern"
+    },
+    {
+        "id": 144,
+        "name": "K1",
+        "longName": "Kolleg 1 (KG)",
+        "active": true,
+        "building": "KG"
+    },
+    {
+        "id": 149,
+        "name": "K2",
+        "longName": "Kolleg 2 (KG)",
+        "active": true,
+        "building": "KG"
+    },
+    {
+        "id": 154,
+        "name": "K3",
+        "longName": "Kolleg 3 (KG)",
+        "active": true,
+        "building": "KG"
+    },
+    {
+        "id": 159,
+        "name": "EW1",
+        "longName": "Erweiterungsbau 1 (EW)",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 164,
+        "name": "EW2",
+        "longName": "Erweiterungsbau 2 (EW)",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 189,
+        "name": "R5a",
+        "longName": "002",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 194,
+        "name": "R5b",
+        "longName": "003",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 199,
+        "name": "R5c",
+        "longName": "004",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 204,
+        "name": "R5d",
+        "longName": "005",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 209,
+        "name": "R5e",
+        "longName": "006",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 214,
+        "name": "R6a",
+        "longName": "102",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 219,
+        "name": "R6b",
+        "longName": "103",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 224,
+        "name": "R6c",
+        "longName": "104",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 229,
+        "name": "R6d",
+        "longName": "107",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 234,
+        "name": "R6e",
+        "longName": "108",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 239,
+        "name": "R7a",
+        "longName": "203",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 244,
+        "name": "R7b",
+        "longName": "204",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 249,
+        "name": "R7c",
+        "longName": "206",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 254,
+        "name": "R7d",
+        "longName": "207",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 259,
+        "name": "R7e",
+        "longName": "208",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 264,
+        "name": "R7f",
+        "longName": "302",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 269,
+        "name": "R8a",
+        "longName": "306",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 274,
+        "name": "R8b",
+        "longName": "323",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 279,
+        "name": "R8c",
+        "longName": "106",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 284,
+        "name": "R8d",
+        "longName": "307",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 289,
+        "name": "R8e",
+        "longName": "213",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 294,
+        "name": "R9a",
+        "longName": "308",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 299,
+        "name": "R9b",
+        "longName": "309",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 304,
+        "name": "R9c",
+        "longName": "109",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 309,
+        "name": "R9d",
+        "longName": "317",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 329,
+        "name": "R9e",
+        "longName": "320",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 334,
+        "name": "R10a",
+        "longName": "318",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 339,
+        "name": "R10b",
+        "longName": "EW3",
+        "active": true,
+        "building": "EW"
+    },
+    {
+        "id": 344,
+        "name": "R10c",
+        "longName": "224",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 349,
+        "name": "R10d",
+        "longName": "322",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 354,
+        "name": "R10e",
+        "longName": "321",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 359,
+        "name": "PERS",
+        "longName": "PERS",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 364,
+        "name": "DIR",
+        "longName": "DIREX",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 369,
+        "name": "BAND",
+        "longName": "Bandraum",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 374,
+        "name": "TECH",
+        "longName": "Bühnentechnik",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 379,
+        "name": "REUCH",
+        "longName": "Reuchlin",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 384,
+        "name": "Lezi",
+        "longName": "Lehrerzimmer",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 389,
+        "name": "GNA",
+        "longName": "Gnadenthal",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 394,
+        "name": "Web",
+        "longName": "Webraum (R212)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 399,
+        "name": "Filmsaal",
+        "longName": "Filmsaal (R222)",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 404,
+        "name": "Bib",
+        "longName": "Bibliothek (KG)",
+        "active": true,
+        "building": "KG"
+    },
+    {
+        "id": 409,
+        "name": "CSG",
+        "longName": "Scheiner",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 425,
+        "name": "R8f",
+        "longName": "306",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 432,
+        "name": "Rob3D",
+        "longName": "R305",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 437,
+        "name": "R115",
+        "longName": "Büro Fr. Jacob/Hr. Geisler",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 440,
+        "name": "R116",
+        "longName": "Büro Hr. Schöner",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 452,
+        "name": "R118",
+        "longName": "Büro Hr. Dr. Schickel",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 457,
+        "name": "R117",
+        "longName": "Sekretariat",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 462,
+        "name": "R124",
+        "longName": "Schulberatung",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 467,
+        "name": "R114",
+        "longName": "Büro Fr. Benning",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 472,
+        "name": "R135",
+        "longName": "Physik Vorbereitung",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 477,
+        "name": "R212",
+        "longName": "Webraum",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 482,
+        "name": "R001",
+        "longName": "StayIn (R001)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 487,
+        "name": "R205",
+        "longName": "Geo-Raum",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 490,
+        "name": "R312",
+        "longName": "Lehrer-Arbeitszimmer",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 502,
+        "name": "OS-Sek",
+        "longName": "Sekretariat Oberstufe (KG)",
+        "active": true,
+        "building": "KG"
+    },
+    {
+        "id": 507,
+        "name": "R125a",
+        "longName": "Elternsprechzimmer",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 510,
+        "name": "R221",
+        "longName": "Besprechungszimmer",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 512,
+        "name": "R5f",
+        "longName": "007",
+        "active": true,
+        "building": "Hauptgebäude"
+    },
+    {
+        "id": 527,
+        "name": "R9f",
+        "longName": "317",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 532,
+        "name": "R10g",
+        "longName": "408",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 537,
+        "name": "R10h",
+        "longName": "322",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 542,
+        "name": "THE",
+        "longName": "Eishalle",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 545,
+        "name": "K4",
+        "longName": "Aufenthaltsraum Q11/12",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 550,
+        "name": "Soz",
+        "longName": "K6  (JAS Mohr)",
+        "active": true,
+        "building": "KG"
+    },
+    {
+        "id": 560,
+        "name": "C-Vorb",
+        "longName": "Chemie Vorbereitung (R141)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 565,
+        "name": "Ph-Vorb1",
+        "longName": "Physik Vorbereitung 1 (R134)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 570,
+        "name": "Ph-Vorb2",
+        "longName": "Physik Vorbereitung 2 (R135)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 575,
+        "name": "Bio-Vorb",
+        "longName": "Biologie Vorbereitung (EW)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 582,
+        "name": "C-Sammlung",
+        "longName": "Chemie Sammlung (R130)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 586,
+        "name": "Hof",
+        "longName": "Pausenhof",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 591,
+        "name": "Gla",
+        "longName": "Glacis",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 594,
+        "name": "Ph-Sammlung",
+        "longName": "Physik Sammlung (R131)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 603,
+        "name": "R6f",
+        "longName": "202",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 608,
+        "name": "R6g",
+        "longName": "203",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 613,
+        "name": "R6h",
+        "longName": "204",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 618,
+        "name": "R11a",
+        "longName": "026",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 623,
+        "name": "R11b",
+        "longName": "405",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 628,
+        "name": "R11c",
+        "longName": "406",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 633,
+        "name": "R11d",
+        "longName": "407",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 638,
+        "name": "KLH",
+        "longName": "Kletterhalle",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 644,
+        "name": "PA0",
+        "longName": "PA 0",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 649,
+        "name": "PA1",
+        "longName": "PA 1",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 654,
+        "name": "PA2",
+        "longName": "PA 2",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 659,
+        "name": "PA3/4",
+        "longName": "PA 3/4",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 664,
+        "name": "Cafeteria",
+        "longName": "Cafeteria",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 669,
+        "name": "Hof1",
+        "longName": "Hof 1",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 674,
+        "name": "Hof2",
+        "longName": "Hof 2",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 679,
+        "name": "Haus_NuT",
+        "longName": "Haus NuT",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 684,
+        "name": "Früh",
+        "longName": "Frühaufsicht",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 689,
+        "name": "K7",
+        "longName": "Aufenthaltsraum Q11/12",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 694,
+        "name": "OGS-Räume",
+        "longName": "OGS (ehemalige Hausmeisterwohnung)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 697,
+        "name": "THD",
+        "longName": "Turnhalle D MTV",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 700,
+        "name": "R7g",
+        "longName": "303",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 703,
+        "name": "R7h",
+        "longName": "304",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 706,
+        "name": "R11e",
+        "longName": "408",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 708,
+        "name": "PS1",
+        "longName": "Pseudoraum 1",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 711,
+        "name": "PS 2",
+        "longName": "Pseudoraum 2",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 714,
+        "name": "PS 3",
+        "longName": "Pseudoraum 3",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 717,
+        "name": "PS 4",
+        "longName": "Pseudoraum 4",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 719,
+        "name": "NuT-Vorb",
+        "longName": "NuT-Vorbereitung (EW)",
+        "active": true,
+        "building": ""
+    },
+    {
+        "id": 722,
+        "name": "LMB",
+        "longName": "Lernmittelbibliothek (HG EG)",
+        "active": true,
+        "building": ""
+    }
+]
