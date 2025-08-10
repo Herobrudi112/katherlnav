@@ -549,7 +549,7 @@ let redoStack = [];
 let isUndoRedoAction = false;
 
 // Grid snapping
-const GRID_SIZE = 20;
+const GRID_SIZE =5;
 let isCtrlPressed = false;
 
 // Search functionality
@@ -1595,8 +1595,10 @@ canvas.addEventListener('contextmenu', e => {
   if(!node){
     // Right-clicked empty space → add new node
     const name = prompt('Enter room name:');
-    const finalName = (name && name.trim()) ? name.trim() : ('Room ' + nodeIdCounter);
-    addNode(transformedX, transformedY, finalName, finalName);
+    if (name !== null && name.trim()) {
+      const finalName = name.trim();
+      addNode(transformedX, transformedY, finalName, finalName);
+    }
   }
 });
 
