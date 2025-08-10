@@ -1762,12 +1762,12 @@ zoomFitBtn.addEventListener('click', () => {
   const centerX = (minX + maxX) / 2;
   const centerY = (minY + maxY) / 2;
   
-  // Apply transformation
-  ctx.save();
-  ctx.translate(canvas.width/DPR/2, canvas.height/DPR/2);
-  ctx.scale(scale, scale);
-  ctx.translate(-centerX, -centerY);
+  // Update view transformation variables
+  viewScale = scale;
+  viewX = (canvas.width/DPR/2) - (centerX * scale);
+  viewY = (canvas.height/DPR/2) - (centerY * scale);
   
+  draw();
   infoBox.textContent = 'View fitted to nodes.';
 });
 
