@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Navigation Graph Viewer</title>
+  <style>
+    :root{--bg:#0f1724;--panel:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--success:#34d399}
+    html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, sans-serif;background:linear-gradient(180deg,#071028 0%,#081122 100%);color:#e6eef6}
+    .app{display:flex;gap:12px;height:100%;padding:12px;box-sizing:border-box}
+    .canvas-wrap{flex:1;background:linear-gradient(180deg,#071a2b, #04202a);border-radius:12px;padding:12px;display:flex;flex-direction:column}
+    canvas{background:transparent;border-radius:8px;flex:1;cursor:default}
+    .panel{width:360px;background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+    h1{margin:4px 0 10px;font-size:18px}
+    .controls{display:grid;gap:8px}
+    label{font-size:12px;color:var(--muted)}
+    input,select,button,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    button{cursor:pointer;background:linear-gradient(90deg,rgba(6,182,212,0.12), rgba(52,211,153,0.06));border:1px solid rgba(6,182,212,0.14)}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    .small{font-size:12px;padding:6px}
+    .list{max-height:160px;overflow:auto;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
+    .hint{font-size:12px;color:var(--muted)}
+    .toolbar{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+    .node-badge{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px}
+    .file-drop{border:2px dashed rgba(255,255,255,0.1);border-radius:8px;padding:20px;text-align:center;margin-bottom:12px;transition:all 0.2s}
+    .file-drop:hover{border-color:var(--accent);background:rgba(6,182,212,0.05)}
+    .file-drop.dragover{border-color:var(--success);background:rgba(52,211,153,0.1)}
+    .stats{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:12px}
+    .stats-row{display:flex;justify-content:space-between;margin-bottom:4px}
+    .stats-row:last-child{margin-bottom:0}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="canvas-wrap">
+      <div class="toolbar">
+        <div class="node-badge">View-only mode - No editing</div>
+        <div class="node-badge">Drag to pan • Scroll to zoom</div>
+        <div class="node-badge">Click nodes to see details</div>
+      </div>
+      <canvas id="graphCanvas"></canvas>
+      <div class="hint">Drag to pan • Scroll to zoom • Click nodes for details • Use panel to find paths</div>
+    </div>
+
+    <div class="panel">
+      <h1>Navigation Graph Viewer</h1>
+      
+      <div class="file-drop" id="fileDrop">
+        <div>📁 Drop navigation graph JSON here</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">or click to browse</div>
+        <input type="file" id="fileInput" accept=".json,application/json" style="display:none" />
+      </div>
+
+      <div class="stats" id="stats" style="display:none">
+        <div class="stats-row">
+          <span>Nodes:</span>
+          <span id="nodeCount">0</span>
+        </div>
+        <div class="stats-row">
+          <span>Edges:</span>
+          <span id="edgeCount">0</span>
+        </div>
+        <div class="stats-row">
+          <span>Total weight:</span>
+          <span id="totalWeight">0</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div>
+          <label>Start room name</label>
+          <input id="startName" placeholder="e.g. Room A" />
+        </div>
+        <div>
+          <label>End room name</label>
+          <input id="endName" placeholder="e.g. Room B" />
+        </div>
+        <div class="row">
+          <button id="findPathBtn">Find shortest path</button>
+          <button id="clearHighlightBtn">Clear highlight</button>
+        </div>
+
+        <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
+
+        <div>
+          <label>Selected node info</label>
+          <div id="nodeInfo" class="list">Click a node to see details</div>
+        </div>
+
+        <div>
+          <label>Path result</label>
+          <div id="pathInfo" class="list">No path computed yet.</div>
+        </div>
+
+        <div style="display:flex;gap:8px">
+          <button id="zoomFitBtn" class="small">Fit view</button>
+          <button id="resetViewBtn" class="small">Reset view</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Navigation Graph Viewer - Read-only mode for exported graphs
+// Data model: nodes: {id,x,y,name,longName}, edges: {from,to,weight}
+
+const canvas = document.getElementById('graphCanvas');
+const ctx = canvas.getContext('2d');
+let DPR = window.devicePixelRatio || 1;
+
+// View state
+let panX = 0;
+let panY = 0;
+let zoom = 1;
+let isDragging = false;
+let lastMousePos = {x: 0, y: 0};
+
+function resize() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.floor(rect.width * DPR);
+  canvas.height = Math.floor(rect.height * DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  draw();
+}
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', resize);
+window.addEventListener('load', resize);
+requestAnimationFrame(resize);
+
+// Graph state
+let nodes = [];
+let edges = [];
+let highlightedPath = {nodes:[], edges:[]};
+let selectedNode = null;
+let hoveredNode = null;
+
+// UI elements
+const fileDrop = document.getElementById('fileDrop');
+const fileInput = document.getElementById('fileInput');
+const stats = document.getElementById('stats');
+const nodeCount = document.getElementById('nodeCount');
+const edgeCount = document.getElementById('edgeCount');
+const totalWeight = document.getElementById('totalWeight');
+const startNameInput = document.getElementById('startName');
+const endNameInput = document.getElementById('endName');
+const findPathBtn = document.getElementById('findPathBtn');
+const clearHighlightBtn = document.getElementById('clearHighlightBtn');
+const nodeInfo = document.getElementById('nodeInfo');
+const pathInfo = document.getElementById('pathInfo');
+const zoomFitBtn = document.getElementById('zoomFitBtn');
+const resetViewBtn = document.getElementById('resetViewBtn');
+
+// File handling
+fileDrop.addEventListener('click', () => fileInput.click());
+fileDrop.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  fileDrop.classList.add('dragover');
+});
+fileDrop.addEventListener('dragleave', () => {
+  fileDrop.classList.remove('dragover');
+});
+fileDrop.addEventListener('drop', (e) => {
+  e.preventDefault();
+  fileDrop.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/json' || file.name.endsWith('.json')) {
+    loadGraphFile(file);
+  }
+});
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    loadGraphFile(file);
+  }
+});
+
+function loadGraphFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(String(reader.result));
+      if (Array.isArray(data.nodes) && Array.isArray(data.edges)) {
+        nodes = data.nodes.map(n => ({...n}));
+        edges = data.edges.map(e => ({...e}));
+        updateStats();
+        resetView();
+        draw();
+        pathInfo.textContent = 'Graph loaded successfully.';
+      } else {
+        alert('Invalid graph format. Expected {nodes: [...], edges: [...]}');
+      }
+    } catch (err) {
+      alert('Invalid JSON file.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function updateStats() {
+  if (nodes.length > 0) {
+    stats.style.display = 'block';
+    nodeCount.textContent = nodes.length;
+    edgeCount.textContent = edges.length;
+    const total = edges.reduce((sum, e) => sum + e.weight, 0);
+    totalWeight.textContent = total;
+  } else {
+    stats.style.display = 'none';
+  }
+}
+
+// View transformations
+function applyTransform() {
+  ctx.save();
+  ctx.translate(panX, panY);
+  ctx.scale(zoom, zoom);
+}
+
+function restoreTransform() {
+  ctx.restore();
+}
+
+function screenToWorld(screenX, screenY) {
+  return {
+    x: (screenX - panX) / zoom,
+    y: (screenY - panY) / zoom
+  };
+}
+
+function worldToScreen(worldX, worldY) {
+  return {
+    x: worldX * zoom + panX,
+    y: worldY * zoom + panY
+  };
+}
+
+// Drawing
+function draw() {
+  ctx.clearRect(0, 0, canvas.width/DPR, canvas.height/DPR);
+  
+  applyTransform();
+  
+  // Draw edges
+  for (const e of edges) {
+    const a = nodes.find(n => n.id === e.from);
+    const b = nodes.find(n => n.id === e.to);
+    if (!a || !b) continue;
+    
+    const isHighlighted = highlightedPath.edges.some(p => 
+      (p.from === e.from && p.to === e.to) || (p.from === e.to && p.to === e.from)
+    );
+    
+    ctx.lineWidth = isHighlighted ? 4 : 2;
+    ctx.strokeStyle = isHighlighted ? '#34d399' : 'rgba(255,255,255,0.12)';
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+    
+    // Weight label
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(e.weight, mx + 6, my - 6);
+  }
+  
+  // Draw nodes
+  for (const n of nodes) {
+    const isSelected = selectedNode && selectedNode.id === n.id;
+    const isHovered = hoveredNode && hoveredNode.id === n.id;
+    const isInPath = highlightedPath.nodes.includes(n.id);
+    
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, 16, 0, Math.PI * 2);
+    
+    if (isInPath) {
+      ctx.fillStyle = '#34d399';
+    } else if (isSelected) {
+      ctx.fillStyle = '#06b6d4';
+    } else if (isHovered) {
+      ctx.fillStyle = 'rgba(6,182,212,0.6)';
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    }
+    
+    ctx.fill();
+    
+    // Border
+    if (isSelected || isInPath) {
+      ctx.strokeStyle = isInPath ? '#34d399' : '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    
+    // Label
+    ctx.fillStyle = '#e6eef6';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const label = isSelected ? (n.longName || n.name) : n.name;
+    ctx.fillText(label, n.x, n.y);
+  }
+  
+  restoreTransform();
+}
+
+// Interaction
+canvas.addEventListener('mousedown', (e) => {
+  if (e.button === 0) { // Left click
+    const rect = canvas.getBoundingClientRect();
+    const screenX = e.clientX - rect.left;
+    const screenY = e.clientY - rect.top;
+    const worldPos = screenToWorld(screenX, screenY);
+    
+    const clickedNode = getNodeAt(worldPos.x, worldPos.y);
+    if (clickedNode) {
+      selectedNode = clickedNode;
+      updateNodeInfo();
+      draw();
+    } else {
+      selectedNode = null;
+      updateNodeInfo();
+      draw();
+      // Start panning
+      isDragging = true;
+      lastMousePos = {x: screenX, y: screenY};
+    }
+  }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const screenX = e.clientX - rect.left;
+  const screenY = e.clientY - rect.top;
+  
+  if (isDragging) {
+    const deltaX = screenX - lastMousePos.x;
+    const deltaY = screenY - lastMousePos.y;
+    panX += deltaX;
+    panY += deltaY;
+    lastMousePos = {x: screenX, y: screenY};
+    draw();
+    return;
+  }
+  
+  // Hover detection
+  const worldPos = screenToWorld(screenX, screenY);
+  const node = getNodeAt(worldPos.x, worldPos.y);
+  if (node !== hoveredNode) {
+    hoveredNode = node;
+    draw();
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+  
+  const worldPos = screenToWorld(mouseX, mouseY);
+  
+  const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+  const newZoom = Math.max(0.1, Math.min(5, zoom * zoomFactor));
+  
+  // Adjust pan to zoom towards mouse
+  panX = mouseX - worldPos.x * newZoom;
+  panY = mouseY - worldPos.y * newZoom;
+  
+  zoom = newZoom;
+  draw();
+});
+
+// Helpers
+function getNodeAt(x, y) {
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    const n = nodes[i];
+    if (Math.hypot(n.x - x, n.y - y) <= 16) return n;
+  }
+  return null;
+}
+
+function updateNodeInfo() {
+  if (selectedNode) {
+    const label = selectedNode.longName || selectedNode.name;
+    const connections = edges.filter(e => e.from === selectedNode.id || e.to === selectedNode.id).length;
+    nodeInfo.innerHTML = `
+      <div><strong>${label}</strong></div>
+      <div style="color:var(--muted);font-size:11px">ID: ${selectedNode.id}</div>
+      <div style="color:var(--muted);font-size:11px">Connections: ${connections}</div>
+      ${selectedNode.building ? `<div style="color:var(--muted);font-size:11px">Building: ${selectedNode.building}</div>` : ''}
+    `;
+  } else {
+    nodeInfo.innerHTML = 'Click a node to see details';
+  }
+}
+
+function resetView() {
+  panX = 0;
+  panY = 0;
+  zoom = 1;
+  selectedNode = null;
+  highlightedPath = {nodes: [], edges: []};
+  updateNodeInfo();
+  pathInfo.textContent = 'No path computed yet.';
+}
+
+// Buttons
+findPathBtn.addEventListener('click', () => {
+  findShortestPath(startNameInput.value.trim(), endNameInput.value.trim());
+});
+
+clearHighlightBtn.addEventListener('click', () => {
+  highlightedPath = {nodes: [], edges: []};
+  pathInfo.textContent = 'Highlight cleared.';
+  draw();
+});
+
+zoomFitBtn.addEventListener('click', () => {
+  if (nodes.length === 0) {
+    alert('No graph loaded.');
+    return;
+  }
+  
+  const minX = Math.min(...nodes.map(n => n.x));
+  const maxX = Math.max(...nodes.map(n => n.x));
+  const minY = Math.min(...nodes.map(n => n.y));
+  const maxY = Math.max(...nodes.map(n => n.y));
+  
+  const padding = 100;
+  const scaleX = (canvas.width/DPR - padding*2) / (maxX - minX);
+  const scaleY = (canvas.height/DPR - padding*2) / (maxY - minY);
+  const scale = Math.min(scaleX, scaleY, 1);
+  
+  zoom = scale;
+  panX = (canvas.width/DPR - (maxX + minX) * scale) / 2;
+  panY = (canvas.height/DPR - (maxY + minY) * scale) / 2;
+  
+  draw();
+  pathInfo.textContent = 'View fitted to graph.';
+});
+
+resetViewBtn.addEventListener('click', () => {
+  resetView();
+  draw();
+});
+
+// Dijkstra shortest path
+function findShortestPath(startName, endName) {
+  const startNode = nodes.find(n => n.name.toLowerCase() === startName.toLowerCase());
+  const endNode = nodes.find(n => n.name.toLowerCase() === endName.toLowerCase());
+  
+  if (!startNode || !endNode) {
+    pathInfo.textContent = 'Start or end room not found.';
+    return;
+  }
+  
+  // Dijkstra's algorithm
+  const distMap = new Map();
+  const prevMap = new Map();
+  const Q = new Set(nodes.map(n => n.id));
+  nodes.forEach(n => distMap.set(n.id, Infinity));
+  distMap.set(startNode.id, 0);
+
+  while (Q.size) {
+    // node in Q with smallest dist
+    let u = null, uDist = Infinity;
+    for (const id of Q) {
+      const d = distMap.get(id);
+      if (d < uDist) { u = id; uDist = d; }
+    }
+    if (u === null) break;
+    Q.delete(u);
+    if (u === endNode.id) break;
+
+    const neighbors = edges.filter(e => e.from === u || e.to === u);
+    for (const e of neighbors) {
+      const v = (e.from === u) ? e.to : e.from;
+      if (!Q.has(v)) continue;
+      const alt = distMap.get(u) + e.weight;
+      if (alt < distMap.get(v)) {
+        distMap.set(v, alt);
+        prevMap.set(v, u);
+      }
+    }
+  }
+
+  // reconstruct path
+  const pathNodes = [];
+  const pathEdges = [];
+  let current = endNode.id;
+  while (current !== undefined && current !== startNode.id) {
+    pathNodes.unshift(current);
+    const prev = prevMap.get(current);
+    if (prev !== undefined) {
+      pathEdges.unshift({from: prev, to: current});
+    }
+    current = prev;
+  }
+  if (current === startNode.id) pathNodes.unshift(startNode.id);
+  else {
+    pathInfo.textContent = 'No path found.';
+    highlightedPath = {nodes: [], edges: []};
+    draw();
+    return;
+  }
+
+  highlightedPath = {nodes: pathNodes, edges: pathEdges};
+  pathInfo.textContent = `Shortest path found (${distMap.get(endNode.id)} units)`;
+  draw();
+}
+
+// Initialize
+updateNodeInfo();
+</script>
+</body>
+</html> 
