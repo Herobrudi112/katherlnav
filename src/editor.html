@@ -435,6 +435,13 @@
               <input type="number" id="frameHeightInput" placeholder="Height" value="150" />
             </div>
           </div>
+          <div>
+            <label>Background Image (optional)</label>
+            <div class="row">
+              <input type="file" id="frameBackgroundInput" accept="image/*" style="flex: 1;" />
+              <button id="clearBackgroundBtn" class="small">Clear</button>
+            </div>
+          </div>
           <div id="framesList" class="list">
             <div class="hint">No frames created yet</div>
           </div>
@@ -533,6 +540,9 @@ let lastMousePos = {x: 0, y: 0};
 let nodeIdCounter = 1;
 let frameIdCounter = 1;
 
+// Image cache for background images
+let imageCache = new Map();
+
 // Undo/Redo system
 let undoStack = [];
 let redoStack = [];
@@ -576,6 +586,8 @@ const frameColorInput = document.getElementById('frameColorInput');
 const frameWidthInput = document.getElementById('frameWidthInput');
 const frameHeightInput = document.getElementById('frameHeightInput');
 const framesList = document.getElementById('framesList');
+const frameBackgroundInput = document.getElementById('frameBackgroundInput');
+const clearBackgroundBtn = document.getElementById('clearBackgroundBtn');
 
 // Tag editor elements
 const tagInput = document.getElementById('tagInput');
@@ -587,6 +599,10 @@ const selectedTagsList = document.getElementById('selectedTagsList');
 // Frame button event listeners
 createFrameBtn.addEventListener('click', createFrame);
 deleteFrameBtn.addEventListener('click', deleteFrame);
+
+// Background image event listeners
+frameBackgroundInput.addEventListener('change', handleBackgroundImageUpload);
+clearBackgroundBtn.addEventListener('click', clearBackgroundImage);
 
 // Tag editor event listeners
 addTagBtn.addEventListener('click', addTagToSelected);
@@ -650,6 +666,18 @@ function undo() {
     nodeIdCounter = previousState.nodeIdCounter;
     frameIdCounter = previousState.frameIdCounter;
     
+    // Rebuild image cache for frames with background images
+    imageCache.clear();
+    frames.forEach(frame => {
+        if (frame.backgroundImage) {
+            const img = new Image();
+            img.onload = function() {
+                imageCache.set(frame.id, img);
+            };
+            img.src = frame.backgroundImage.src;
+        }
+    });
+    
     // Clear selections and update UI
     selected.clear();
     selectedFrame = null;
@@ -689,6 +717,18 @@ function redo() {
     frames = nextState.frames;
     nodeIdCounter = nextState.nodeIdCounter;
     frameIdCounter = nextState.frameIdCounter;
+    
+    // Rebuild image cache for frames with background images
+    imageCache.clear();
+    frames.forEach(frame => {
+        if (frame.backgroundImage) {
+            const img = new Image();
+            img.onload = function() {
+                imageCache.set(frame.id, img);
+            };
+            img.src = frame.backgroundImage.src;
+        }
+    });
     
     // Clear selections and update UI
     selected.clear();
@@ -951,8 +991,6 @@ function updateWeightControls() {
 function createFrame() {
   const name = frameNameInput.value.trim();
   const color = frameColorInput.value;
-  const width = Number(frameWidthInput.value) || 200;
-  const height = Number(frameHeightInput.value) || 150;
   
   if (!name) {
     alert('Please enter a frame name');
@@ -966,11 +1004,13 @@ function createFrame() {
     nodes: [],
     x: 100,
     y: 100,
-    width: width,
-    height: height
+    width: 300,
+    height: 200,
+    backgroundImage: null // Add background image support
   };
   
   frames.push(frame);
+  frameNameInput.value = '';
   updateFramesList();
   draw();
   saveState();
@@ -997,7 +1037,10 @@ function updateFramesList() {
   framesList.innerHTML = frames.map(frame => `
     <div class="frame-item" data-frame-id="${frame.id}" style="background: ${frame.color}20; border: 1px solid ${frame.color}40;">
       <div style="font-weight: bold; color: ${frame.color}">${frame.name}</div>
-      <div style="font-size: 11px; color: var(--muted)">${frame.nodes.length} nodes</div>
+      <div style="font-size: 11px; color: var(--muted)">
+        ${frame.nodes.length} nodes
+        ${frame.backgroundImage ? ' • 📷 Background' : ''}
+      </div>
     </div>
   `).join('');
   
@@ -1031,6 +1074,49 @@ function removeNodeFromFrame(nodeId, frameId) {
     draw();
     saveState();
   }
+}
+
+function handleBackgroundImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  if (!selectedFrame) {
+    alert('Please select a frame first');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = new Image();
+    img.onload = function() {
+      selectedFrame.backgroundImage = {
+        src: event.target.result,
+        width: img.width,
+        height: img.height
+      };
+      
+      // Cache the image for better performance
+      imageCache.set(selectedFrame.id, img);
+      
+      draw();
+      saveState();
+      e.target.value = ''; // Clear the input
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearBackgroundImage() {
+  if (!selectedFrame) {
+    alert('Please select a frame first');
+    return;
+  }
+  
+  selectedFrame.backgroundImage = null;
+  imageCache.delete(selectedFrame.id);
+  draw();
+  saveState();
 }
 
 // Tag editor functions
@@ -1168,6 +1254,62 @@ function draw(){
   
   // Draw frames first (background)
   for (const frame of frames) {
+    // Draw background image if present
+    if (frame.backgroundImage) {
+      const img = imageCache.get(frame.id);
+      if (img) {
+        // Calculate aspect ratio to fit image within frame
+        const frameAspect = frame.width / frame.height;
+        const imgAspect = frame.backgroundImage.width / frame.backgroundImage.height;
+        
+        let drawWidth, drawHeight, drawX, drawY;
+        
+        if (imgAspect > frameAspect) {
+          // Image is wider than frame, fit to width
+          drawWidth = frame.width;
+          drawHeight = frame.width / imgAspect;
+          drawX = frame.x;
+          drawY = frame.y + (frame.height - drawHeight) / 2;
+        } else {
+          // Image is taller than frame, fit to height
+          drawHeight = frame.height;
+          drawWidth = frame.height * imgAspect;
+          drawX = frame.x + (frame.width - drawWidth) / 2;
+          drawY = frame.y;
+        }
+        
+        ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+      } else {
+        // Fallback to original image loading if not in cache
+        const img = new Image();
+        img.onload = function() {
+          // Calculate aspect ratio to fit image within frame
+          const frameAspect = frame.width / frame.height;
+          const imgAspect = img.width / img.height;
+          
+          let drawWidth, drawHeight, drawX, drawY;
+          
+          if (imgAspect > frameAspect) {
+            // Image is wider than frame, fit to width
+            drawWidth = frame.width;
+            drawHeight = frame.width / imgAspect;
+            drawX = frame.x;
+            drawY = frame.y + (frame.height - drawHeight) / 2;
+          } else {
+            // Image is taller than frame, fit to height
+            drawHeight = frame.height;
+            drawWidth = frame.height * imgAspect;
+            drawX = frame.x + (frame.width - drawWidth) / 2;
+            drawY = frame.y;
+          }
+          
+          ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+        };
+        img.src = frame.backgroundImage.src;
+      }
+    }
+    
+    // Draw frame background
     ctx.fillStyle = frame.color + '10';
     ctx.strokeStyle = frame.color + '60';
     ctx.lineWidth = 2;
@@ -1613,6 +1755,20 @@ importBtn.addEventListener('click', () => {
       frames = data.frames ? data.frames.map(f => ({...f})) : [];
       nodeIdCounter = nodes.reduce((max, n) => Math.max(max, n.id), 0) + 1;
       frameIdCounter = frames.reduce((max, f) => Math.max(max, f.id), 0) + 1;
+      
+      // Rebuild image cache for frames with background images
+      imageCache.clear();
+      frames.forEach(frame => {
+        if (frame.backgroundImage) {
+          const img = new Image();
+          img.onload = function() {
+            imageCache.set(frame.id, img);
+            draw(); // Redraw when image loads
+          };
+          img.src = frame.backgroundImage.src;
+        }
+      });
+      
       selected.clear();
       selectedFrame = null;
       highlightedPath.nodes = [];
