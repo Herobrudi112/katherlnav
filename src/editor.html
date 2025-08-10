@@ -442,9 +442,15 @@
               <button id="clearBackgroundBtn" class="small">Clear</button>
             </div>
           </div>
-          <div id="framesList" class="list">
-            <div class="hint">No frames created yet</div>
-          </div>
+            <div id="framesList" class="list">
+              <div class="hint">No frames created yet</div>
+            </div>
+            
+            <div class="hint" style="margin-top: 8px; font-size: 11px; color: var(--muted);">
+              💡 <strong>Resize frames:</strong> Select a frame and drag the corner handles to resize.<br>
+              💡 <strong>Move frames:</strong> Click and drag the frame body to move.<br>
+              💡 <strong>Reset size:</strong> Press 'R' to reset selected frame to default size.
+            </div>
         </div>
       </div>
 
@@ -1042,6 +1048,38 @@ function createFrame() {
   saveState();
 }
 
+// Add resize handle detection function
+function getResizeHandleAt(x, y, frame) {
+  if (!frame) return null;
+  
+  const handleSize = 10; // Slightly larger for easier interaction
+  const handles = [
+    { corner: 'nw', x: frame.x, y: frame.y },
+    { corner: 'ne', x: frame.x + frame.width, y: frame.y },
+    { corner: 'sw', x: frame.x, y: frame.y + frame.height },
+    { corner: 'se', x: frame.x + frame.width, y: frame.y + frame.height }
+  ];
+  
+  for (const handle of handles) {
+    if (x >= handle.x - handleSize && x <= handle.x + handleSize &&
+        y >= handle.y - handleSize && y <= handle.y + handleSize) {
+      return handle.corner;
+    }
+  }
+  
+  return null;
+}
+
+// Helper function to get current mouse position
+function getMousePos() {
+  if (!canvas) return null;
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: lastMousePos ? lastMousePos.x : 0,
+    y: lastMousePos ? lastMousePos.y : 0
+  };
+}
+
 function deleteFrame() {
   if (selectedFrame) {
     frames = frames.filter(f => f.id !== selectedFrame.id);
@@ -1367,16 +1405,23 @@ function draw(){
       }
     }
     
-    // Draw frame background
-    ctx.fillStyle = frame.color + '10';
-    ctx.strokeStyle = frame.color + '60';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
-    
-    ctx.beginPath();
-    ctx.rect(frame.x, frame.y, frame.width, frame.height);
-    ctx.fill();
-    ctx.stroke();
+          // Draw frame background
+      ctx.fillStyle = frame.color + '10';
+      ctx.strokeStyle = frame.color + '60';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      
+      // Highlight frame if it's being resized
+      if (dragging && dragging.type === 'resize' && dragging.frame.id === frame.id) {
+        ctx.strokeStyle = '#ffff00';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([]);
+      }
+      
+      ctx.beginPath();
+      ctx.rect(frame.x, frame.y, frame.width, frame.height);
+      ctx.fill();
+      ctx.stroke();
     
     // Frame label
     ctx.fillStyle = frame.color;
@@ -1391,6 +1436,64 @@ function draw(){
       ctx.lineWidth = 3;
       ctx.setLineDash([]);
       ctx.stroke();
+      
+      // Draw resize handles
+      const handleSize = 8;
+      ctx.fillStyle = frame.color;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      
+      // Get current mouse position for hover detection
+      const mousePos = getMousePos();
+      const transformedMouseX = mousePos ? (mousePos.x - viewX) / viewScale : null;
+      const transformedMouseY = mousePos ? (mousePos.y - viewY) / viewScale : null;
+      
+      // Northwest corner
+      const isHoveringNW = transformedMouseX && transformedMouseY && 
+        transformedMouseX >= frame.x - handleSize/2 && transformedMouseX <= frame.x + handleSize/2 &&
+        transformedMouseY >= frame.y - handleSize/2 && transformedMouseY <= frame.y + handleSize/2;
+      const handleSizeNW = isHoveringNW ? handleSize + 2 : handleSize;
+      ctx.beginPath();
+      ctx.rect(frame.x - handleSizeNW/2, frame.y - handleSizeNW/2, handleSizeNW, handleSizeNW);
+      ctx.fillStyle = isHoveringNW ? '#ffffff' : frame.color;
+      ctx.fill();
+      ctx.stroke();
+      
+      // Northeast corner
+      const isHoveringNE = transformedMouseX && transformedMouseY && 
+        transformedMouseX >= frame.x + frame.width - handleSize/2 && transformedMouseX <= frame.x + frame.width + handleSize/2 &&
+        transformedMouseY >= frame.y - handleSize/2 && transformedMouseY <= frame.y + handleSize/2;
+      const handleSizeNE = isHoveringNE ? handleSize + 2 : handleSize;
+      ctx.beginPath();
+      ctx.rect(frame.x + frame.width - handleSizeNE/2, frame.y - handleSizeNE/2, handleSizeNE, handleSizeNE);
+      ctx.fillStyle = isHoveringNE ? '#ffffff' : frame.color;
+      ctx.fill();
+      ctx.stroke();
+      
+      // Southwest corner
+      const isHoveringSW = transformedMouseX && transformedMouseY && 
+        transformedMouseX >= frame.x - handleSize/2 && transformedMouseX <= frame.x + handleSize/2 &&
+        transformedMouseY >= frame.y + frame.height - handleSize/2 && transformedMouseY <= frame.y + frame.height + handleSize/2;
+      const handleSizeSW = isHoveringSW ? handleSize + 2 : handleSize;
+      ctx.beginPath();
+      ctx.rect(frame.x - handleSizeSW/2, frame.y + frame.height - handleSizeSW/2, handleSizeSW, handleSizeSW);
+      ctx.fillStyle = isHoveringSW ? '#ffffff' : frame.color;
+      ctx.fill();
+      ctx.stroke();
+      
+      // Southeast corner
+      const isHoveringSE = transformedMouseX && transformedMouseY && 
+        transformedMouseX >= frame.x + frame.width - handleSize/2 && transformedMouseX <= frame.x + frame.width + handleSize/2 &&
+        transformedMouseY >= frame.y + frame.height - handleSize/2 && transformedMouseY <= frame.y + frame.height + handleSize/2;
+      const handleSizeSE = isHoveringSE ? handleSize + 2 : handleSize;
+      ctx.beginPath();
+      ctx.rect(frame.x + frame.width - handleSizeSE/2, frame.y + frame.height - handleSizeSE/2, handleSizeSE, handleSizeSE);
+      ctx.fillStyle = isHoveringSE ? '#ffffff' : frame.color;
+      ctx.fill();
+      ctx.stroke();
+      
+      // Reset fill style
+      ctx.fillStyle = frame.color;
     }
   }
   
@@ -1534,6 +1637,18 @@ canvas.addEventListener('mousedown', e=>{
   // If no node was clicked, check for frames
   const clickedFrame = getFrameAt(transformedX, transformedY);
   if (clickedFrame) {
+    // Check if clicking on a resize handle first
+    const resizeHandle = getResizeHandleAt(transformedX, transformedY, clickedFrame);
+    if (resizeHandle) {
+      selectedFrame = clickedFrame;
+      updateFrameControls();
+      dragging = { type: 'resize', frame: clickedFrame, handle: resizeHandle };
+      dragOffset.x = transformedX;
+      dragOffset.y = transformedY;
+      draw();
+      return;
+    }
+    
     if (e.shiftKey) {
       // Shift+click to add/remove nodes from frame
       const node = getNodeAt(transformedX, transformedY);
@@ -1541,7 +1656,7 @@ canvas.addEventListener('mousedown', e=>{
         if (clickedFrame.nodes.includes(node.id)) {
           removeNodeFromFrame(node.id, clickedFrame.id);
         } else {
-          addNodeToFrame(node.id, clickedFrame.id);
+          addNodeFromFrame(node.id, clickedFrame.id);
         }
       } 
     } else {
@@ -1564,8 +1679,19 @@ canvas.addEventListener('mouseup', e=>{
     return;
   }
   
-  if (dragging && dragging.type === 'frame') {
+  if (dragging && (dragging.type === 'frame' || dragging.type === 'resize')) {
     selectedFrame = dragging.frame;
+    
+    // Clear resize info if we were resizing
+    if (dragging.type === 'resize') {
+      const infoBox = document.getElementById('infoBox');
+      if (infoBox) {
+        infoBox.textContent = 'Frame resized successfully';
+        setTimeout(() => {
+          infoBox.textContent = '';
+        }, 2000);
+      }
+    }
   }
   if (dragging) {
     saveState();
@@ -1606,6 +1732,63 @@ canvas.addEventListener('mousemove', e=>{
       
       dragging.frame.x = newX;
       dragging.frame.y = newY;
+    } else if (dragging.type === 'resize') {
+      const deltaX = transformedX - dragOffset.x;
+      const deltaY = transformedY - dragOffset.y;
+      
+      let newWidth = dragging.frame.width;
+      let newHeight = dragging.frame.height;
+      let newX = dragging.frame.x;
+      let newY = dragging.frame.y;
+      
+      switch (dragging.handle) {
+        case 'nw': // Northwest - resize from top-left
+          newWidth = Math.max(80, dragging.frame.width - deltaX);
+          newHeight = Math.max(60, dragging.frame.height - deltaY);
+          newX = dragging.frame.x + (dragging.frame.width - newWidth);
+          newY = dragging.frame.y + (dragging.frame.height - newHeight);
+          break;
+        case 'ne': // Northeast - resize from top-right
+          newWidth = Math.max(80, dragging.frame.width + deltaX);
+          newHeight = Math.max(60, dragging.frame.height - deltaY);
+          newY = dragging.frame.y + (dragging.frame.height - newHeight);
+          break;
+        case 'sw': // Southwest - resize from bottom-left
+          newWidth = Math.max(80, dragging.frame.width - deltaX);
+          newHeight = Math.max(60, dragging.frame.height + deltaY);
+          newX = dragging.frame.x + (dragging.frame.width - newWidth);
+          break;
+        case 'se': // Southeast - resize from bottom-right
+          newWidth = Math.max(80, dragging.frame.width + deltaX);
+          newHeight = Math.max(60, dragging.frame.height + deltaY);
+          break;
+      }
+      
+      // Apply grid snapping if Ctrl is pressed
+      if (isCtrlPressed) {
+        newWidth = snapToGrid(newWidth);
+        newHeight = snapToGrid(newHeight);
+        newX = snapToGrid(newX);
+        newY = snapToGrid(newY);
+      }
+      
+      dragging.frame.width = newWidth;
+      dragging.frame.height = newHeight;
+      dragging.frame.x = newX;
+      dragging.frame.y = newY;
+      
+      // Update drag offset for continuous resizing
+      dragOffset.x = transformedX;
+      dragOffset.y = transformedY;
+      
+      // Update frame controls to show new dimensions
+      updateFrameControls();
+      
+      // Show temporary dimension info
+      const infoBox = document.getElementById('infoBox');
+      if (infoBox) {
+        infoBox.textContent = `Resizing frame: ${Math.round(dragging.frame.width)} × ${Math.round(dragging.frame.height)}`;
+      }
     } else if (dragging.type === 'node') {
       let newX = transformedX - dragOffset.x;
       let newY = transformedY - dragOffset.y;
@@ -1628,6 +1811,31 @@ canvas.addEventListener('mousemove', e=>{
   if(node !== hovered){
     hovered = node;
     draw();
+  }
+  
+  // Check for resize handle hover and update cursor
+  if (selectedFrame) {
+    const resizeHandle = getResizeHandleAt(transformedX, transformedY, selectedFrame);
+    if (resizeHandle) {
+      let cursor = 'default';
+      switch (resizeHandle) {
+        case 'nw': cursor = 'nw-resize'; break;
+        case 'ne': cursor = 'ne-resize'; break;
+        case 'sw': cursor = 'sw-resize'; break;
+        case 'se': cursor = 'se-resize'; break;
+      }
+      canvas.style.cursor = cursor;
+    } else {
+      // Check if hovering over the frame itself
+      const frame = getFrameAt(transformedX, transformedY);
+      if (frame && frame.id === selectedFrame.id) {
+        canvas.style.cursor = 'move';
+      } else {
+        canvas.style.cursor = 'default';
+      }
+    }
+  } else {
+    canvas.style.cursor = 'default';
   }
 });
 
@@ -1794,6 +2002,22 @@ document.addEventListener('keydown', e => {
       }
       
       draw();
+    } else if (e.key === 'r' && selectedFrame) {
+      e.preventDefault();
+      // Reset frame to default size
+      selectedFrame.width = 300;
+      selectedFrame.height = 200;
+      updateFrameControls();
+      draw();
+      saveState();
+      
+      const infoBox = document.getElementById('infoBox');
+      if (infoBox) {
+        infoBox.textContent = 'Frame reset to default size';
+        setTimeout(() => {
+          infoBox.textContent = '';
+        }, 2000);
+      }
     }
   }
 });
