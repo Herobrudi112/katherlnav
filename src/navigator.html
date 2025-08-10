@@ -32,14 +32,15 @@
         }
         
         .canvas-wrap {
-            flex: 1;
-            background: var(--panel);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+    flex: 1;
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden; /* No scroll here */
+}
         
         canvas {
             background: transparent;
@@ -49,13 +50,18 @@
         }
         
         .panel {
-            width: 360px;
-            background: var(--panel);
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--border);
-        }
+    width: 360px;
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border);
+
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Only this column scrolls */
+    max-height: 100%;
+}
         
         h1 {
             margin: 4px 0 10px;
