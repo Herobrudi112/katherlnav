@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KathErlNav - Navigation Viewer</title>
+    <title>KatherlNav - Navigation Viewer</title>
     <style>
         :root {
             --bg: #000000;
@@ -342,7 +342,7 @@
                     <p>Drop JSON file here or click to browse</p>
                     <input type="file" id="fileInput" class="file-input" accept=".json" />
                 </div>
-                <button onclick="loadSampleData()">Load Sample Data</button>
+                
             </div>
             
             <!-- Path Finding -->
@@ -985,46 +985,7 @@
             reader.readAsText(file);
         }
         
-        function loadSampleData() {
-            // Create some sample data for demonstration
-            const sampleData = {
-                nodes: [
-                    {id: 1, x: 100, y: 100, name: "Entrance", longName: "Main Building Entrance", building: "Main Building"},
-                    {id: 2, x: 300, y: 100, name: "Lobby", longName: "Building Lobby", building: "Main Building"},
-                    {id: 3, x: 500, y: 100, name: "Office A", longName: "Office Room A", building: "Main Building"},
-                    {id: 4, x: 100, y: 300, name: "Office B", longName: "Office Room B", building: "Main Building"},
-                    {id: 5, x: 300, y: 300, name: "Conference", longName: "Conference Room", building: "Main Building"},
-                    {id: 6, x: 500, y: 300, name: "Kitchen", longName: "Staff Kitchen", building: "Main Building"}
-                ],
-                edges: [
-                    {from: 1, to: 2, weight: 50},
-                    {from: 2, to: 3, weight: 60},
-                    {from: 2, to: 5, weight: 70},
-                    {from: 4, to: 5, weight: 50},
-                    {from: 5, to: 6, weight: 40},
-                    {from: 3, to: 6, weight: 80}
-                ],
-                frames: [
-                    {id: 1, name: "Ground Floor", color: "#ffffff", nodes: [1, 2, 3, 4, 5, 6], x: 50, y: 50, width: 600, height: 350}
-                ]
-            };
-            
-            // Simulate loading the data
-            nodes = sampleData.nodes.map(n => ({...n}));
-            edges = sampleData.edges.map(e => ({...e}));
-            frames = sampleData.frames.map(f => ({...f}));
-            
-            selectedNode = null;
-            highlightedPath = {nodes: [], edges: []};
-            viewX = 0;
-            viewY = 0;
-            viewScale = 1;
-            
-            updatePathfindingSelects();
-            updateNodeInfo();
-            clearPath();
-            draw();
-        }
+        
         
         // Search input event listener
         document.getElementById('nodeSearch').addEventListener('input', (e) => {
