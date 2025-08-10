@@ -317,6 +317,297 @@
             font-size: 18px;
             font-weight: bold;
         }
+        
+        /* Responsive Design */
+        
+        /* Mobile First - Default styles for phones */
+        @media (max-width: 768px) {
+            .app {
+                flex-direction: column;
+                gap: 8px;
+                padding: 8px;
+                height: 100vh;
+            }
+            
+            .canvas-wrap {
+                flex: 1;
+                min-height: 0;
+                padding: 8px;
+            }
+            
+            .panel {
+                width: 100%;
+                max-height: 40vh;
+                min-height: 200px;
+                order: 2;
+            }
+            
+            .search-container {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                left: 12px;
+                width: auto;
+            }
+            
+            .search-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 12px 16px;
+            }
+            
+            .zoom-controls {
+                bottom: 12px;
+                right: 12px;
+            }
+            
+            .zoom-controls button {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            
+            h1 {
+                font-size: 16px;
+                margin: 2px 0 8px;
+            }
+            
+            .section {
+                margin-bottom: 12px;
+                padding: 12px;
+            }
+            
+            .section h3 {
+                font-size: 13px;
+                margin: 0 0 8px 0;
+            }
+            
+            input, select, button, textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 10px 12px;
+                margin: 3px 0;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .controls button {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .file-drop {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+            
+            .info-box {
+                padding: 10px;
+                font-size: 11px;
+            }
+            
+            .path-info {
+                padding: 10px;
+            }
+            
+            .path-info h4 {
+                font-size: 13px;
+            }
+            
+            .path-steps li {
+                font-size: 11px;
+                padding: 6px 0;
+            }
+        }
+        
+        /* Tablet styles */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .app {
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .panel {
+                width: 320px;
+            }
+            
+            .search-container {
+                width: 220px;
+            }
+            
+            .zoom-controls button {
+                width: 44px;
+                height: 44px;
+                font-size: 19px;
+            }
+            
+            h1 {
+                font-size: 17px;
+            }
+            
+            .section {
+                margin-bottom: 16px;
+                padding: 14px;
+            }
+            
+            .section h3 {
+                font-size: 13px;
+            }
+            
+            input, select, button, textarea {
+                font-size: 15px;
+                padding: 9px 12px;
+            }
+            
+            .controls button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+        
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .app {
+                flex-direction: row;
+                gap: 8px;
+            }
+            
+            .canvas-wrap {
+                flex: 2;
+                order: 1;
+            }
+            
+            .panel {
+                flex: 1;
+                max-height: 100vh;
+                min-height: auto;
+                order: 2;
+            }
+            
+            .search-container {
+                top: 8px;
+                right: 8px;
+                left: auto;
+                width: 200px;
+            }
+        }
+        
+        /* Large screens - maintain current desktop layout */
+        @media (min-width: 1025px) {
+            .app {
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .panel {
+                width: 360px;
+            }
+            
+            .search-container {
+                width: 250px;
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            button {
+                min-height: 44px; /* iOS recommended touch target size */
+            }
+            
+            .search-result-item {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+            }
+            
+            .zoom-controls button {
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+        
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .search-input,
+            input, select, button, textarea {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+        
+        /* Node Selection Menu */
+        .node-menu {
+            position: absolute;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            z-index: 1002;
+            display: none;
+            min-width: 200px;
+            overflow: hidden;
+        }
+        
+        .node-menu-header {
+            padding: 12px 16px;
+            background: var(--hover);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .node-menu-options {
+            padding: 8px 0;
+        }
+        
+        .node-menu-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+        }
+        
+        .node-menu-option:hover {
+            background: var(--hover);
+        }
+        
+        .node-menu-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .node-menu-option.disabled:hover {
+            background: transparent;
+        }
+        
+        .node-menu-option-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Mobile responsive for node menu */
+        @media (max-width: 768px) {
+            .node-menu {
+                min-width: 180px;
+                max-width: 90vw;
+            }
+            
+            .node-menu-header {
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+            
+            .node-menu-option {
+                padding: 14px 16px;
+                font-size: 16px;
+                min-height: 44px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -335,6 +626,23 @@
                 <button onclick="zoomIn()">+</button>
                 <button onclick="zoomOut()">−</button>
                 <button onclick="resetZoom()">⌂</button>
+            </div>
+            
+            <!-- Node Selection Menu -->
+            <div id="nodeMenu" class="node-menu">
+                <div class="node-menu-header" id="nodeMenuHeader">
+                    Selected Node
+                </div>
+                <div class="node-menu-options">
+                    <div class="node-menu-option" id="setAsStart">
+                        <span class="node-menu-option-icon">🚀</span>
+                        Set as Departure Point
+                    </div>
+                    <div class="node-menu-option" id="setAsEnd">
+                        <span class="node-menu-option-icon">🎯</span>
+                        Set as Arrival Point
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -438,6 +746,12 @@
         const totalDistance = document.getElementById('totalDistance');
         const nodeInfo = document.getElementById('nodeInfo');
         
+        // Node menu elements
+        const nodeMenu = document.getElementById('nodeMenu');
+        const nodeMenuHeader = document.getElementById('nodeMenuHeader');
+        const setAsStartBtn = document.getElementById('setAsStart');
+        const setAsEndBtn = document.getElementById('setAsEnd');
+        
         // Canvas setup
         function resize() {
             const rect = canvas.getBoundingClientRect();
@@ -445,6 +759,85 @@
             canvas.height = Math.floor(rect.height * DPR);
             ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
             draw();
+        }
+        
+        // Node menu functions
+        function showNodeMenu(node, x, y) {
+            if (!node) return;
+            
+            // Update menu header with node name
+            nodeMenuHeader.textContent = node.name;
+            
+            // Update button states
+            const currentStart = startNodeSelect.value;
+            const currentEnd = endNodeSelect.value;
+            
+            setAsStartBtn.classList.toggle('disabled', currentStart === node.id.toString());
+            setAsEndBtn.classList.toggle('disabled', currentEnd === node.id.toString());
+            
+            // Position menu near the node
+            const rect = canvas.getBoundingClientRect();
+            const menuX = x + rect.left;
+            const menuY = y + rect.top;
+            
+            // Ensure menu stays within viewport
+            const menuWidth = 200;
+            const menuHeight = 120;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            let finalX = menuX;
+            let finalY = menuY;
+            
+            if (menuX + menuWidth > viewportWidth) {
+                finalX = menuX - menuWidth;
+            }
+            
+            if (menuY + menuHeight > viewportHeight) {
+                finalY = menuY - menuHeight;
+            }
+            
+            nodeMenu.style.left = finalX + 'px';
+            nodeMenu.style.top = finalY + 'px';
+            nodeMenu.style.display = 'block';
+        }
+        
+        function hideNodeMenu() {
+            nodeMenu.style.display = 'none';
+        }
+        
+        function setNodeAsStart() {
+            if (selectedNode) {
+                console.log('Setting start node:', selectedNode.name, 'ID:', selectedNode.id);
+                startNodeSelect.value = selectedNode.id.toString();
+                console.log('Start select value after setting:', startNodeSelect.value);
+                
+                // Visual feedback
+                startNodeSelect.style.backgroundColor = '#3b82f6';
+                setTimeout(() => {
+                    startNodeSelect.style.backgroundColor = '';
+                }, 500);
+                
+                hideNodeMenu();
+                // Don't call updatePathfindingSelects() as it rebuilds the entire list
+            }
+        }
+        
+        function setNodeAsEnd() {
+            if (selectedNode) {
+                console.log('Setting end node:', selectedNode.name, 'ID:', selectedNode.id);
+                endNodeSelect.value = selectedNode.id.toString();
+                console.log('End select value after setting:', endNodeSelect.value);
+                
+                // Visual feedback
+                endNodeSelect.style.backgroundColor = '#3b82f6';
+                setTimeout(() => {
+                    endNodeSelect.style.backgroundColor = '';
+                }, 500);
+                
+                hideNodeMenu();
+                // Don't call updatePathfindingSelects() as it rebuilds the entire list
+            }
         }
         
         window.addEventListener('resize', resize);
@@ -460,6 +853,12 @@
         function getNodeAt(x, y) { 
             for (let i = nodes.length - 1; i >= 0; i--) { 
                 const n = nodes[i]; 
+                
+                // Skip hidden nodes
+                if (n.tags && n.tags.includes('hidden')) {
+                    continue;
+                }
+                
                 if (Math.hypot(n.x - x, n.y - y) <= 16) return n; 
             } 
             return null; 
@@ -525,12 +924,17 @@
             }
             
             const searchTerm = query.toLowerCase();
-            searchResults = nodes.filter(node => 
-                node.name.toLowerCase().includes(searchTerm) ||
-                node.longName.toLowerCase().includes(searchTerm) ||
-                (node.building && node.building.toLowerCase().includes(searchTerm)) ||
-                (node.tags && node.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-            );
+            searchResults = nodes.filter(node => {
+                // Skip hidden nodes
+                if (node.tags && node.tags.includes('hidden')) {
+                    return false;
+                }
+                
+                return node.name.toLowerCase().includes(searchTerm) ||
+                    node.longName.toLowerCase().includes(searchTerm) ||
+                    (node.building && node.building.toLowerCase().includes(searchTerm)) ||
+                    (node.tags && node.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+            });
             
             updateSearchResults();
         }
@@ -628,6 +1032,11 @@
             endNodeSelect.innerHTML = '<option value="">Select end node</option>';
             
             nodes.forEach(node => {
+                // Skip hidden nodes
+                if (node.tags && node.tags.includes('hidden')) {
+                    return;
+                }
+                
                 const buildingInfo = node.building ? ` (${node.building})` : '';
                 const tagsInfo = node.tags && node.tags.length > 0 ? ` [${node.tags.join(', ')}]` : '';
                 const displayText = `${node.name}${buildingInfo}${tagsInfo}`;
@@ -822,9 +1231,14 @@
             }
             
             for (const n of nodes) {
-    const isSel = selectedNode && selectedNode.id === n.id;
-    const isHover = hoveredNode && hoveredNode.id === n.id;
-    const isInPath = highlightedPath.nodes.includes(n.id);
+                // Skip hidden nodes
+                if (n.tags && n.tags.includes('hidden')) {
+                    continue;
+                }
+                
+                const isSel = selectedNode && selectedNode.id === n.id;
+                const isHover = hoveredNode && hoveredNode.id === n.id;
+                const isInPath = highlightedPath.nodes.includes(n.id);
 
     // Label to display
     const label = isSel ? (n.longName || n.name) : n.name;
@@ -897,12 +1311,25 @@
             
             const node = getNodeAt(x, y);
             if (node) {
-                selectedNode = node;
-                updateNodeInfo();
+                // Check if the clicked node is already selected
+                if (selectedNode && selectedNode.id === node.id) {
+                    // Deselect the node
+                    selectedNode = null;
+                    updateNodeInfo();
+                    hideNodeMenu();
+                } else {
+                    // Select the node
+                    selectedNode = node;
+                    updateNodeInfo();
+                    // Show node menu at mouse position
+                    showNodeMenu(node, e.clientX, e.clientY);
+                }
                 draw();
             } else {
                 isDragging = true;
                 lastMousePos = {x: e.clientX, y: e.clientY};
+                // Hide menu when clicking on empty space
+                hideNodeMenu();
             }
         });
         
@@ -1045,6 +1472,160 @@
             const searchContainer = document.querySelector('.search-container');
             if (!searchContainer.contains(e.target)) {
                 document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+        
+        // Responsive functionality
+        function handleResponsiveLayout() {
+            const isMobile = window.innerWidth <= 768;
+            const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+            const isLandscape = window.innerWidth > window.innerHeight;
+            
+            // Adjust canvas for mobile
+            if (isMobile) {
+                // Increase touch target sizes
+                const searchResults = document.getElementById('searchResults');
+                if (searchResults) {
+                    searchResults.style.maxHeight = '150px'; // Smaller on mobile
+                }
+                
+                // Adjust zoom controls for touch
+                const zoomButtons = document.querySelectorAll('.zoom-controls button');
+                zoomButtons.forEach(btn => {
+                    btn.style.minWidth = '48px';
+                    btn.style.minHeight = '48px';
+                });
+            }
+            
+            // Handle orientation changes
+            if (isMobile && isLandscape) {
+                // Landscape mobile - adjust search container
+                const searchContainer = document.querySelector('.search-container');
+                if (searchContainer) {
+                    searchContainer.style.width = '180px';
+                }
+            }
+        }
+        
+        // Enhanced touch handling for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
+        
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            touchStartTime = Date.now();
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (touch.clientX - rect.left);
+            const y = (touch.clientY - rect.top);
+            
+            // Transform coordinates for view transformation
+            const transformedX = (x - viewX) / viewScale;
+            const transformedY = (y - viewY) / viewScale;
+            
+            const node = getNodeAt(transformedX, transformedY);
+            if (node) {
+                // Check if the touched node is already selected
+                if (selectedNode && selectedNode.id === node.id) {
+                    // Deselect the node
+                    selectedNode = null;
+                    updateNodeInfo();
+                    hideNodeMenu();
+                } else {
+                    // Select the node
+                    selectedNode = node;
+                    updateNodeInfo();
+                    // Show node menu at touch position
+                    showNodeMenu(node, touch.clientX, touch.clientY);
+                }
+                draw();
+            } else {
+                // Hide menu when touching empty space
+                hideNodeMenu();
+            }
+        }, { passive: false });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = (touch.clientX - rect.left);
+            const y = (touch.clientY - rect.top);
+            
+            // Pan the view
+            const deltaX = x - touchStartX;
+            const deltaY = y - touchStartY;
+            viewX += deltaX;
+            viewY += deltaY;
+            touchStartX = x;
+            touchStartY = y;
+            
+            draw();
+        }, { passive: false });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const touchEndTime = Date.now();
+            const touchDuration = touchEndTime - touchStartTime;
+            
+            // If it was a quick tap (less than 200ms), treat as click
+            if (touchDuration < 200) {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.changedTouches[0].clientX - rect.left);
+                const y = (e.changedTouches[0].clientY - rect.top);
+                
+                const transformedX = (x - viewX) / viewScale;
+                const transformedY = (y - viewY) / viewScale;
+                
+                const node = getNodeAt(transformedX, transformedY);
+                if (node) {
+                    // Check if the touched node is already selected
+                    if (selectedNode && selectedNode.id === node.id) {
+                        // Deselect the node
+                        selectedNode = null;
+                        updateNodeInfo();
+                        hideNodeMenu();
+                    } else {
+                        // Select the node
+                        selectedNode = node;
+                        updateNodeInfo();
+                        // Show node menu at touch position
+                        showNodeMenu(node, e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+                    }
+                    draw();
+                }
+            }
+        }, { passive: false });
+        
+        // Handle window resize and orientation changes
+        window.addEventListener('resize', () => {
+            resize();
+            handleResponsiveLayout();
+        });
+        
+        window.addEventListener('orientationchange', () => {
+            // Delay to allow orientation change to complete
+            setTimeout(() => {
+                resize();
+                handleResponsiveLayout();
+            }, 100);
+        });
+        
+        // Initialize responsive layout
+        handleResponsiveLayout();
+        
+        // Node menu event listeners
+        setAsStartBtn.addEventListener('click', setNodeAsStart);
+        setAsEndBtn.addEventListener('click', setNodeAsEnd);
+        
+        // Hide menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!nodeMenu.contains(e.target) && !canvas.contains(e.target)) {
+                hideNodeMenu();
             }
         });
         

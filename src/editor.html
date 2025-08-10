@@ -944,7 +944,8 @@ function updateSelectedList(){
     const label = n.longName || n.name; 
     const buildingInfo = n.building ? ` • ${n.building}` : '';
     const tagsInfo = n.tags && n.tags.length > 0 ? ` • [${n.tags.join(', ')}]` : '';
-    return `<div>${label} <small style="color:var(--muted)">(id:${n.id})${buildingInfo}${tagsInfo}</small></div>` 
+    const hiddenIndicator = (n.tags && n.tags.includes('hidden')) ? ' <span style="color: #ff6b6b; font-weight: bold;">(HIDDEN)</span>' : '';
+    return `<div>${label}${hiddenIndicator} <small style="color:var(--muted)">(id:${n.id})${buildingInfo}${tagsInfo}</small></div>` 
   }).join(''); 
   
   // Update tag editor when selection changes
@@ -1345,6 +1346,10 @@ function draw(){
     const b = nodes.find(n=>n.id===e.to);
     if (!a || !b) continue;
     
+    // Only show edges if no nodes are selected, or if the edge is connected to a selected node
+    const shouldShowEdge = selected.size === 0 || selected.has(e.from) || selected.has(e.to);
+    if (!shouldShowEdge) continue;
+    
     const isHighlighted = highlightedPath.edges.some(p=> (p.from===e.from && p.to===e.to) || (p.from===e.to && p.to===e.from));
     const isRightClicked = rightClickedEdge && ((e.from === rightClickedEdge.from && e.to === rightClickedEdge.to) || (e.from === rightClickedEdge.to && e.to === rightClickedEdge.from));
     
@@ -1366,6 +1371,7 @@ function draw(){
   for(const n of nodes){ 
     const isSel = selected.has(n.id); 
     const isHover = hovered && hovered.id===n.id;
+    const isHidden = n.tags && n.tags.includes('hidden');
     
     // Label to display
     const label = isSel ? (n.longName || n.name) : n.name;
@@ -1395,23 +1401,40 @@ function draw(){
       ctx.lineTo(x, y + radius);
       ctx.arcTo(x, y, x + radius, y, radius);
       
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = isHidden ? '#666666' : '#ffffff';
       ctx.fill();
-      ctx.strokeStyle = '#000000';
+      ctx.strokeStyle = isHidden ? '#ff6b6b' : '#000000';
       ctx.lineWidth = 3;
+      if (isHidden) {
+        ctx.setLineDash([5, 5]);
+      } else {
+        ctx.setLineDash([]);
+      }
       ctx.stroke();
     } else {
       // Regular circle for non-selected nodes
       ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = isHover ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)';
-      ctx.fill();
+      if (isHidden) {
+        ctx.fillStyle = isHover ? 'rgba(255,107,107,0.4)' : 'rgba(255,107,107,0.2)';
+        ctx.fill();
+        ctx.strokeStyle = '#ff6b6b';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([3, 3]);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = isHover ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)';
+        ctx.fill();
+      }
     }
     
     // Draw label
-    ctx.fillStyle = isSel ? '#000000' : '#ffffff';
+    ctx.fillStyle = isSel ? '#000000' : (isHidden ? '#ff6b6b' : '#ffffff');
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(label, n.x, n.y);
+    
+    // Reset line dash
+    ctx.setLineDash([]);
   }
   ctx.restore(); // Restore context after drawing
 }
@@ -1456,7 +1479,7 @@ canvas.addEventListener('mousedown', e=>{
         } else {
           addNodeToFrame(node.id, clickedFrame.id);
         }
-      }
+      } 
     } else {
       // Regular click to select frame and start dragging
       selectedFrame = clickedFrame;
@@ -1562,8 +1585,15 @@ canvas.addEventListener('click', e=>{
       updateSelectedList();
       draw();
     } else {
-      selected.clear();
-      selected.add(node.id);
+      // Check if the clicked node is already selected
+      if(selected.has(node.id)){
+        // Deselect the node
+        selected.delete(node.id);
+      } else {
+        // Select only this node
+        selected.clear();
+        selected.add(node.id);
+      }
       updateSelectedList();
       draw();
     }
@@ -1638,63 +1668,68 @@ document.addEventListener('keydown', e => {
     isCtrlPressed = true;
     document.getElementById('gridIndicator').style.display = 'block';
     draw(); // Redraw to show grid
-  }
-  if (e.key === 'z') {
-    e.preventDefault();
-    undo();
-  } else if (e.key === 'y') {
-    e.preventDefault();
-    redo();
-  } else if (e.key === 'F2') {
-    e.preventDefault();
-    if (selected.size === 1) {
-      const nodeId = Array.from(selected)[0];
-      const node = nodes.find(n => n.id === nodeId);
-      if (node) {
-        const newName = prompt('Enter new name for node:', node.name);
-        if (newName && newName.trim() && newName.trim() !== node.name) {
-          const newLongName = prompt('Enter new long name (or leave empty to use short name):', node.longName);
-          const finalLongName = newLongName && newLongName.trim() ? newLongName.trim() : newName.trim();
-          
-          node.name = newName.trim();
-          node.longName = finalLongName;
-          
-          rebuildSelects();
-          updateSelectedList();
-          draw();
-          saveState();
+    
+    // Handle Ctrl key combinations
+    if (e.key === 'z') {
+      e.preventDefault();
+      undo();
+    } else if (e.key === 'y') {
+      e.preventDefault();
+      redo();
+    }
+  } else {
+    // Handle non-Ctrl key combinations
+    if (e.key === 'F2') {
+      e.preventDefault();
+      if (selected.size === 1) {
+        const nodeId = Array.from(selected)[0];
+        const node = nodes.find(n => n.id === nodeId);
+        if (node) {
+          const newName = prompt('Enter new name for node:', node.name);
+          if (newName && newName.trim() && newName.trim() !== node.name) {
+            const newLongName = prompt('Enter new long name (or leave empty to use short name):', node.longName);
+            const finalLongName = newLongName && newLongName.trim() ? newLongName.trim() : newName.trim();
+            
+            node.name = newName.trim();
+            node.longName = finalLongName;
+            
+            rebuildSelects();
+            updateSelectedList();
+            draw();
+            saveState();
+          }
         }
       }
+    } else if (e.key === 'Delete') {
+      e.preventDefault();
+      // Delete selected nodes
+      if (selected.size > 0) {
+          const selectedArray = Array.from(selected);
+          selectedArray.forEach(nodeId => {
+              const node = nodes.find(n => n.id === nodeId);
+              if (node) {
+                  removeNode(node);
+              }
+          });
+          selected.clear();
+          updateSelectedList();
+      }
+      
+      // Delete selected frame
+      if (selectedFrame) {
+          deleteFrame();
+          selectedFrame = null;
+      }
+      
+      // Delete selected edge (if any edge is selected for weight editing)
+      if (rightClickedEdge) {
+          removeEdgeBetween(rightClickedEdge.from, rightClickedEdge.to);
+          rightClickedEdge = null;
+          updateWeightControls();
+      }
+      
+      draw();
     }
-  } else if (e.key === 'Delete') {
-    e.preventDefault();
-    // Delete selected nodes
-    if (selected.size > 0) {
-        const selectedArray = Array.from(selected);
-        selectedArray.forEach(nodeId => {
-            const node = nodes.find(n => n.id === nodeId);
-            if (node) {
-                removeNode(node);
-            }
-        });
-        selected.clear();
-        updateSelectedList();
-    }
-    
-    // Delete selected frame
-    if (selectedFrame) {
-        deleteFrame();
-        selectedFrame = null;
-    }
-    
-    // Delete selected edge (if any edge is selected for weight editing)
-    if (rightClickedEdge) {
-        removeEdgeBetween(rightClickedEdge.from, rightClickedEdge.to);
-        rightClickedEdge = null;
-        updateWeightControls();
-    }
-    
-    draw();
   }
 });
 
