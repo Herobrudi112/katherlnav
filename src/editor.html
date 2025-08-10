@@ -8,7 +8,7 @@
     :root{--bg:#0f1724;--panel:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--success:#34d399}
     html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, sans-serif;background:linear-gradient(180deg,#071028 0%,#081122 100%);color:#e6eef6}
     .app{display:flex;gap:12px;height:100%;padding:12px;box-sizing:border-box}
-    .canvas-wrap{flex:1;background:linear-gradient(180deg,#071a2b, #04202a);border-radius:12px;padding:12px;display:flex;flex-direction:column}
+    .canvas-wrap{flex:1;background:linear-gradient(180deg,#071a2b, #04202a);border-radius:12px;padding:12px;display:flex;flex-direction:column;position:relative}
     canvas{background:transparent;border-radius:8px;flex:1;cursor:crosshair}
     .panel{width:400px;background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
     h1{margin:4px 0 10px;font-size:18px}
@@ -29,6 +29,77 @@
     .weight-row{display:flex;gap:8px;align-items:center;margin-bottom:4px}
     .weight-row input{flex:1}
     .weight-row button{flex-shrink:0;padding:4px 8px;font-size:11px}
+    .frame-item:hover{background:rgba(255,255,255,0.05) !important}
+    
+                   /* Search Bar Styles */
+               .search-container {
+                   position: absolute;
+                   top: 20px;
+                   right: 20px;
+                   z-index: 1000;
+                   width: 250px;
+                   pointer-events: none;
+               }
+               
+               .search-container * {
+                   pointer-events: auto;
+               }
+    
+    .search-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        background: rgba(0,0,0,0.8);
+        color: #e6eef6;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    
+    .search-input:focus {
+        border-color: #4a9eff;
+    }
+    
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.95);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        margin-top: 4px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+    }
+    
+    .search-result-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        transition: background 0.2s;
+    }
+    
+    .search-result-item:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+    
+    .search-result-name {
+        font-weight: bold;
+        color: #e6eef6;
+    }
+    
+    .search-result-building {
+        font-size: 12px;
+        color: #a0aec0;
+        margin-top: 2px;
+    }
   </style>
 </head>
 <body>
@@ -41,6 +112,13 @@
         <div class="node-badge">Right-click edges to edit weights</div>
       </div>
       <canvas id="graphCanvas"></canvas>
+      
+      <!-- Node Search Bar -->
+      <div class="search-container">
+          <input type="text" id="nodeSearch" placeholder="Search nodes..." class="search-input">
+          <div id="searchResults" class="search-results"></div>
+      </div>
+      
       <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select • Right-click edge: edit weight</div>
     </div>
 
@@ -95,6 +173,34 @@
         <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
 
         <div>
+          <label>Frame Management</label>
+          <div class="row">
+            <button id="createFrameBtn">Create Frame</button>
+            <button id="deleteFrameBtn">Delete Frame</button>
+          </div>
+          <div>
+            <label>Frame name</label>
+            <input id="frameNameInput" placeholder="e.g. Building A, Floor 1" />
+          </div>
+          <div>
+            <label>Frame color</label>
+            <input type="color" id="frameColorInput" value="#3b82f6" />
+          </div>
+          <div>
+            <label>Frame size</label>
+            <div class="row">
+              <input type="number" id="frameWidthInput" placeholder="Width" value="200" />
+              <input type="number" id="frameHeightInput" placeholder="Height" value="150" />
+            </div>
+          </div>
+          <div id="framesList" class="list">
+            <div class="hint">No frames created yet</div>
+          </div>
+        </div>
+
+        <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
+
+        <div>
           <label>Import / Export JSON</label>
           <textarea id="jsonBox" rows="6" placeholder='Paste JSON here or press "Export"'></textarea>
           <div class="row" style="margin-top:6px">
@@ -143,6 +249,8 @@ requestAnimationFrame(resize);
 // State
 let nodes = [];
 let edges = [];
+let frames = [];
+let frameIdCounter = 1;
 let nodeIdCounter = 1;
 let selected = new Set();
 let dragging = null;
@@ -150,8 +258,14 @@ let dragOffset = {x:0,y:0};
 let hovered = null;
 let highlightedPath = {nodes:[], edges:[]};
 let rightClickedEdge = null;
-
-// UI elements
+let selectedFrame = null;
+let frameMode = 'select'; // 'select' or 'create'
+    
+    // Search functionality
+    let searchTimeout = null;
+    let searchResults = [];
+    
+    // DOM elements
 const startNameInput = document.getElementById('startName');
 const endNameInput = document.getElementById('endName');
 const findPathBtn = document.getElementById('findPathBtn');
@@ -174,10 +288,114 @@ const resetBtn = document.getElementById('resetBtn');
 const zoomFitBtn = document.getElementById('zoomFitBtn');
 const clearHighlightBtn = document.getElementById('clearHighlightBtn');
 const weightControls = document.getElementById('weightControls');
+const createFrameBtn = document.getElementById('createFrameBtn');
+const deleteFrameBtn = document.getElementById('deleteFrameBtn');
+const frameNameInput = document.getElementById('frameNameInput');
+const frameColorInput = document.getElementById('frameColorInput');
+const frameWidthInput = document.getElementById('frameWidthInput');
+const frameHeightInput = document.getElementById('frameHeightInput');
+const framesList = document.getElementById('framesList');
+
+// Frame button event listeners
+createFrameBtn.addEventListener('click', createFrame);
+deleteFrameBtn.addEventListener('click', deleteFrame);
 
 // Helpers
 function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
 function getNodeAt(x,y){ for(let i=nodes.length-1;i>=0;i--){ const n=nodes[i]; if(Math.hypot(n.x-x,n.y-y) <= 16) return n; } return null }
+function getFrameAt(x, y) {
+    for (let i = frames.length - 1; i >= 0; i--) {
+        const frame = frames[i];
+        if (x >= frame.x && x <= frame.x + frame.width &&
+            y >= frame.y && y <= frame.y + frame.height) {
+            return frame;
+        }
+    }
+    return null;
+}
+
+// Search functions
+function searchNodes(query) {
+    if (!query.trim()) {
+        searchResults = [];
+        updateSearchResults();
+        return;
+    }
+    
+    const searchTerm = query.toLowerCase();
+    searchResults = nodes.filter(node => 
+        node.name.toLowerCase().includes(searchTerm) ||
+        node.longName.toLowerCase().includes(searchTerm) ||
+        (node.building && node.building.toLowerCase().includes(searchTerm))
+    );
+    
+    updateSearchResults();
+}
+
+function updateSearchResults() {
+    const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '';
+    
+    if (searchResults.length === 0) {
+        resultsContainer.style.display = 'none';
+        return;
+    }
+    
+    resultsContainer.style.display = 'block';
+    
+    searchResults.forEach(node => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'search-result-item';
+        resultItem.innerHTML = `
+            <div class="search-result-name">${node.name}</div>
+            <div class="search-result-building">${node.building || 'No building'}</div>
+        `;
+        
+        resultItem.addEventListener('click', () => {
+            selectNode(node.id);
+            centerOnNode(node.id);
+            document.getElementById('nodeSearch').value = '';
+            resultsContainer.style.display = 'none';
+        });
+        
+        resultsContainer.appendChild(resultItem);
+    });
+}
+
+function centerOnNode(nodeId) {
+    const node = nodes.find(n => n.id === nodeId);
+    if (node) {
+        // Center the view on the selected node
+        const canvas = document.getElementById('graphCanvas');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Calculate offset to center the node
+        const offsetX = centerX - node.x;
+        const offsetY = centerY - node.y;
+        
+        // Apply offset to all nodes
+        nodes.forEach(n => {
+            n.x += offsetX;
+            n.y += offsetY;
+        });
+        
+        // Apply offset to all frames
+        frames.forEach(f => {
+            f.x += offsetX;
+            f.y += offsetY;
+        });
+        
+        draw();
+    }
+}
+
+function selectNode(nodeId) {
+    selectedNodes = [nodeId];
+    updateSelectedNodesList();
+    draw();
+}
+
 function getEdgeAt(x,y){ 
   for(let i=edges.length-1;i>=0;i--){ 
     const e = edges[i];
@@ -318,9 +536,122 @@ function updateWeightControls() {
   }
 }
 
+// Frame functions
+function createFrame() {
+  const name = frameNameInput.value.trim();
+  const color = frameColorInput.value;
+  const width = Number(frameWidthInput.value) || 200;
+  const height = Number(frameHeightInput.value) || 150;
+  
+  if (!name) {
+    alert('Please enter a frame name');
+    return;
+  }
+  
+  const frame = {
+    id: frameIdCounter++,
+    name: name,
+    color: color,
+    nodes: [],
+    x: 100,
+    y: 100,
+    width: width,
+    height: height
+  };
+  
+  frames.push(frame);
+  updateFramesList();
+  draw();
+}
+
+function deleteFrame() {
+  if (selectedFrame) {
+    frames = frames.filter(f => f.id !== selectedFrame.id);
+    selectedFrame = null;
+    updateFramesList();
+    draw();
+  } else {
+    alert('Please select a frame to delete');
+  }
+}
+
+function updateFramesList() {
+  if (frames.length === 0) {
+    framesList.innerHTML = '<div class="hint">No frames created yet</div>';
+    return;
+  }
+  
+  framesList.innerHTML = frames.map(frame => `
+    <div class="frame-item" data-frame-id="${frame.id}" style="cursor: pointer; padding: 4px; border-radius: 4px; margin-bottom: 4px; background: ${frame.color}20; border: 1px solid ${frame.color}40;">
+      <div style="font-weight: bold; color: ${frame.color}">${frame.name}</div>
+      <div style="font-size: 11px; color: var(--muted)">${frame.nodes.length} nodes</div>
+    </div>
+  `).join('');
+  
+  // Add click handlers
+  framesList.querySelectorAll('.frame-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const frameId = Number(item.dataset.frameId);
+      selectedFrame = frames.find(f => f.id === frameId);
+      draw();
+    });
+  });
+}
+
+function addNodeToFrame(nodeId, frameId) {
+  const frame = frames.find(f => f.id === frameId);
+  const node = nodes.find(n => n.id === nodeId);
+  
+  if (frame && node && !frame.nodes.includes(nodeId)) {
+    frame.nodes.push(nodeId);
+    updateFramesList();
+    draw();
+  }
+}
+
+function removeNodeFromFrame(nodeId, frameId) {
+  const frame = frames.find(f => f.id === frameId);
+  if (frame) {
+    frame.nodes = frame.nodes.filter(id => id !== nodeId);
+    updateFramesList();
+    draw();
+  }
+}
+
 // Drawing
 function draw(){ 
   ctx.clearRect(0,0,canvas.width/DPR,canvas.height/DPR);
+  
+  // Draw frames first (background)
+  for (const frame of frames) {
+    ctx.fillStyle = frame.color + '10';
+    ctx.strokeStyle = frame.color + '60';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    
+    ctx.beginPath();
+    ctx.rect(frame.x, frame.y, frame.width, frame.height);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Frame label
+    ctx.fillStyle = frame.color;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(frame.name, frame.x + 8, frame.y + 8);
+    
+    // Highlight selected frame
+    if (selectedFrame && selectedFrame.id === frame.id) {
+      ctx.strokeStyle = frame.color;
+      ctx.lineWidth = 3;
+      ctx.setLineDash([]);
+      ctx.stroke();
+    }
+  }
+  
+  // Reset line dash
+  ctx.setLineDash([]);
   
   // edges
   for(const e of edges){ 
@@ -370,15 +701,43 @@ canvas.addEventListener('mousedown', e=>{
   const rect = canvas.getBoundingClientRect();
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
+  
+  // Check if clicking on a frame first
+  const clickedFrame = getFrameAt(x, y);
+  if (clickedFrame) {
+    if (e.shiftKey) {
+      // Shift+click to add/remove nodes from frame
+      const node = getNodeAt(x, y);
+      if (node) {
+        if (clickedFrame.nodes.includes(node.id)) {
+          removeNodeFromFrame(node.id, clickedFrame.id);
+        } else {
+          addNodeToFrame(node.id, clickedFrame.id);
+        }
+      }
+    } else {
+      // Regular click to select frame and start dragging
+      selectedFrame = clickedFrame;
+      dragging = { type: 'frame', frame: clickedFrame };
+      dragOffset.x = x - clickedFrame.x;
+      dragOffset.y = y - clickedFrame.y;
+      draw();
+      return;
+    }
+  }
+  
   const node = getNodeAt(x,y);
   if(node){
-    dragging = node;
+    dragging = { type: 'node', node: node };
     dragOffset.x = x - node.x;
     dragOffset.y = y - node.y;
   }
 });
 
 canvas.addEventListener('mouseup', e=>{
+  if (dragging && dragging.type === 'frame') {
+    selectedFrame = dragging.frame;
+  }
   dragging = null;
 });
 
@@ -388,8 +747,13 @@ canvas.addEventListener('mousemove', e=>{
   const y = (e.clientY - rect.top);
 
   if(dragging){
-    dragging.x = x - dragOffset.x;
-    dragging.y = y - dragOffset.y;
+    if (dragging.type === 'frame') {
+      dragging.frame.x = x - dragOffset.x;
+      dragging.frame.y = y - dragOffset.y;
+    } else if (dragging.type === 'node') {
+      dragging.node.x = x - dragOffset.x;
+      dragging.node.y = y - dragOffset.y;
+    }
     draw();
     return;
   }
@@ -480,7 +844,7 @@ removeEdgeBtn.addEventListener('click', () => {
 });
 
 exportBtn.addEventListener('click', () => {
-  const data = {nodes, edges};
+  const data = {nodes, edges, frames};
   jsonBox.value = JSON.stringify(data, null, 2);
 });
 
@@ -490,13 +854,17 @@ importBtn.addEventListener('click', () => {
     if(Array.isArray(data.nodes) && Array.isArray(data.edges)){
       nodes = data.nodes.map(n => ({...n}));
       edges = data.edges.map(e => ({...e}));
+      frames = data.frames ? data.frames.map(f => ({...f})) : [];
       nodeIdCounter = nodes.reduce((max, n) => Math.max(max, n.id), 0) + 1;
+      frameIdCounter = frames.reduce((max, f) => Math.max(max, f.id), 0) + 1;
       selected.clear();
+      selectedFrame = null;
       highlightedPath.nodes = [];
       highlightedPath.edges = [];
       rightClickedEdge = null;
       rebuildSelects();
       updateWeightControls();
+      updateFramesList();
       draw();
       infoBox.textContent = 'Data imported successfully.';
     } else {
@@ -508,7 +876,7 @@ importBtn.addEventListener('click', () => {
 });
 
 exportForNavBtn.addEventListener('click', () => {
-  const data = {nodes, edges};
+  const data = {nodes, edges, frames};
   const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -575,9 +943,10 @@ loadRoomsBtn.addEventListener('click', () => {
 });
 
 resetBtn.addEventListener('click', () => {
-  if(confirm('Reset all nodes and edges?')){
+  if(confirm('Reset all nodes, edges, and frames?')){
     nodes = [];
     edges = [];
+    frames = [];
     selected.clear();
     highlightedPath.nodes = [];
     highlightedPath.edges = [];
@@ -723,6 +1092,22 @@ roomsFileInput.addEventListener('change', (e) => {
     alert('Failed to read file.');
   };
   reader.readAsText(file);
+});
+
+// Search input event listener
+document.getElementById('nodeSearch').addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        searchNodes(e.target.value);
+    }, 300);
+});
+
+// Close search results when clicking outside
+document.addEventListener('click', (e) => {
+    const searchContainer = document.querySelector('.search-container');
+    if (!searchContainer.contains(e.target)) {
+        document.getElementById('searchResults').style.display = 'none';
+    }
 });
 
 // Initialize

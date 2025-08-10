@@ -8,7 +8,7 @@
     :root{--bg:#0f1724;--panel:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--success:#34d399}
     html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, sans-serif;background:linear-gradient(180deg,#071028 0%,#081122 100%);color:#e6eef6}
     .app{display:flex;gap:12px;height:100%;padding:12px;box-sizing:border-box}
-    .canvas-wrap{flex:1;background:linear-gradient(180deg,#071a2b, #04202a);border-radius:12px;padding:12px;display:flex;flex-direction:column}
+    .canvas-wrap{flex:1;background:linear-gradient(180deg,#071a2b, #04202a);border-radius:12px;padding:12px;display:flex;flex-direction:column;position:relative}
     canvas{background:transparent;border-radius:8px;flex:1;cursor:default}
     .panel{width:360px;background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
     h1{margin:4px 0 10px;font-size:18px}
@@ -29,6 +29,46 @@
     .stats{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:12px}
     .stats-row{display:flex;justify-content:space-between;margin-bottom:4px}
     .stats-row:last-child{margin-bottom:0}
+    .search-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--panel);
+        border-radius: 8px;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .search-input {
+        width: 200px;
+        padding: 6px 10px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: transparent;
+        color: inherit;
+        border-radius: 6px;
+    }
+    .search-results {
+        max-height: 200px;
+        overflow-y: auto;
+        background: rgba(0,0,0,0.1);
+        border-radius: 6px;
+        padding: 4px;
+    }
+    .search-result-item {
+        padding: 6px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-bottom: 2px;
+    }
+    .search-result-item:hover {
+        background: rgba(255,255,255,0.05);
+    }
+    .search-result-item.selected {
+        background: var(--accent);
+        color: white;
+    }
   </style>
 </head>
 <body>
@@ -40,6 +80,13 @@
         <div class="node-badge">Click nodes to see details</div>
       </div>
       <canvas id="graphCanvas"></canvas>
+      
+      <!-- Node Search Bar -->
+      <div class="search-container">
+          <input type="text" id="nodeSearch" placeholder="Search nodes..." class="search-input">
+          <div id="searchResults" class="search-results"></div>
+      </div>
+      
       <div class="hint">Drag to pan • Scroll to zoom • Click nodes for details • Use panel to find paths</div>
     </div>
 
@@ -131,9 +178,15 @@ requestAnimationFrame(resize);
 // Graph state
 let nodes = [];
 let edges = [];
+let frames = [];
 let highlightedPath = {nodes:[], edges:[]};
 let selectedNode = null;
 let hoveredNode = null;
+let hoveredFrame = null;
+
+// Search functionality
+let searchTimeout = null;
+let searchResults = [];
 
 // UI elements
 const fileDrop = document.getElementById('fileDrop');
@@ -150,6 +203,106 @@ const nodeInfo = document.getElementById('nodeInfo');
 const pathInfo = document.getElementById('pathInfo');
 const zoomFitBtn = document.getElementById('zoomFitBtn');
 const resetViewBtn = document.getElementById('resetViewBtn');
+
+// Helper functions
+function getFrameAt(x, y) {
+  for (let i = frames.length - 1; i >= 0; i--) {
+    const f = frames[i];
+    if (x >= f.x && x <= f.x + f.width && y >= f.y && y <= f.y + f.height) {
+      return f;
+    }
+  }
+  return null;
+}
+
+// Search functions
+function searchNodes(query) {
+  if (!query.trim()) {
+    searchResults = [];
+    updateSearchResults();
+    return;
+  }
+  
+  const searchTerm = query.toLowerCase();
+  searchResults = nodes.filter(node => 
+    node.name.toLowerCase().includes(searchTerm) ||
+    node.longName.toLowerCase().includes(searchTerm) ||
+    (node.building && node.building.toLowerCase().includes(searchTerm))
+  );
+  
+  updateSearchResults();
+}
+
+function updateSearchResults() {
+  const resultsContainer = document.getElementById('searchResults');
+  resultsContainer.innerHTML = '';
+  
+  if (searchResults.length === 0) {
+    resultsContainer.style.display = 'none';
+    return;
+  }
+  
+  resultsContainer.style.display = 'block';
+  
+  searchResults.forEach(node => {
+    const resultItem = document.createElement('div');
+    resultItem.className = 'search-result-item';
+    resultItem.innerHTML = `
+      <div style="font-weight: bold;">${node.name}</div>
+      <div style="font-size: 12px; opacity: 0.7;">${node.building || 'No building'}</div>
+    `;
+    
+    resultItem.addEventListener('click', () => {
+      selectNode(node.id);
+      centerOnNode(node.id);
+      document.getElementById('nodeSearch').value = '';
+      resultsContainer.style.display = 'none';
+    });
+    
+    resultsContainer.appendChild(resultItem);
+  });
+}
+
+function centerOnNode(nodeId) {
+  const node = nodes.find(n => n.id === nodeId);
+  if (node) {
+    // Center the view on the selected node
+    const canvas = document.getElementById('graphCanvas');
+    const centerX = canvas.width / 2;
+    const centerY = node.y;
+    
+    // Calculate offset to center the node
+    const offsetX = centerX - node.x;
+    const offsetY = 0; // Don't change Y position
+    
+    // Apply offset to all nodes
+    nodes.forEach(n => {
+      n.x += offsetX;
+    });
+    
+    // Apply offset to all frames
+    frames.forEach(f => {
+      f.x += offsetX;
+    });
+    
+    draw();
+  }
+}
+
+function selectNode(nodeId) {
+  // Find the node by ID
+  const node = nodes.find(n => n.id === nodeId);
+  if (node) {
+    // Set as selected node (using the existing selectedNode system)
+    selectedNode = node;
+    
+    // Update the info panel
+    updateNodeInfo();
+    
+    // Redraw to show selection
+    draw();
+  }
+}
 
 // File handling
 fileDrop.addEventListener('click', () => fileInput.click());
@@ -184,6 +337,7 @@ function loadGraphFile(file) {
       if (Array.isArray(data.nodes) && Array.isArray(data.edges)) {
         nodes = data.nodes.map(n => ({...n}));
         edges = data.edges.map(e => ({...e}));
+        frames = data.frames ? data.frames.map(f => ({...f})) : [];
         updateStats();
         resetView();
         draw();
@@ -205,6 +359,24 @@ function updateStats() {
     edgeCount.textContent = edges.length;
     const total = edges.reduce((sum, e) => sum + e.weight, 0);
     totalWeight.textContent = total;
+    
+    // Add frame count if frames exist
+    if (frames.length > 0) {
+      const frameCount = document.createElement('div');
+      frameCount.innerHTML = `<strong>Frames:</strong> ${frames.length}`;
+      frameCount.style.marginTop = '8px';
+      frameCount.style.fontSize = '14px';
+      frameCount.style.color = 'var(--muted)';
+      
+      // Remove existing frame count if it exists
+      const existingFrameCount = stats.querySelector('.frame-count');
+      if (existingFrameCount) {
+        existingFrameCount.remove();
+      }
+      
+      frameCount.className = 'frame-count';
+      stats.appendChild(frameCount);
+    }
   } else {
     stats.style.display = 'none';
   }
@@ -240,6 +412,39 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width/DPR, canvas.height/DPR);
   
   applyTransform();
+  
+  // Draw frames first (background)
+  for (const frame of frames) {
+    const isHovered = hoveredFrame && hoveredFrame.id === frame.id;
+    
+    ctx.fillStyle = frame.color + (isHovered ? '20' : '10');
+    ctx.strokeStyle = frame.color + (isHovered ? '80' : '60');
+    ctx.lineWidth = isHovered ? 3 : 2;
+    ctx.setLineDash([5, 5]);
+    
+    ctx.beginPath();
+    ctx.rect(frame.x, frame.y, frame.width, frame.height);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Frame label
+    ctx.fillStyle = frame.color;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(frame.name, frame.x + 8, frame.y + 8);
+    
+    // Show frame info on hover
+    if (isHovered) {
+      ctx.setLineDash([]);
+      ctx.strokeStyle = frame.color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+  
+  // Reset line dash
+  ctx.setLineDash([]);
   
   // Draw edges
   for (const e of edges) {
@@ -347,8 +552,22 @@ canvas.addEventListener('mousemove', (e) => {
   // Hover detection
   const worldPos = screenToWorld(screenX, screenY);
   const node = getNodeAt(worldPos.x, worldPos.y);
+  const frame = getFrameAt(worldPos.x, worldPos.y);
+  
+  let needsRedraw = false;
+  
   if (node !== hoveredNode) {
     hoveredNode = node;
+    needsRedraw = true;
+  }
+  
+  if (frame !== hoveredFrame) {
+    hoveredFrame = frame;
+    needsRedraw = true;
+  }
+  
+  if (needsRedraw) {
+    updateNodeInfo();
     draw();
   }
 });
@@ -376,6 +595,22 @@ canvas.addEventListener('wheel', (e) => {
   draw();
 });
 
+// Search input event listener
+document.getElementById('nodeSearch').addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        searchNodes(e.target.value);
+    }, 300);
+});
+
+// Close search results when clicking outside
+document.addEventListener('click', (e) => {
+    const searchContainer = document.querySelector('.search-container');
+    if (!searchContainer.contains(e.target)) {
+        document.getElementById('searchResults').style.display = 'none';
+    }
+});
+
 // Helpers
 function getNodeAt(x, y) {
   for (let i = nodes.length - 1; i >= 0; i--) {
@@ -395,8 +630,16 @@ function updateNodeInfo() {
       <div style="color:var(--muted);font-size:11px">Connections: ${connections}</div>
       ${selectedNode.building ? `<div style="color:var(--muted);font-size:11px">Building: ${selectedNode.building}</div>` : ''}
     `;
+  } else if (hoveredFrame) {
+    const nodeCount = hoveredFrame.nodes.length;
+    nodeInfo.innerHTML = `
+      <div><strong>${hoveredFrame.name}</strong></div>
+      <div style="color:var(--muted);font-size:11px">Frame ID: ${hoveredFrame.id}</div>
+      <div style="color:var(--muted);font-size:11px">Contains ${nodeCount} node${nodeCount !== 1 ? 's' : ''}</div>
+      <div style="color:var(--muted);font-size:11px">Size: ${hoveredFrame.width} × ${hoveredFrame.height}</div>
+    `;
   } else {
-    nodeInfo.innerHTML = 'Click a node to see details';
+    nodeInfo.innerHTML = 'Click a node or hover over a frame to see details';
   }
 }
 
@@ -427,10 +670,23 @@ zoomFitBtn.addEventListener('click', () => {
     return;
   }
   
-  const minX = Math.min(...nodes.map(n => n.x));
-  const maxX = Math.max(...nodes.map(n => n.x));
-  const minY = Math.min(...nodes.map(n => n.y));
-  const maxY = Math.max(...nodes.map(n => n.y));
+  let minX = Math.min(...nodes.map(n => n.x));
+  let maxX = Math.max(...nodes.map(n => n.x));
+  let minY = Math.min(...nodes.map(n => n.y));
+  let maxY = Math.max(...nodes.map(n => n.y));
+  
+  // Also consider frames for view fitting
+  if (frames.length > 0) {
+    const frameMinX = Math.min(...frames.map(f => f.x));
+    const frameMaxX = Math.max(...frames.map(f => f.x + f.width));
+    const frameMinY = Math.min(...frames.map(f => f.y));
+    const frameMaxY = Math.max(...frames.map(f => f.y + f.height));
+    
+    minX = Math.min(minX, frameMinX);
+    maxX = Math.max(maxX, frameMaxX);
+    minY = Math.min(minY, frameMinY);
+    maxY = Math.max(maxY, frameMaxY);
+  }
   
   const padding = 100;
   const scaleX = (canvas.width/DPR - padding*2) / (maxX - minX);
