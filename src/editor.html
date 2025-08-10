@@ -5,102 +5,321 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Navigation Graph Editor</title>
   <style>
-    :root{--bg:#0f1724;--panel:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--success:#34d399}
-    html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, sans-serif;background:linear-gradient(180deg,#071028 0%,#081122 100%);color:#e6eef6}
-    .app{display:flex;gap:12px;height:100%;padding:12px;box-sizing:border-box}
-    .canvas-wrap{flex:1;background:linear-gradient(180deg,#071a2b, #04202a);border-radius:12px;padding:12px;display:flex;flex-direction:column;position:relative}
-    canvas{background:transparent;border-radius:8px;flex:1;cursor:crosshair}
-    .panel{width:400px;background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
-    h1{margin:4px 0 10px;font-size:18px}
-    .controls{display:grid;gap:8px}
-    label{font-size:12px;color:var(--muted)}
-    input,select,button,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:#e6eef6}
-    select option{background:#0f1724;color:#94a3b8;padding:8px}
-    select option:hover{background:#94a3b8}
-    button{cursor:pointer;background:linear-gradient(90deg,#0f1724, #0f1724);border:1px solid rgba(6,182,212,0.14)}
-    .row{display:flex;gap:8px}
-    .row > *{flex:1}
-    .small{font-size:12px;padding:6px}
-    .list{max-height:160px;overflow:auto;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
-    .hint{font-size:12px;color:var(--muted)}
-    .toolbar{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-    .node-badge{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px}
-    .weight-controls{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-top:8px}
-    .weight-row{display:flex;gap:8px;align-items:center;margin-bottom:4px}
-    .weight-row input{flex:1}
-    .weight-row button{flex-shrink:0;padding:4px 8px;font-size:11px}
-    .frame-item:hover{background:rgba(255,255,255,0.05) !important}
+    :root {
+      --bg: #000000;
+      --panel: #111111;
+      --muted: #888888;
+      --accent: #ffffff;
+      --success: #ffffff;
+      --border: #333333;
+      --hover: #1a1a1a;
+    }
     
-                   /* Search Bar Styles */
-               .search-container {
-                   position: absolute;
-                   top: 20px;
-                   right: 20px;
-                   z-index: 1000;
-                   width: 250px;
-                   pointer-events: none;
-               }
-               
-               .search-container * {
-                   pointer-events: auto;
-               }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--accent);
+    }
+    
+    .app {
+      display: flex;
+      gap: 12px;
+      height: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+    
+    .canvas-wrap {
+      flex: 1;
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    canvas {
+      background: transparent;
+      border-radius: 8px;
+      flex: 1;
+      cursor: crosshair;
+    }
+    
+    .panel {
+      width: 400px;
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: 100%;
+    }
+    
+    h1 {
+      margin: 4px 0 10px;
+      font-size: 18px;
+      color: var(--accent);
+    }
+    
+    .section {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--hover);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .section h3 {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      color: var(--accent);
+    }
+    
+    .controls {
+      display: grid;
+      gap: 8px;
+    }
+    
+    label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      display: block;
+    }
+    
+    input, select, button, textarea {
+      width: 100%;
+      padding: 8px 12px;
+      margin: 4px 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--accent);
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    select option {
+      background: var(--panel);
+      color: var(--accent);
+      padding: 8px;
+    }
+    
+    button {
+      background: var(--accent);
+      color: var(--bg);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    button:hover {
+      background: #f0f0f0;
+      transform: translateY(-1px);
+    }
+    
+    button:disabled {
+      background: var(--muted);
+      color: var(--bg);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .row > * {
+      flex: 1;
+    }
+    
+    .small {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+    
+    .list {
+      max-height: 160px;
+      overflow: auto;
+      background: var(--panel);
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 8px 0;
+    }
+    
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .node-badge {
+      display: inline-block;
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--accent);
+      margin: 2px;
+    }
+    
+    .tag-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 11px;
+      font-weight: 600;
+      margin: 2px;
+    }
+    
+    .tag-section {
+      margin-bottom: 16px;
+    }
+    
+    .tag-section label {
+      margin-bottom: 8px;
+    }
+    
+    .weight-controls {
+      background: var(--panel);
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .weight-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .weight-row input {
+      flex: 1;
+    }
+    
+    .weight-row button {
+      flex-shrink: 0;
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+    
+    .frame-item {
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+    
+    .frame-item:hover {
+      background: var(--hover) !important;
+      transform: translateY(-1px);
+    }
+    
+    hr {
+      opacity: 0.2;
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+    
+    /* Search Bar Styles */
+    .search-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      width: 250px;
+      pointer-events: none;
+    }
+    
+    .search-container * {
+      pointer-events: auto;
+    }
     
     .search-input {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 6px;
-        background: rgba(0,0,0,0.8);
-        color: #e6eef6;
-        font-size: 14px;
-        outline: none;
-        transition: border-color 0.2s;
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--accent);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
     }
     
     .search-input:focus {
-        border-color: #4a9eff;
+      border-color: var(--accent);
     }
     
     .search-results {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,0.95);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 6px;
-        margin-top: 4px;
-        max-height: 200px;
-        overflow-y: auto;
-        display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1001;
     }
     
     .search-result-item {
-        padding: 8px 12px;
-        cursor: pointer;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        transition: background 0.2s;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
     }
     
     .search-result-item:hover {
-        background: rgba(255,255,255,0.1);
+      background: var(--hover);
     }
     
     .search-result-item:last-child {
-        border-bottom: none;
+      border-bottom: none;
     }
     
     .search-result-name {
-        font-weight: bold;
-        color: #e6eef6;
+      font-weight: 600;
+      color: var(--accent);
     }
     
     .search-result-building {
-        font-size: 12px;
-        color: #a0aec0;
-        margin-top: 2px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
     }
-    
   </style>
 </head>
 <body>
@@ -125,56 +344,83 @@
 
     <div class="panel">
       <h1>Navigation Graph Editor</h1>
-      <div class="controls">
-        <div>
-          <label>Start room name</label>
-          <input id="startName" placeholder="e.g. Room A" />
-        </div>
-        <div>
-          <label>End room name</label>
-          <input id="endName" placeholder="e.g. Room B" />
-        </div>
-        <div class="row">
-          <button id="findPathBtn">Find shortest path</button>
-          <button id="clearHighlightBtn">Clear highlight</button>
-        </div>
-
-        <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
-
-        <div>
-          <label>Selected nodes (click nodes in canvas)</label>
-          <div id="selectedList" class="list">(none)</div>
-        </div>
-        <div class="row">
-          <button id="connectSelectedBtn">Connect selected</button>
-          <button id="removeSelectedBtn">Remove selected</button>
-        </div>
-
-        <div>
-          <label>Connect manually (from → to)</label>
+      
+      <!-- Node Selection -->
+      <div class="section">
+        <h3>Node Selection</h3>
+        <div class="controls">
+          <div>
+            <label>Selected nodes (click nodes in canvas)</label>
+            <div id="selectedList" class="list">(none)</div>
+          </div>
           <div class="row">
-            <select id="fromSelect"></select>
-            <select id="toSelect"></select>
-          </div>
-          <label style="margin-top:6px">Weight (leave empty to auto distance)</label>
-          <input id="edgeWeight" placeholder="auto" />
-          <div class="row" style="margin-top:6px">
-            <button id="connectBtn">Connect</button>
-            <button id="removeEdgeBtn">Remove edge</button>
+            <button id="connectSelectedBtn">Connect selected</button>
+            <button id="removeSelectedBtn">Remove selected</button>
           </div>
         </div>
+      </div>
 
+      <!-- Manual Connection -->
+      <div class="section">
+        <h3>Manual Connection</h3>
+        <div class="controls">
+          <div>
+            <label>Connect manually (from → to)</label>
+            <div class="row">
+              <select id="fromSelect"></select>
+              <select id="toSelect"></select>
+            </div>
+            <label style="margin-top:6px">Weight (leave empty to auto distance)</label>
+            <input id="edgeWeight" placeholder="auto" />
+            <div class="row" style="margin-top:6px">
+              <button id="connectBtn">Connect</button>
+              <button id="removeEdgeBtn">Remove edge</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edge Weight Editor -->
+      <div class="section">
+        <h3>Edge Weight Editor</h3>
         <div class="weight-controls">
-          <label>Edge Weight Editor</label>
           <div id="weightControls">
             <div class="hint">Right-click on an edge to edit its weight</div>
           </div>
         </div>
+      </div>
 
-        <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
+      <!-- Tag Editor -->
+      <div class="section">
+        <h3>Tag Editor</h3>
+        <div class="controls">
+          <div class="tag-section">
+            <label>Add tag to selected nodes</label>
+            <div class="row">
+              <input id="tagInput" placeholder="Enter tag name" />
+              <button id="addTagBtn">Add</button>
+            </div>
+          </div>
+          <div class="tag-section">
+            <label>Remove tag from selected nodes</label>
+            <div class="row">
+              <select id="tagRemoveSelect">
+                <option value="">Select tag to remove</option>
+              </select>
+              <button id="removeTagBtn">Remove</button>
+            </div>
+          </div>
+          <div class="tag-section">
+            <label>Selected nodes tags</label>
+            <div id="selectedTagsList" class="list">(none selected)</div>
+          </div>
+        </div>
+      </div>
 
-        <div>
-          <label>Frame Management</label>
+      <!-- Frame Management -->
+      <div class="section">
+        <h3>Frame Management</h3>
+        <div class="controls">
           <div class="row">
             <button id="createFrameBtn">Create Frame</button>
             <button id="deleteFrameBtn">Delete Frame</button>
@@ -198,11 +444,12 @@
             <div class="hint">No frames created yet</div>
           </div>
         </div>
+      </div>
 
-        <hr style="opacity:.06;border:none;height:1px;background:rgba(255,255,255,0.03)">
-
-        <div>
-          <label>Import / Export JSON</label>
+      <!-- Import / Export -->
+      <div class="section">
+        <h3>Import / Export JSON</h3>
+        <div class="controls">
           <textarea id="jsonBox" rows="6" placeholder='Paste JSON here or press "Export"'></textarea>
           <div class="row" style="margin-top:6px">
             <button id="exportBtn">Export</button>
@@ -214,15 +461,36 @@
           </div>
           <input type="file" id="roomsFileInput" accept=".json,application/json" style="display:none" />
         </div>
+      </div>
 
-        <div>
-          <label>Info / Path result</label>
-          <div id="info" class="list">No path computed yet.</div>
+      <!-- Path Finding -->
+      <div class="section">
+        <h3>Path Finder</h3>
+        <div class="controls">
+          <div>
+            <label>Start room name</label>
+            <input id="startName" placeholder="e.g. Room A" />
+          </div>
+          <div>
+            <label>End room name</label>
+            <input id="endName" placeholder="e.g. Room B" />
+          </div>
+          <div class="row">
+            <button id="findPathBtn">Find shortest path</button>
+            <button id="clearHighlightBtn">Clear highlight</button>
+          </div>
         </div>
+      </div>
 
-        <div style="display:flex;gap:8px">
-          <button id="resetBtn" class="small">Reset all</button>
-          <button id="zoomFitBtn" class="small">Fit view</button>
+      <!-- Info / Results -->
+      <div class="section">
+        <h3>Info / Path Results</h3>
+        <div class="controls">
+          <div id="info" class="list">No path computed yet.</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="resetBtn" class="small">Reset all</button>
+            <button id="zoomFitBtn" class="small">Fit view</button>
+          </div>
         </div>
       </div>
     </div>
@@ -297,9 +565,20 @@ const frameWidthInput = document.getElementById('frameWidthInput');
 const frameHeightInput = document.getElementById('frameHeightInput');
 const framesList = document.getElementById('framesList');
 
+// Tag editor elements
+const tagInput = document.getElementById('tagInput');
+const addTagBtn = document.getElementById('addTagBtn');
+const tagRemoveSelect = document.getElementById('tagRemoveSelect');
+const removeTagBtn = document.getElementById('removeTagBtn');
+const selectedTagsList = document.getElementById('selectedTagsList');
+
 // Frame button event listeners
 createFrameBtn.addEventListener('click', createFrame);
 deleteFrameBtn.addEventListener('click', deleteFrame);
+
+// Tag editor event listeners
+addTagBtn.addEventListener('click', addTagToSelected);
+removeTagBtn.addEventListener('click', removeTagFromSelected);
 
 // Helpers
 function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
@@ -395,8 +674,9 @@ function centerOnNode(nodeId) {
 }
 
 function selectNode(nodeId) {
-    selectedNodes = [nodeId];
-    updateSelectedNodesList();
+    selected.clear();
+    selected.add(nodeId);
+    updateSelectedList();
     draw();
 }
 
@@ -499,6 +779,8 @@ function rebuildSelects(){
     toSelect.appendChild(opt.cloneNode(true)); 
   }
   updateSelectedList(); 
+  updateSelectedTagsList();
+  updateTagRemoveSelect();
 }
 
 function updateSelectedList(){ 
@@ -513,6 +795,10 @@ function updateSelectedList(){
     const tagsInfo = n.tags && n.tags.length > 0 ? ` • [${n.tags.join(', ')}]` : '';
     return `<div>${label} <small style="color:var(--muted)">(id:${n.id})${buildingInfo}${tagsInfo}</small></div>` 
   }).join(''); 
+  
+  // Update tag editor when selection changes
+  updateSelectedTagsList();
+  updateTagRemoveSelect();
 }
 
 function updateWeightControls() {
@@ -596,7 +882,7 @@ function updateFramesList() {
   }
   
   framesList.innerHTML = frames.map(frame => `
-    <div class="frame-item" data-frame-id="${frame.id}" style="cursor: pointer; padding: 4px; border-radius: 4px; margin-bottom: 4px; background: ${frame.color}20; border: 1px solid ${frame.color}40;">
+    <div class="frame-item" data-frame-id="${frame.id}" style="background: ${frame.color}20; border: 1px solid ${frame.color}40;">
       <div style="font-weight: bold; color: ${frame.color}">${frame.name}</div>
       <div style="font-size: 11px; color: var(--muted)">${frame.nodes.length} nodes</div>
     </div>
@@ -630,6 +916,103 @@ function removeNodeFromFrame(nodeId, frameId) {
     updateFramesList();
     draw();
   }
+}
+
+// Tag editor functions
+function addTagToSelected() {
+  const tag = tagInput.value.trim();
+  if (!tag) {
+    alert('Please enter a tag name');
+    return;
+  }
+  
+  if (selected.size === 0) {
+    alert('Please select at least one node');
+    return;
+  }
+  
+  selected.forEach(nodeId => {
+    const node = nodes.find(n => n.id === nodeId);
+    if (node) {
+      if (!node.tags) node.tags = [];
+      if (!node.tags.includes(tag)) {
+        node.tags.push(tag);
+      }
+    }
+  });
+  
+  tagInput.value = '';
+  updateSelectedTagsList();
+  updateTagRemoveSelect();
+  draw();
+}
+
+function removeTagFromSelected() {
+  const tag = tagRemoveSelect.value;
+  if (!tag) {
+    alert('Please select a tag to remove');
+    return;
+  }
+  
+  if (selected.size === 0) {
+    alert('Please select at least one node');
+    return;
+  }
+  
+  selected.forEach(nodeId => {
+    const node = nodes.find(n => n.id === nodeId);
+    if (node && node.tags) {
+      node.tags = node.tags.filter(t => t !== tag);
+    }
+  });
+  
+  updateSelectedTagsList();
+  updateTagRemoveSelect();
+  draw();
+}
+
+function updateSelectedTagsList() {
+  if (selected.size === 0) {
+    selectedTagsList.innerHTML = '(none selected)';
+    return;
+  }
+  
+  const allTags = new Set();
+  selected.forEach(nodeId => {
+    const node = nodes.find(n => n.id === nodeId);
+    if (node && node.tags) {
+      node.tags.forEach(tag => allTags.add(tag));
+    }
+  });
+  
+  if (allTags.size === 0) {
+    selectedTagsList.innerHTML = '(no tags)';
+  } else {
+    selectedTagsList.innerHTML = Array.from(allTags).map(tag => 
+      `<div class="tag-badge">${tag}</div>`
+    ).join('');
+  }
+}
+
+function updateTagRemoveSelect() {
+  tagRemoveSelect.innerHTML = '<option value="">Select tag to remove</option>';
+  
+  if (selected.size === 0) return;
+  
+  const allTags = new Set();
+  selected.forEach(nodeId => {
+    const node = nodes.find(n => n.id === nodeId);
+    if (node && node.tags) {
+      node.tags.forEach(tag => allTags.add(tag));
+    }
+  });
+  
+  Array.from(allTags).forEach(tag => {
+    const option = document.createElement('option');
+    option.value = tag;
+    option.textContent = tag;
+    tagRemoveSelect.appendChild(option);
+  });
 }
 
 // Drawing
@@ -677,7 +1060,7 @@ function draw(){
     const isRightClicked = rightClickedEdge && ((e.from === rightClickedEdge.from && e.to === rightClickedEdge.to) || (e.from === rightClickedEdge.to && e.to === rightClickedEdge.from));
     
     ctx.lineWidth = isHighlighted ? 4 : (isRightClicked ? 3 : 2);
-    ctx.strokeStyle = isHighlighted ? '#34d399' : (isRightClicked ? '#06b6d4' : 'rgba(255,255,255,0.12)');
+    ctx.strokeStyle = isHighlighted ? '#ffffff' : (isRightClicked ? '#ffffff' : 'rgba(255,255,255,0.3)');
     ctx.beginPath(); 
     ctx.moveTo(a.x,a.y); 
     ctx.lineTo(b.x,b.y); 
@@ -685,7 +1068,7 @@ function draw(){
     
     // weight label
     const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
-    ctx.fillStyle = 'rgba(255,255,255,0.7)'; 
+    ctx.fillStyle = 'rgba(255,255,255,0.8)'; 
     ctx.font='12px sans-serif'; 
     ctx.fillText(e.weight, mx+6, my-6);
   }
@@ -694,18 +1077,51 @@ function draw(){
   for(const n of nodes){ 
     const isSel = selected.has(n.id); 
     const isHover = hovered && hovered.id===n.id;
-    ctx.beginPath(); 
-    ctx.arc(n.x,n.y,16,0,Math.PI*2);
-    ctx.fillStyle = isSel ? '#06b6d4' : (isHover ? 'rgba(6,182,212,0.6)' : 'rgba(255,255,255,0.15)');
-    ctx.fill();
-    ctx.strokeStyle = isSel ? '#38bdf8' : 'rgba(0,0,0,0)';
-    ctx.lineWidth = isSel ? 3 : 0;
-    ctx.stroke();
-    ctx.fillStyle = '#e6eef6';
+    
+    // Label to display
+    const label = isSel ? (n.longName || n.name) : n.name;
+    
     ctx.font = '12px sans-serif';
+    const textWidth = ctx.measureText(label).width;
+    const paddingX = 10; // space left & right of text
+    const radius = 16; // node radius for normal nodes
+    
+    ctx.beginPath();
+    
+    if (isSel) {
+      // Draw pill shape (rounded rectangle) based on text width
+      const totalWidth = textWidth + paddingX * 2;
+      const height = radius * 2;
+      const x = n.x - totalWidth / 2;
+      const y = n.y - height / 2;
+      
+      // Rounded rectangle
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + totalWidth - radius, y);
+      ctx.arcTo(x + totalWidth, y, x + totalWidth, y + radius, radius);
+      ctx.lineTo(x + totalWidth, y + height - radius);
+      ctx.arcTo(x + totalWidth, y + height, x + totalWidth - radius, y + height, radius);
+      ctx.lineTo(x + radius, y + height);
+      ctx.arcTo(x, y + height, x, y + height - radius, radius);
+      ctx.lineTo(x, y + radius);
+      ctx.arcTo(x, y, x + radius, y, radius);
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    } else {
+      // Regular circle for non-selected nodes
+      ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = isHover ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)';
+      ctx.fill();
+    }
+    
+    // Draw label
+    ctx.fillStyle = isSel ? '#000000' : '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const label = isSel ? (n.longName || n.name) : n.name;
     ctx.fillText(label, n.x, n.y);
   }
 }
@@ -879,6 +1295,8 @@ importBtn.addEventListener('click', () => {
       rebuildSelects();
       updateWeightControls();
       updateFramesList();
+      updateSelectedTagsList();
+      updateTagRemoveSelect();
       draw();
       infoBox.textContent = 'Data imported successfully.';
     } else {
@@ -960,6 +1378,8 @@ function importRoomsFromArray(arr){
   infoBox.textContent = `Loaded ${count} rooms from rooms.json.`;
   rebuildSelects();
   updateWeightControls();
+  updateSelectedTagsList();
+  updateTagRemoveSelect();
   draw();
 }
 
@@ -979,6 +1399,8 @@ resetBtn.addEventListener('click', () => {
     nodeIdCounter = 1;
     rebuildSelects();
     updateWeightControls();
+    updateSelectedTagsList();
+    updateTagRemoveSelect();
     draw();
     infoBox.textContent = 'Reset done.';
   }
@@ -1137,6 +1559,8 @@ document.addEventListener('click', (e) => {
 
 // Initialize
 updateWeightControls();
+updateSelectedTagsList();
+updateTagRemoveSelect();
 </script>
 </body>
 </html> 
