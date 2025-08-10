@@ -334,7 +334,7 @@
           <div id="searchResults" class="search-results"></div>
       </div>
       
-      <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select • Right-click edge: edit weight • Ctrl+Z: undo • F2: rename • Ctrl+drag: grid snap</div>
+      <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select • Right-click edge: edit weight • Ctrl+Z: undo • F2: rename • Ctrl+drag: grid snap • Del: delete selected nodes/frames/edges</div>
     </div>
 
     <div class="panel">
@@ -1276,7 +1276,16 @@ canvas.addEventListener('mousedown', e=>{
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
   
-  // Check if clicking on a frame first
+  // Check if clicking on a node first (nodes have priority over frames)
+  const node = getNodeAt(x,y);
+  if(node){
+    dragging = { type: 'node', node: node };
+    dragOffset.x = x - node.x;
+    dragOffset.y = y - node.y;
+    return;
+  }
+  
+  // If no node was clicked, check for frames
   const clickedFrame = getFrameAt(x, y);
   if (clickedFrame) {
     if (e.shiftKey) {
@@ -1298,13 +1307,6 @@ canvas.addEventListener('mousedown', e=>{
       draw();
       return;
     }
-  }
-  
-  const node = getNodeAt(x,y);
-  if(node){
-    dragging = { type: 'node', node: node };
-    dragOffset.x = x - node.x;
-    dragOffset.y = y - node.y;
   }
 });
 
@@ -1442,6 +1444,35 @@ document.addEventListener('keydown', e => {
         }
       }
     }
+  } else if (e.key === 'Delete') {
+    e.preventDefault();
+    // Delete selected nodes
+    if (selected.size > 0) {
+        const selectedArray = Array.from(selected);
+        selectedArray.forEach(nodeId => {
+            const node = nodes.find(n => n.id === nodeId);
+            if (node) {
+                removeNode(node);
+            }
+        });
+        selected.clear();
+        updateSelectedList();
+    }
+    
+    // Delete selected frame
+    if (selectedFrame) {
+        deleteFrame();
+        selectedFrame = null;
+    }
+    
+    // Delete selected edge (if any edge is selected for weight editing)
+    if (rightClickedEdge) {
+        removeEdgeBetween(rightClickedEdge.from, rightClickedEdge.to);
+        rightClickedEdge = null;
+        updateWeightControls();
+    }
+    
+    draw();
   }
 });
 
