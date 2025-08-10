@@ -1,84 +1,271 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Navigation Graph System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KathErlNav - Navigation System</title>
   <style>
-    :root{--bg:#0f1724;--panel:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--success:#34d399}
-    html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, sans-serif;background:linear-gradient(180deg,#071028 0%,#081122 100%);color:#e6eef6}
-    .container{max-width:800px;margin:0 auto;padding:40px 20px;text-align:center}
-    h1{font-size:2.5rem;margin-bottom:1rem;background:linear-gradient(135deg,var(--accent),var(--success));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .subtitle{font-size:1.2rem;color:var(--muted);margin-bottom:3rem}
-    .apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-bottom:3rem}
-    .app-card{background:var(--panel);border-radius:16px;padding:2rem;text-align:left;transition:all 0.3s ease;border:1px solid rgba(255,255,255,0.06)}
-    .app-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 20px 40px rgba(6,182,212,0.1)}
-    .app-icon{font-size:3rem;margin-bottom:1rem}
-    .app-title{font-size:1.5rem;font-weight:600;margin-bottom:0.5rem}
-    .app-desc{color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
-    .app-btn{display:inline-block;padding:12px 24px;background:linear-gradient(135deg,var(--accent),var(--success));color:white;text-decoration:none;border-radius:8px;font-weight:500;transition:all 0.2s ease}
-    .app-btn:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(6,182,212,0.3)}
-    .features{background:var(--panel);border-radius:16px;padding:2rem;margin-bottom:2rem;text-align:left}
-    .features h3{margin-bottom:1rem;color:var(--accent)}
-    .feature-list{list-style:none;padding:0}
-    .feature-list li{margin-bottom:0.5rem;padding-left:1.5rem;position:relative}
-    .feature-list li:before{content:"✓";position:absolute;left:0;color:var(--success);font-weight:bold}
-    .workflow{background:var(--panel);border-radius:16px;padding:2rem;text-align:left}
-    .workflow h3{margin-bottom:1rem;color:var(--accent)}
-    .workflow-steps{list-style:none;padding:0;counter-reset:step-counter}
-    .workflow-steps li{counter-increment:step-counter;margin-bottom:1rem;padding-left:2.5rem;position:relative}
-    .workflow-steps li:before{content:counter(step-counter);position:absolute;left:0;top:0;background:var(--accent);color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:bold}
-    .footer{color:var(--muted);font-size:0.9rem;margin-top:3rem}
-  </style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+        
+        .app-card {
+            background: #111111;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .app-card:hover {
+            background: #1a1a1a;
+            border-color: #666666;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .app-card h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+        
+        .app-card p {
+            color: #cccccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .app-card .features {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+        
+        .app-card .features li {
+            color: #aaaaaa;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .app-card .features li:before {
+            content: "•";
+            color: #ffffff;
+            position: absolute;
+            left: 0;
+        }
+        
+        .app-card .cta {
+            display: inline-block;
+            background: #ffffff;
+            color: #000000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .app-card .cta:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        
+        .workflow {
+            background: #111111;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .workflow h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #ffffff;
+        }
+        
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 24px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #444444;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #ffffff;
+            color: #000000;
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+        }
+        
+        .step h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+        
+        .step p {
+            color: #cccccc;
+            font-size: 0.95rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #333333;
+            color: #888888;
+        }
+        
+        .footer p {
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .apps-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .app-card {
+                padding: 24px;
+            }
+            
+            .workflow-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Navigation Graph System</h1>
-    <p class="subtitle">Create, edit, and explore indoor navigation networks</p>
-    
-    <div class="apps">
-      <div class="app-card">
-        <div class="app-icon">✏️</div>
-        <div class="app-title">Graph Editor</div>
-        <div class="app-desc">Full-featured editor for creating and modifying navigation graphs. Add rooms, connect them, set custom weights, and export for sharing.</div>
-        <a href="editor.html" class="app-btn">Open Editor</a>
-      </div>
-      
-      <div class="app-card">
-        <div class="app-icon">🧭</div>
-        <div class="app-title">Graph Navigator</div>
-        <div class="app-desc">View-only navigator for exploring exported graphs. Load JSON files, find shortest paths, and navigate with pan and zoom.</div>
-        <a href="navigator.html" class="app-btn">Open Navigator</a>
-      </div>
+    <div class="container">
+        <div class="header">
+            <h1>KathErlNav</h1>
+            <p>A powerful navigation system for creating and exploring interactive building maps with intelligent pathfinding and visual organization.</p>
+        </div>
+        
+        <div class="apps-grid">
+            <a href="editor.html" class="app-card">
+                <h2>Graph Editor</h2>
+                <p>Create and edit navigation graphs with an intuitive visual interface. Design building layouts, set connections, and organize spaces with frames.</p>
+                <ul class="features">
+                    <li>Visual node and edge creation</li>
+                    <li>Manual weight configuration</li>
+                    <li>Frame-based organization</li>
+                    <li>Real-time graph editing</li>
+                    <li>Export to JSON format</li>
+                </ul>
+                <span class="cta">Open Editor</span>
+            </a>
+            
+            <a href="navigator.html" class="app-card">
+                <h2>Navigation Viewer</h2>
+                <p>Load exported navigation graphs and explore buildings with intelligent pathfinding. Find optimal routes between any two locations.</p>
+                <ul class="features">
+                    <li>Interactive graph visualization</li>
+                    <li>Dijkstra's pathfinding algorithm</li>
+                    <li>Node search and selection</li>
+                    <li>Frame visualization</li>
+                    <li>Pan and zoom navigation</li>
+                </ul>
+                <span class="cta">Open Navigator</span>
+            </a>
+        </div>
+        
+        <div class="workflow">
+            <h2>How It Works</h2>
+            <div class="workflow-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Design</h3>
+                    <p>Use the Graph Editor to create your building's navigation structure. Add nodes for rooms, edges for connections, and frames for organization.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Configure</h3>
+                    <p>Set manual weights for connections to represent distance, difficulty, or preference. Organize spaces with colored frames for better visual clarity.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Export</h3>
+                    <p>Save your navigation graph as a JSON file. The system automatically includes all nodes, edges, and frame information for complete portability.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Navigate</h3>
+                    <p>Load your exported graph in the Navigation Viewer to explore paths, find optimal routes, and help users navigate your building efficiently.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Built by Sachsi and Mosstuff</p>
+        </div>
     </div>
-    
-    <div class="features">
-      <h3>Key Features</h3>
-      <ul class="feature-list">
-        <li><strong>Manual Weight System:</strong> Set custom weights for connections or use automatic distance-based weights</li>
-        <li><strong>Dual Applications:</strong> Separate editor and viewer for different use cases</li>
-        <li><strong>Path Finding:</strong> Dijkstra's algorithm for shortest path calculations</li>
-        <li><strong>Import/Export:</strong> Load from rooms.json or custom JSON, export for sharing</li>
-        <li><strong>Interactive Canvas:</strong> Drag & drop, zoom, pan, and click interactions</li>
-        <li><strong>Responsive Design:</strong> Works on desktop and mobile devices</li>
-      </ul>
-    </div>
-    
-    <div class="workflow">
-      <h3>Workflow</h3>
-      <ol class="workflow-steps">
-        <li><strong>Design:</strong> Use the editor to create your navigation graph by adding rooms and connections</li>
-        <li><strong>Customize:</strong> Set manual weights for connections or let the system calculate automatic distances</li>
-        <li><strong>Test:</strong> Verify connectivity and find shortest paths between rooms</li>
-        <li><strong>Export:</strong> Save your graph as JSON for distribution</li>
-        <li><strong>Share:</strong> Distribute the JSON file to users who need navigation</li>
-        <li><strong>Navigate:</strong> Users open the navigator to explore your graph</li>
-      </ol>
-    </div>
-    
-    <div class="footer">
-      <p>Built with HTML5 Canvas and modern JavaScript • Compatible with all modern browsers</p>
-    </div>
-  </div>
 </body>
 </html>
