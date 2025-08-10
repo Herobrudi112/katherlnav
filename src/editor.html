@@ -257,11 +257,6 @@
       right: 20px;
       z-index: 1000;
       width: 250px;
-      pointer-events: none;
-    }
-    
-    .search-container * {
-      pointer-events: auto;
     }
     
     .search-input {
@@ -272,11 +267,11 @@
       background: var(--panel);
       color: var(--accent);
       font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
+      box-sizing: border-box;
     }
     
     .search-input:focus {
+      outline: none;
       border-color: var(--accent);
     }
     
@@ -288,18 +283,17 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 6px;
-      margin-top: 4px;
       max-height: 200px;
       overflow-y: auto;
-      display: none;
       z-index: 1001;
+      display: none;
     }
     
     .search-result-item {
       padding: 8px 12px;
       cursor: pointer;
       border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
+      transition: background 0.2s ease;
     }
     
     .search-result-item:hover {
@@ -310,12 +304,12 @@
       border-bottom: none;
     }
     
-    .search-result-name {
+    .search-result-item .node-name {
       font-weight: 600;
       color: var(--accent);
     }
     
-    .search-result-building {
+    .search-result-item .node-details {
       font-size: 12px;
       color: var(--muted);
       margin-top: 2px;
@@ -330,6 +324,7 @@
         <div class="node-badge">Drag nodes to reposition</div>
         <div class="node-badge">Shift+Click two nodes to select them, then Connect</div>
         <div class="node-badge">Right-click edges to edit weights</div>
+        <div class="node-badge" id="gridIndicator" style="display: none;">Grid snapping active (Ctrl)</div>
       </div>
       <canvas id="graphCanvas"></canvas>
       
@@ -339,7 +334,7 @@
           <div id="searchResults" class="search-results"></div>
       </div>
       
-      <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select • Right-click edge: edit weight</div>
+      <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select • Right-click edge: edit weight • Ctrl+Z: undo • F2: rename • Ctrl+drag: grid snap</div>
     </div>
 
     <div class="panel">
@@ -529,10 +524,19 @@ let highlightedPath = {nodes:[], edges:[]};
 let rightClickedEdge = null;
 let selectedFrame = null;
 let frameMode = 'select'; // 'select' or 'create'
-    
-    // Search functionality
-    let searchTimeout = null;
-    let searchResults = [];
+
+// Undo/Redo system
+let undoStack = [];
+let redoStack = [];
+let isUndoRedoAction = false;
+
+// Grid snapping
+const GRID_SIZE = 20;
+let isCtrlPressed = false;
+
+// Search functionality
+let searchTimeout = null;
+let searchResults = [];
     
     // DOM elements
 const startNameInput = document.getElementById('startName');
@@ -594,6 +598,112 @@ function getFrameAt(x, y) {
     return null;
 }
 
+// Undo/Redo functions
+function saveState() {
+    if (isUndoRedoAction) return;
+    
+    const state = {
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        edges: JSON.parse(JSON.stringify(edges)),
+        frames: JSON.parse(JSON.stringify(frames)),
+        nodeIdCounter: nodeIdCounter,
+        frameIdCounter: frameIdCounter
+    };
+    
+    undoStack.push(state);
+    redoStack = []; // Clear redo stack when new action is performed
+    
+    // Limit undo stack size
+    if (undoStack.length > 50) {
+        undoStack.shift();
+    }
+}
+
+function undo() {
+    if (undoStack.length === 0) return;
+    
+    isUndoRedoAction = true;
+    
+    // Save current state to redo stack
+    const currentState = {
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        edges: JSON.parse(JSON.stringify(edges)),
+        frames: JSON.parse(JSON.stringify(frames)),
+        nodeIdCounter: nodeIdCounter,
+        frameIdCounter: frameIdCounter
+    };
+    redoStack.push(currentState);
+    
+    // Restore previous state
+    const previousState = undoStack.pop();
+    nodes = previousState.nodes;
+    edges = previousState.edges;
+    frames = previousState.frames;
+    nodeIdCounter = previousState.nodeIdCounter;
+    frameIdCounter = previousState.frameIdCounter;
+    
+    // Clear selections and update UI
+    selected.clear();
+    selectedFrame = null;
+    rightClickedEdge = null;
+    highlightedPath.nodes = [];
+    highlightedPath.edges = [];
+    
+    rebuildSelects();
+    updateWeightControls();
+    updateSelectedTagsList();
+    updateTagRemoveSelect();
+    updateFramesList();
+    draw();
+    
+    isUndoRedoAction = false;
+}
+
+function redo() {
+    if (redoStack.length === 0) return;
+    
+    isUndoRedoAction = true;
+    
+    // Save current state to undo stack
+    const currentState = {
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        edges: JSON.parse(JSON.stringify(edges)),
+        frames: JSON.parse(JSON.stringify(frames)),
+        nodeIdCounter: nodeIdCounter,
+        frameIdCounter: frameIdCounter
+    };
+    undoStack.push(currentState);
+    
+    // Restore next state
+    const nextState = redoStack.pop();
+    nodes = nextState.nodes;
+    edges = nextState.edges;
+    frames = nextState.frames;
+    nodeIdCounter = nextState.nodeIdCounter;
+    frameIdCounter = nextState.frameIdCounter;
+    
+    // Clear selections and update UI
+    selected.clear();
+    selectedFrame = null;
+    rightClickedEdge = null;
+    highlightedPath.nodes = [];
+    highlightedPath.edges = [];
+    
+    rebuildSelects();
+    updateWeightControls();
+    updateSelectedTagsList();
+    updateTagRemoveSelect();
+    updateFramesList();
+    draw();
+    
+    isUndoRedoAction = false;
+}
+
+// Grid snapping function
+function snapToGrid(value) {
+    return Math.round(value / GRID_SIZE) * GRID_SIZE;
+}
+
 // Search functions
 function searchNodes(query) {
     if (!query.trim()) {
@@ -607,7 +717,7 @@ function searchNodes(query) {
         node.name.toLowerCase().includes(searchTerm) ||
         node.longName.toLowerCase().includes(searchTerm) ||
         (node.building && node.building.toLowerCase().includes(searchTerm)) ||
-        (node.tags && node.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+        (node.tags && node.tags.some(tag => String(tag).toLowerCase().includes(searchTerm)))
     );
     
     updateSearchResults();
@@ -624,25 +734,25 @@ function updateSearchResults() {
     
     resultsContainer.style.display = 'block';
     
-            searchResults.forEach(node => {
-            const resultItem = document.createElement('div');
-            resultItem.className = 'search-result-item';
-            
-            const tagsText = node.tags && node.tags.length > 0 ? node.tags.join(', ') : 'No tags';
-            resultItem.innerHTML = `
-                <div class="search-result-name">${node.name}</div>
-                <div class="search-result-building">${node.building || 'No building'} • ${tagsText}</div>
-            `;
-            
-            resultItem.addEventListener('click', () => {
-                selectNode(node.id);
-                centerOnNode(node.id);
-                document.getElementById('nodeSearch').value = '';
-                resultsContainer.style.display = 'none';
-            });
-            
-            resultsContainer.appendChild(resultItem);
+    searchResults.forEach(node => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'search-result-item';
+        
+        const tagsText = node.tags && node.tags.length > 0 ? node.tags.join(', ') : 'No tags';
+        resultItem.innerHTML = `
+            <div class="node-name">${node.name}</div>
+            <div class="node-details">${node.building || 'No building'} • ${tagsText}</div>
+        `;
+        
+        resultItem.addEventListener('click', () => {
+            selectNode(node.id);
+            centerOnNode(node.id);
+            document.getElementById('nodeSearch').value = '';
+            resultsContainer.style.display = 'none';
         });
+        
+        resultsContainer.appendChild(resultItem);
+    });
 }
 
 function centerOnNode(nodeId) {
@@ -651,22 +761,20 @@ function centerOnNode(nodeId) {
         // Center the view on the selected node
         const canvas = document.getElementById('graphCanvas');
         const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
+        const centerY = node.y;
         
         // Calculate offset to center the node
         const offsetX = centerX - node.x;
-        const offsetY = centerY - node.y;
+        const offsetY = 0; // Don't change Y position
         
         // Apply offset to all nodes
         nodes.forEach(n => {
             n.x += offsetX;
-            n.y += offsetY;
         });
         
         // Apply offset to all frames
         frames.forEach(f => {
             f.x += offsetX;
-            f.y += offsetY;
         });
         
         draw();
@@ -733,6 +841,7 @@ function addNode(x,y,name,longName){
   nodes.push(n); 
   rebuildSelects(); 
   draw(); 
+  saveState();
   return n; 
 }
 
@@ -742,6 +851,7 @@ function removeNode(node){
   selected.delete(node.id); 
   rebuildSelects(); 
   draw(); 
+  saveState();
 }
 
 function addEdge(aId,bId,w){ 
@@ -753,11 +863,13 @@ function addEdge(aId,bId,w){
   const weight = (w!==undefined && w!==null && w!=='') ? Number(w) : Math.round(dist(a,b));
   edges.push({from:aId,to:bId,weight}); 
   draw(); 
+  saveState();
 }
 
 function removeEdgeBetween(aId,bId){ 
   edges = edges.filter(e=>!((e.from===aId&&e.to===bId)||(e.from===bId&&e.to===aId))); 
   draw(); 
+  saveState();
 }
 
 function updateEdgeWeight(edge, newWeight) {
@@ -765,6 +877,7 @@ function updateEdgeWeight(edge, newWeight) {
     edge.weight = Number(newWeight);
     draw();
     updateWeightControls();
+    saveState();
   }
 }
 
@@ -862,6 +975,7 @@ function createFrame() {
   frames.push(frame);
   updateFramesList();
   draw();
+  saveState();
 }
 
 function deleteFrame() {
@@ -870,6 +984,7 @@ function deleteFrame() {
     selectedFrame = null;
     updateFramesList();
     draw();
+    saveState();
   } else {
     alert('Please select a frame to delete');
   }
@@ -906,6 +1021,7 @@ function addNodeToFrame(nodeId, frameId) {
     frame.nodes.push(nodeId);
     updateFramesList();
     draw();
+    saveState();
   }
 }
 
@@ -915,6 +1031,7 @@ function removeNodeFromFrame(nodeId, frameId) {
     frame.nodes = frame.nodes.filter(id => id !== nodeId);
     updateFramesList();
     draw();
+    saveState();
   }
 }
 
@@ -945,6 +1062,7 @@ function addTagToSelected() {
   updateSelectedTagsList();
   updateTagRemoveSelect();
   draw();
+  saveState();
 }
 
 function removeTagFromSelected() {
@@ -969,6 +1087,7 @@ function removeTagFromSelected() {
   updateSelectedTagsList();
   updateTagRemoveSelect();
   draw();
+  saveState();
 }
 
 function updateSelectedTagsList() {
@@ -1018,6 +1137,31 @@ function updateTagRemoveSelect() {
 // Drawing
 function draw(){ 
   ctx.clearRect(0,0,canvas.width/DPR,canvas.height/DPR);
+  
+  // Draw grid when Ctrl is pressed
+  if (isCtrlPressed) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    
+    const width = canvas.width / DPR;
+    const height = canvas.height / DPR;
+    
+    // Vertical lines
+    for (let x = 0; x <= width; x += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    
+    // Horizontal lines
+    for (let y = 0; y <= height; y += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+  }
   
   // Draw frames first (background)
   for (const frame of frames) {
@@ -1168,6 +1312,9 @@ canvas.addEventListener('mouseup', e=>{
   if (dragging && dragging.type === 'frame') {
     selectedFrame = dragging.frame;
   }
+  if (dragging) {
+    saveState();
+  }
   dragging = null;
 });
 
@@ -1178,11 +1325,29 @@ canvas.addEventListener('mousemove', e=>{
 
   if(dragging){
     if (dragging.type === 'frame') {
-      dragging.frame.x = x - dragOffset.x;
-      dragging.frame.y = y - dragOffset.y;
+      let newX = x - dragOffset.x;
+      let newY = y - dragOffset.y;
+      
+      // Apply grid snapping if Ctrl is pressed
+      if (isCtrlPressed) {
+        newX = snapToGrid(newX);
+        newY = snapToGrid(newY);
+      }
+      
+      dragging.frame.x = newX;
+      dragging.frame.y = newY;
     } else if (dragging.type === 'node') {
-      dragging.node.x = x - dragOffset.x;
-      dragging.node.y = y - dragOffset.y;
+      let newX = x - dragOffset.x;
+      let newY = y - dragOffset.y;
+      
+      // Apply grid snapping if Ctrl is pressed
+      if (isCtrlPressed) {
+        newX = snapToGrid(newX);
+        newY = snapToGrid(newY);
+      }
+      
+      dragging.node.x = newX;
+      dragging.node.y = newY;
     }
     draw();
     return;
@@ -1201,6 +1366,7 @@ canvas.addEventListener('click', e=>{
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
   const node = getNodeAt(x,y);
+  const edge = getEdgeAt(x, y);
 
   if(node){
     if(e.shiftKey){
@@ -1214,11 +1380,16 @@ canvas.addEventListener('click', e=>{
       updateSelectedList();
       draw();
     }
+  } else if (edge) {
+    // Left-click on edge for weight editing
+    rightClickedEdge = edge;
+    updateWeightControls();
+    draw();
   } else {
-    // Clicked empty space → add new node
-    const name = prompt('Enter room name:');
-    const finalName = (name && name.trim()) ? name.trim() : ('Room ' + nodeIdCounter);
-    addNode(x, y, finalName, finalName);
+    // Left-click on empty space - clear edge selection
+    rightClickedEdge = null;
+    updateWeightControls();
+    draw();
   }
 });
 
@@ -1227,16 +1398,58 @@ canvas.addEventListener('contextmenu', e => {
   const rect = canvas.getBoundingClientRect();
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
-  const edge = getEdgeAt(x, y);
-  
-  if (edge) {
-    rightClickedEdge = edge;
-    updateWeightControls();
-    draw();
-  } else {
-    rightClickedEdge = null;
-    updateWeightControls();
-    draw();
+  const node = getNodeAt(x,y);
+
+  if(!node){
+    // Right-clicked empty space → add new node
+    const name = prompt('Enter room name:');
+    const finalName = (name && name.trim()) ? name.trim() : ('Room ' + nodeIdCounter);
+    addNode(x, y, finalName, finalName);
+  }
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey) {
+    isCtrlPressed = true;
+    document.getElementById('gridIndicator').style.display = 'block';
+    draw(); // Redraw to show grid
+  }
+  if (e.key === 'z') {
+    e.preventDefault();
+    undo();
+  } else if (e.key === 'y') {
+    e.preventDefault();
+    redo();
+  } else if (e.key === 'F2') {
+    e.preventDefault();
+    if (selected.size === 1) {
+      const nodeId = Array.from(selected)[0];
+      const node = nodes.find(n => n.id === nodeId);
+      if (node) {
+        const newName = prompt('Enter new name for node:', node.name);
+        if (newName && newName.trim() && newName.trim() !== node.name) {
+          const newLongName = prompt('Enter new long name (or leave empty to use short name):', node.longName);
+          const finalLongName = newLongName && newLongName.trim() ? newLongName.trim() : newName.trim();
+          
+          node.name = newName.trim();
+          node.longName = finalLongName;
+          
+          rebuildSelects();
+          updateSelectedList();
+          draw();
+          saveState();
+        }
+      }
+    }
+  }
+});
+
+document.addEventListener('keyup', e => {
+  if (!e.ctrlKey) {
+    isCtrlPressed = false;
+    document.getElementById('gridIndicator').style.display = 'none';
+    draw(); // Redraw to hide grid
   }
 });
 
@@ -1248,6 +1461,7 @@ connectSelectedBtn.addEventListener('click', () => {
   }
   const [a,b] = Array.from(selected);
   addEdge(a,b);
+  saveState();
 });
 
 removeSelectedBtn.addEventListener('click', () => {
@@ -1258,6 +1472,7 @@ removeSelectedBtn.addEventListener('click', () => {
   selected.clear();
   updateSelectedList();
   draw();
+  saveState();
 });
 
 connectBtn.addEventListener('click', () => {
@@ -1265,12 +1480,14 @@ connectBtn.addEventListener('click', () => {
   const toId = Number(toSelect.value);
   const w = edgeWeightInput.value;
   addEdge(fromId,toId,w);
+  saveState();
 });
 
 removeEdgeBtn.addEventListener('click', () => {
   const fromId = Number(fromSelect.value);
   const toId = Number(toSelect.value);
   removeEdgeBetween(fromId,toId);
+  saveState();
 });
 
 exportBtn.addEventListener('click', () => {
@@ -1299,6 +1516,7 @@ importBtn.addEventListener('click', () => {
       updateTagRemoveSelect();
       draw();
       infoBox.textContent = 'Data imported successfully.';
+      saveState();
     } else {
       alert('Invalid JSON format');
     }
@@ -1381,6 +1599,7 @@ function importRoomsFromArray(arr){
   updateSelectedTagsList();
   updateTagRemoveSelect();
   draw();
+  saveState();
 }
 
 loadRoomsBtn.addEventListener('click', () => {
@@ -1403,6 +1622,7 @@ resetBtn.addEventListener('click', () => {
     updateTagRemoveSelect();
     draw();
     infoBox.textContent = 'Reset done.';
+    saveState();
   }
 });
 
@@ -1561,6 +1781,7 @@ document.addEventListener('click', (e) => {
 updateWeightControls();
 updateSelectedTagsList();
 updateTagRemoveSelect();
+saveState(); // Save initial state
 </script>
 </body>
 </html> 
