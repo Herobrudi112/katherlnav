@@ -1662,6 +1662,7 @@
         // Enhanced touch handling for mobile
         let touchStartX = 0;
         let touchStartY = 0;
+        let isPanning = false;
         let touchStartTime = 0;
         
         canvas.addEventListener('touchstart', (e) => {
@@ -1670,35 +1671,7 @@
             touchStartX = touch.clientX;
             touchStartY = touch.clientY;
             touchStartTime = Date.now();
-            
-            const rect = canvas.getBoundingClientRect();
-            const x = (touch.clientX - rect.left);
-            const y = (touch.clientY - rect.top);
-            
-            // Transform coordinates for view transformation
-            const transformedX = (x - viewX) / viewScale;
-            const transformedY = (y - viewY) / viewScale;
-            
-            const node = getNodeAt(transformedX, transformedY);
-            if (node) {
-                // Check if the touched node is already selected
-                if (selectedNode && selectedNode.id === node.id) {
-                    // Deselect the node
-                    selectedNode = null;
-                    updateNodeInfo();
-                    hideNodeMenu();
-                } else {
-                    // Select the node
-                    selectedNode = node;
-                    updateNodeInfo();
-                    // Show node menu at touch position
-                    showNodeMenu(node, touch.clientX, touch.clientY);
-                }
-                draw();
-            } else {
-                // Hide menu when touching empty space
-                hideNodeMenu();
-            }
+            isPanning = false;
         }, { passive: false });
         
         canvas.addEventListener('touchmove', (e) => {
@@ -1708,11 +1681,16 @@
             const x = (touch.clientX - rect.left);
             const y = (touch.clientY - rect.top);
             
+            // Check if this is a pan gesture (movement > threshold)
+            const deltaX = Math.abs(x - touchStartX);
+            const deltaY = Math.abs(y - touchStartY);
+            if (deltaX > 10 || deltaY > 10) {
+                isPanning = true;
+            }
+            
             // Pan the view
-            const deltaX = x - touchStartX;
-            const deltaY = y - touchStartY;
-            viewX += deltaX;
-            viewY += deltaY;
+            viewX += x - touchStartX;
+            viewY += y - touchStartY;
             touchStartX = x;
             touchStartY = y;
             
@@ -1724,8 +1702,8 @@
             const touchEndTime = Date.now();
             const touchDuration = touchEndTime - touchStartTime;
             
-            // If it was a quick tap (less than 200ms), treat as click
-            if (touchDuration < 200) {
+            // Only process as a tap if it wasn't a pan and was quick
+            if (!isPanning && touchDuration < 300) {
                 const rect = canvas.getBoundingClientRect();
                 const x = (e.changedTouches[0].clientX - rect.left);
                 const y = (e.changedTouches[0].clientY - rect.top);
@@ -1749,6 +1727,9 @@
                         showNodeMenu(node, e.changedTouches[0].clientX, e.changedTouches[0].clientY);
                     }
                     draw();
+                } else {
+                    // Hide menu when touching empty space
+                    hideNodeMenu();
                 }
             }
         }, { passive: false });
@@ -1859,8 +1840,10 @@
                 highlightedPath.nodes = pathNodes;
                 highlightedPath.edges = pathEdges;
                 
-                // Show success message
-                showMobilePathResult(pathNodes, pathEdges, distMap.get(endNode.id));
+                // Show success message only on desktop (not on mobile)
+                if (window.innerWidth > 768) {
+                    showMobilePathResult(pathNodes, pathEdges, distMap.get(endNode.id));
+                }
                 
                 draw();
             } else {
