@@ -334,7 +334,7 @@
           <div id="searchResults" class="search-results"></div>
       </div>
       
-      <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select • Right-click edge: edit weight • Ctrl+Z: undo • F2: rename • Ctrl+drag: grid snap • Del: delete selected nodes/frames/edges</div>
+      <div class="hint">Left-click canvas: add node • Click node: select • Drag node: move • Shift+click: multi-select • Right-click edge: edit weight • Middle-drag: pan canvas • Scroll: zoom • Ctrl+Z: undo • F2: rename • Ctrl+drag: grid snap • Del: delete selected nodes/frames/edges</div>
     </div>
 
     <div class="panel">
@@ -514,16 +514,24 @@ requestAnimationFrame(resize);
 let nodes = [];
 let edges = [];
 let frames = [];
-let frameIdCounter = 1;
-let nodeIdCounter = 1;
 let selected = new Set();
-let dragging = null;
-let dragOffset = {x:0,y:0};
-let hovered = null;
-let highlightedPath = {nodes:[], edges:[]};
-let rightClickedEdge = null;
 let selectedFrame = null;
-let frameMode = 'select'; // 'select' or 'create'
+let rightClickedEdge = null;
+let highlightedPath = {nodes: [], edges: []};
+let hovered = null;
+let dragging = null;
+let dragOffset = {x: 0, y: 0};
+
+// View transformation
+let viewX = 0;
+let viewY = 0;
+let viewScale = 1;
+let isPanning = false;
+let lastMousePos = {x: 0, y: 0};
+
+// Counters
+let nodeIdCounter = 1;
+let frameIdCounter = 1;
 
 // Undo/Redo system
 let undoStack = [];
@@ -761,21 +769,11 @@ function centerOnNode(nodeId) {
         // Center the view on the selected node
         const canvas = document.getElementById('graphCanvas');
         const centerX = canvas.width / 2;
-        const centerY = node.y;
+        const centerY = canvas.height / 2;
         
-        // Calculate offset to center the node
-        const offsetX = centerX - node.x;
-        const offsetY = 0; // Don't change Y position
-        
-        // Apply offset to all nodes
-        nodes.forEach(n => {
-            n.x += offsetX;
-        });
-        
-        // Apply offset to all frames
-        frames.forEach(f => {
-            f.x += offsetX;
-        });
+        // Calculate the view position to center the node
+        viewX = centerX - node.x * viewScale;
+        viewY = centerY - node.y * viewScale;
         
         draw();
     }
@@ -1138,6 +1136,11 @@ function updateTagRemoveSelect() {
 function draw(){ 
   ctx.clearRect(0,0,canvas.width/DPR,canvas.height/DPR);
   
+  // Apply view transformation
+  ctx.save();
+  ctx.translate(viewX, viewY);
+  ctx.scale(viewScale, viewScale);
+  
   // Draw grid when Ctrl is pressed
   if (isCtrlPressed) {
     ctx.strokeStyle = 'rgba(255,255,255,0.1)';
@@ -1268,6 +1271,7 @@ function draw(){
     ctx.textBaseline = 'middle';
     ctx.fillText(label, n.x, n.y);
   }
+  ctx.restore(); // Restore context after drawing
 }
 
 // Interaction
@@ -1276,21 +1280,34 @@ canvas.addEventListener('mousedown', e=>{
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
   
+  // Transform coordinates for view transformation
+  const transformedX = (x - viewX) / viewScale;
+  const transformedY = (y - viewY) / viewScale;
+  
+  // Middle mouse button for panning
+  if (e.button === 1) { // Middle mouse button
+    e.preventDefault();
+    isPanning = true;
+    lastMousePos = {x, y};
+    canvas.style.cursor = 'grabbing';
+    return;
+  }
+  
   // Check if clicking on a node first (nodes have priority over frames)
-  const node = getNodeAt(x,y);
+  const node = getNodeAt(transformedX, transformedY);
   if(node){
     dragging = { type: 'node', node: node };
-    dragOffset.x = x - node.x;
-    dragOffset.y = y - node.y;
+    dragOffset.x = transformedX - node.x;
+    dragOffset.y = transformedY - node.y;
     return;
   }
   
   // If no node was clicked, check for frames
-  const clickedFrame = getFrameAt(x, y);
+  const clickedFrame = getFrameAt(transformedX, transformedY);
   if (clickedFrame) {
     if (e.shiftKey) {
       // Shift+click to add/remove nodes from frame
-      const node = getNodeAt(x, y);
+      const node = getNodeAt(transformedX, transformedY);
       if (node) {
         if (clickedFrame.nodes.includes(node.id)) {
           removeNodeFromFrame(node.id, clickedFrame.id);
@@ -1302,8 +1319,8 @@ canvas.addEventListener('mousedown', e=>{
       // Regular click to select frame and start dragging
       selectedFrame = clickedFrame;
       dragging = { type: 'frame', frame: clickedFrame };
-      dragOffset.x = x - clickedFrame.x;
-      dragOffset.y = y - clickedFrame.y;
+      dragOffset.x = transformedX - clickedFrame.x;
+      dragOffset.y = transformedY - clickedFrame.y;
       draw();
       return;
     }
@@ -1311,6 +1328,12 @@ canvas.addEventListener('mousedown', e=>{
 });
 
 canvas.addEventListener('mouseup', e=>{
+  if (isPanning) {
+    isPanning = false;
+    canvas.style.cursor = 'default';
+    return;
+  }
+  
   if (dragging && dragging.type === 'frame') {
     selectedFrame = dragging.frame;
   }
@@ -1325,10 +1348,25 @@ canvas.addEventListener('mousemove', e=>{
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
 
+  // Handle panning
+  if (isPanning) {
+    const deltaX = x - lastMousePos.x;
+    const deltaY = y - lastMousePos.y;
+    viewX += deltaX;
+    viewY += deltaY;
+    lastMousePos = {x, y};
+    draw();
+    return;
+  }
+
+  // Transform coordinates for view transformation
+  const transformedX = (x - viewX) / viewScale;
+  const transformedY = (y - viewY) / viewScale;
+
   if(dragging){
     if (dragging.type === 'frame') {
-      let newX = x - dragOffset.x;
-      let newY = y - dragOffset.y;
+      let newX = transformedX - dragOffset.x;
+      let newY = transformedY - dragOffset.y;
       
       // Apply grid snapping if Ctrl is pressed
       if (isCtrlPressed) {
@@ -1339,8 +1377,8 @@ canvas.addEventListener('mousemove', e=>{
       dragging.frame.x = newX;
       dragging.frame.y = newY;
     } else if (dragging.type === 'node') {
-      let newX = x - dragOffset.x;
-      let newY = y - dragOffset.y;
+      let newX = transformedX - dragOffset.x;
+      let newY = transformedY - dragOffset.y;
       
       // Apply grid snapping if Ctrl is pressed
       if (isCtrlPressed) {
@@ -1356,7 +1394,7 @@ canvas.addEventListener('mousemove', e=>{
   }
 
   // hover detection
-  const node = getNodeAt(x,y);
+  const node = getNodeAt(transformedX, transformedY);
   if(node !== hovered){
     hovered = node;
     draw();
@@ -1367,8 +1405,13 @@ canvas.addEventListener('click', e=>{
   const rect = canvas.getBoundingClientRect();
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
-  const node = getNodeAt(x,y);
-  const edge = getEdgeAt(x, y);
+  
+  // Transform coordinates for view transformation
+  const transformedX = (x - viewX) / viewScale;
+  const transformedY = (y - viewY) / viewScale;
+  
+  const node = getNodeAt(transformedX, transformedY);
+  const edge = getEdgeAt(transformedX, transformedY);
 
   if(node){
     if(e.shiftKey){
@@ -1400,14 +1443,49 @@ canvas.addEventListener('contextmenu', e => {
   const rect = canvas.getBoundingClientRect();
   const x = (e.clientX - rect.left);
   const y = (e.clientY - rect.top);
-  const node = getNodeAt(x,y);
+  
+  // Transform coordinates for view transformation
+  const transformedX = (x - viewX) / viewScale;
+  const transformedY = (y - viewY) / viewScale;
+  
+  const node = getNodeAt(transformedX, transformedY);
 
   if(!node){
     // Right-clicked empty space → add new node
     const name = prompt('Enter room name:');
     const finalName = (name && name.trim()) ? name.trim() : ('Room ' + nodeIdCounter);
-    addNode(x, y, finalName, finalName);
+    addNode(transformedX, transformedY, finalName, finalName);
   }
+});
+
+// Zoom functionality
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+  
+  // Calculate zoom factor
+  const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+  const newScale = Math.max(0.1, Math.min(5, viewScale * zoomFactor));
+  
+  // Calculate the point under the mouse before zoom
+  const pointXBeforeZoom = (mouseX - viewX) / viewScale;
+  const pointYBeforeZoom = (mouseY - viewY) / viewScale;
+  
+  // Update scale
+  viewScale = newScale;
+  
+  // Calculate the point under the mouse after zoom
+  const pointXAfterZoom = (mouseX - viewX) / viewScale;
+  const pointYAfterZoom = (mouseY - viewY) / viewScale;
+  
+  // Adjust view position to keep the point under the mouse
+  viewX += (pointXAfterZoom - pointXBeforeZoom) * viewScale;
+  viewY += (pointYAfterZoom - pointYBeforeZoom) * viewScale;
+  
+  draw();
 });
 
 // Keyboard shortcuts
