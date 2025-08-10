@@ -11,8 +11,8 @@
     },
     {
       "id": 2,
-      "x": 719,
-      "y": 839,
+      "x": 716,
+      "y": 840,
       "name": "Ph2",
       "longName": "Physik-Saal 2 (R133)",
       "building": "Hauptgebäude",
@@ -569,7 +569,7 @@
     },
     {
       "id": 67,
-      "x": 994,
+      "x": 993,
       "y": 274,
       "name": "BAND",
       "longName": "Bandraum",
@@ -749,8 +749,8 @@
     },
     {
       "id": 90,
-      "x": 1232,
-      "y": 617,
+      "x": 1222,
+      "y": 620,
       "name": "R125a",
       "longName": "Elternsprechzimmer",
       "building": null,
@@ -812,8 +812,8 @@
     },
     {
       "id": 100,
-      "x": 760,
-      "y": 795,
+      "x": 756,
+      "y": 796,
       "name": "Ph-Vorb1",
       "longName": "Physik Vorbereitung 1 (R134)",
       "building": null,
@@ -1020,7 +1020,7 @@
     {
       "id": 125,
       "x": 767,
-      "y": 731,
+      "y": 732,
       "name": "OGS-Räume",
       "longName": "OGS (ehemalige Hausmeisterwohnung)",
       "building": null,
@@ -1118,8 +1118,8 @@
     },
     {
       "id": 138,
-      "x": 715,
-      "y": 466,
+      "x": 714,
+      "y": 465,
       "name": "Werk1",
       "longName": "Werk1",
       "building": null,
@@ -1154,30 +1154,36 @@
     },
     {
       "id": 142,
-      "x": 934,
-      "y": 690,
+      "x": 931,
+      "y": 693,
       "name": "UGHW1",
       "longName": "UGHW1",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 143,
-      "x": 750,
-      "y": 615,
+      "x": 752,
+      "y": 623,
       "name": "UGHW2",
       "longName": "UGHW2",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 144,
-      "x": 750,
-      "y": 462,
+      "x": 745,
+      "y": 471,
       "name": "UGHW3",
       "longName": "UGHW3",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 145,
@@ -1186,52 +1192,64 @@
       "name": "2GHW1",
       "longName": "2GHW1",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 146,
-      "x": 1267,
-      "y": 537,
+      "x": 1273,
+      "y": 546,
       "name": "2GHW2",
       "longName": "2GHW2",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 147,
-      "x": 1282,
-      "y": 455,
+      "x": 1285,
+      "y": 463,
       "name": "2GHW3",
       "longName": "2GHW3",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 148,
-      "x": 1414,
-      "y": 817,
+      "x": 1402,
+      "y": 809,
       "name": "3GHW1",
       "longName": "3GHW1",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 149,
-      "x": 1257,
-      "y": 750,
+      "x": 1264,
+      "y": 752,
       "name": "3GHW2",
       "longName": "3GHW2",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 150,
-      "x": 981,
+      "x": 979.7004854083737,
       "y": 1043,
       "name": "1GHW1",
       "longName": "1GHW1",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 151,
@@ -1240,7 +1258,9 @@
       "name": "1GHW2",
       "longName": "1GHW2",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 152,
@@ -1249,7 +1269,9 @@
       "name": "1GHW2",
       "longName": "1GHW2",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 153,
@@ -1258,7 +1280,9 @@
       "name": "4MTH1",
       "longName": "4MTH1",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 154,
@@ -1267,7 +1291,9 @@
       "name": "4MTH2",
       "longName": "4MTH2",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 155,
@@ -1276,7 +1302,9 @@
       "name": "3MTH1",
       "longName": "3MTH1",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 156,
@@ -1285,7 +1313,9 @@
       "name": "3MTH2",
       "longName": "3MTH2",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 157,
@@ -1294,7 +1324,9 @@
       "name": "2MTH1",
       "longName": "2MTH1",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 158,
@@ -1303,25 +1335,31 @@
       "name": "2MTH2",
       "longName": "2MTH2",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 159,
       "x": 787,
-      "y": 700,
+      "y": 696,
       "name": "UMTH1",
       "longName": "UMTH1",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 160,
-      "x": 754,
-      "y": 673,
+      "x": 750.4974508090544,
+      "y": 670.8984704854327,
       "name": "UMTH2",
       "longName": "UMTH2",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 161,
@@ -1330,7 +1368,9 @@
       "name": "1MTH2",
       "longName": "1MTH2",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 163,
@@ -1339,7 +1379,9 @@
       "name": "UCTH",
       "longName": "UCTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 164,
@@ -1348,7 +1390,9 @@
       "name": "1CTH",
       "longName": "1CTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 165,
@@ -1357,7 +1401,9 @@
       "name": "2CTH",
       "longName": "2CTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 166,
@@ -1366,7 +1412,9 @@
       "name": "-1MTH1",
       "longName": "-1MTH1",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 167,
@@ -1375,25 +1423,31 @@
       "name": "-1BTH",
       "longName": "-1BTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 168,
       "x": 1142,
-      "y": 717,
+      "y": 716,
       "name": "UBTH",
       "longName": "UBTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 169,
-      "x": 1220,
-      "y": 1039,
+      "x": 1200,
+      "y": 1036,
       "name": "1BTH",
       "longName": "1BTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 170,
@@ -1402,16 +1456,20 @@
       "name": "4BTH",
       "longName": "4BTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 171,
-      "x": 1595,
-      "y": 834,
+      "x": 1593,
+      "y": 831,
       "name": "3BTH",
       "longName": "3BTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 172,
@@ -1420,7 +1478,9 @@
       "name": "2BTH",
       "longName": "2BTH",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 174,
@@ -1429,7 +1489,9 @@
       "name": "1MTH1",
       "longName": "1MTH1",
       "building": null,
-      "tags": []
+      "tags": [
+        "stairs"
+      ]
     },
     {
       "id": 175,
@@ -1438,7 +1500,9 @@
       "name": "4GHW1",
       "longName": "4GHW1",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 176,
@@ -1447,7 +1511,9 @@
       "name": "4GHW2",
       "longName": "4GHW2",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     },
     {
       "id": 177,
@@ -1456,7 +1522,9 @@
       "name": "4GHW3",
       "longName": "4GHW3",
       "building": null,
-      "tags": []
+      "tags": [
+        "hidden"
+      ]
     }
   ],
   "edges": [
@@ -1924,7 +1992,683 @@
       "from": 123,
       "to": 70,
       "weight": 78
+    },
+    {
+      "from": 171,
+      "to": 56,
+      "weight": 57
+    },
+    {
+      "from": 171,
+      "to": 55,
+      "weight": 72
+    },
+    {
+      "from": 171,
+      "to": 64,
+      "weight": 43
+    },
+    {
+      "from": 171,
+      "to": 53,
+      "weight": 102
+    },
+    {
+      "from": 171,
+      "to": 63,
+      "weight": 81
+    },
+    {
+      "from": 171,
+      "to": 50,
+      "weight": 143
+    },
+    {
+      "from": 171,
+      "to": 51,
+      "weight": 125
+    },
+    {
+      "from": 171,
+      "to": 77,
+      "weight": 178
+    },
+    {
+      "from": 171,
+      "to": 5,
+      "weight": 182
+    },
+    {
+      "from": 171,
+      "to": 148,
+      "weight": 191
+    },
+    {
+      "from": 148,
+      "to": 77,
+      "weight": 39
+    },
+    {
+      "from": 148,
+      "to": 5,
+      "weight": 39
+    },
+    {
+      "from": 148,
+      "to": 50,
+      "weight": 67
+    },
+    {
+      "from": 148,
+      "to": 51,
+      "weight": 77
+    },
+    {
+      "from": 148,
+      "to": 53,
+      "weight": 107
+    },
+    {
+      "from": 148,
+      "to": 63,
+      "weight": 118
+    },
+    {
+      "from": 148,
+      "to": 55,
+      "weight": 148
+    },
+    {
+      "from": 148,
+      "to": 64,
+      "weight": 159
+    },
+    {
+      "from": 148,
+      "to": 56,
+      "weight": 189
+    },
+    {
+      "from": 148,
+      "to": 128,
+      "weight": 47
+    },
+    {
+      "from": 148,
+      "to": 88,
+      "weight": 62
+    },
+    {
+      "from": 148,
+      "to": 127,
+      "weight": 81
+    },
+    {
+      "from": 148,
+      "to": 155,
+      "weight": 93
+    },
+    {
+      "from": 148,
+      "to": 49,
+      "weight": 125
+    },
+    {
+      "from": 148,
+      "to": 149,
+      "weight": 157
+    },
+    {
+      "from": 149,
+      "to": 156,
+      "weight": 64
+    },
+    {
+      "from": 155,
+      "to": 128,
+      "weight": 97
+    },
+    {
+      "from": 155,
+      "to": 127,
+      "weight": 89
+    },
+    {
+      "from": 156,
+      "to": 49,
+      "weight": 81
+    },
+    {
+      "from": 149,
+      "to": 58,
+      "weight": 43
+    },
+    {
+      "from": 156,
+      "to": 58,
+      "weight": 48
+    },
+    {
+      "from": 149,
+      "to": 49,
+      "weight": 43
+    },
+    {
+      "from": 149,
+      "to": 127,
+      "weight": 86
+    },
+    {
+      "from": 149,
+      "to": 128,
+      "weight": 127
+    },
+    {
+      "from": 149,
+      "to": 60,
+      "weight": 33
+    },
+    {
+      "from": 149,
+      "to": 59,
+      "weight": 62
+    },
+    {
+      "from": 172,
+      "to": 48,
+      "weight": 55
+    },
+    {
+      "from": 172,
+      "to": 47,
+      "weight": 65
+    },
+    {
+      "from": 172,
+      "to": 72,
+      "weight": 35
+    },
+    {
+      "from": 172,
+      "to": 54,
+      "weight": 78
+    },
+    {
+      "from": 172,
+      "to": 46,
+      "weight": 100
+    },
+    {
+      "from": 172,
+      "to": 87,
+      "weight": 139
+    },
+    {
+      "from": 172,
+      "to": 139,
+      "weight": 125
+    },
+    {
+      "from": 172,
+      "to": 145,
+      "weight": 149
+    },
+    {
+      "from": 145,
+      "to": 48,
+      "weight": 150
+    },
+    {
+      "from": 145,
+      "to": 72,
+      "weight": 120
+    },
+    {
+      "from": 145,
+      "to": 47,
+      "weight": 116
+    },
+    {
+      "from": 145,
+      "to": 54,
+      "weight": 79
+    },
+    {
+      "from": 145,
+      "to": 46,
+      "weight": 71
+    },
+    {
+      "from": 145,
+      "to": 139,
+      "weight": 42
+    },
+    {
+      "from": 145,
+      "to": 87,
+      "weight": 39
+    },
+    {
+      "from": 145,
+      "to": 20,
+      "weight": 36
+    },
+    {
+      "from": 145,
+      "to": 45,
+      "weight": 49
+    },
+    {
+      "from": 145,
+      "to": 17,
+      "weight": 76
+    },
+    {
+      "from": 145,
+      "to": 44,
+      "weight": 84
+    },
+    {
+      "from": 145,
+      "to": 107,
+      "weight": 130
+    },
+    {
+      "from": 145,
+      "to": 157,
+      "weight": 117
+    },
+    {
+      "from": 145,
+      "to": 146,
+      "weight": 166
+    },
+    {
+      "from": 157,
+      "to": 44,
+      "weight": 92
+    },
+    {
+      "from": 157,
+      "to": 45,
+      "weight": 117
+    },
+    {
+      "from": 157,
+      "to": 17,
+      "weight": 48
+    },
+    {
+      "from": 158,
+      "to": 146,
+      "weight": 65
+    },
+    {
+      "from": 146,
+      "to": 107,
+      "weight": 43
+    },
+    {
+      "from": 146,
+      "to": 73,
+      "weight": 37
+    },
+    {
+      "from": 146,
+      "to": 62,
+      "weight": 74
+    },
+    {
+      "from": 146,
+      "to": 147,
+      "weight": 91
+    },
+    {
+      "from": 147,
+      "to": 165,
+      "weight": 20
+    },
+    {
+      "from": 147,
+      "to": 15,
+      "weight": 61
+    },
+    {
+      "from": 147,
+      "to": 16,
+      "weight": 42
+    },
+    {
+      "from": 168,
+      "to": 92,
+      "weight": 49
+    },
+    {
+      "from": 168,
+      "to": 38,
+      "weight": 72
+    },
+    {
+      "from": 168,
+      "to": 135,
+      "weight": 79
+    },
+    {
+      "from": 168,
+      "to": 37,
+      "weight": 110
+    },
+    {
+      "from": 168,
+      "to": 36,
+      "weight": 156
+    },
+    {
+      "from": 168,
+      "to": 142,
+      "weight": 210
+    },
+    {
+      "from": 142,
+      "to": 36,
+      "weight": 66
+    },
+    {
+      "from": 142,
+      "to": 37,
+      "weight": 114
+    },
+    {
+      "from": 142,
+      "to": 38,
+      "weight": 155
+    },
+    {
+      "from": 142,
+      "to": 135,
+      "weight": 131
+    },
+    {
+      "from": 142,
+      "to": 92,
+      "weight": 205
+    },
+    {
+      "from": 142,
+      "to": 35,
+      "weight": 51
+    },
+    {
+      "from": 142,
+      "to": 34,
+      "weight": 107
+    },
+    {
+      "from": 142,
+      "to": 159,
+      "weight": 147
+    },
+    {
+      "from": 142,
+      "to": 143,
+      "weight": 197
+    },
+    {
+      "from": 143,
+      "to": 160,
+      "weight": 48
+    },
+    {
+      "from": 143,
+      "to": 34,
+      "weight": 97
+    },
+    {
+      "from": 143,
+      "to": 35,
+      "weight": 153
+    },
+    {
+      "from": 143,
+      "to": 141,
+      "weight": 42
+    },
+    {
+      "from": 143,
+      "to": 86,
+      "weight": 43
+    },
+    {
+      "from": 143,
+      "to": 110,
+      "weight": 72
+    },
+    {
+      "from": 143,
+      "to": 140,
+      "weight": 104
+    },
+    {
+      "from": 143,
+      "to": 4,
+      "weight": 123
+    },
+    {
+      "from": 143,
+      "to": 22,
+      "weight": 131
+    },
+    {
+      "from": 143,
+      "to": 138,
+      "weight": 163
+    },
+    {
+      "from": 143,
+      "to": 144,
+      "weight": 161
+    },
+    {
+      "from": 144,
+      "to": 86,
+      "weight": 129
+    },
+    {
+      "from": 144,
+      "to": 4,
+      "weight": 47
+    },
+    {
+      "from": 144,
+      "to": 141,
+      "weight": 144
+    },
+    {
+      "from": 144,
+      "to": 110,
+      "weight": 106
+    },
+    {
+      "from": 144,
+      "to": 140,
+      "weight": 75
+    },
+    {
+      "from": 144,
+      "to": 22,
+      "weight": 42
+    },
+    {
+      "from": 144,
+      "to": 138,
+      "weight": 30
+    },
+    {
+      "from": 144,
+      "to": 163,
+      "weight": 35
+    },
+    {
+      "from": 163,
+      "to": 119,
+      "weight": 39
+    },
+    {
+      "from": 144,
+      "to": 119,
+      "weight": 74
+    },
+    {
+      "from": 159,
+      "to": 125,
+      "weight": 41
+    },
+    {
+      "from": 166,
+      "to": 24,
+      "weight": 64
+    },
+    {
+      "from": 166,
+      "to": 68,
+      "weight": 98
+    },
+    {
+      "from": 24,
+      "to": 23,
+      "weight": 141
+    },
+    {
+      "from": 24,
+      "to": 68,
+      "weight": 60
+    },
+    {
+      "from": 68,
+      "to": 67,
+      "weight": 72
+    },
+    {
+      "from": 67,
+      "to": 167,
+      "weight": 95
+    },
+    {
+      "from": 23,
+      "to": 67,
+      "weight": 65
+    },
+    {
+      "from": 23,
+      "to": 167,
+      "weight": 63
+    },
+    {
+      "from": 138,
+      "to": 22,
+      "weight": 33
+    },
+    {
+      "from": 77,
+      "to": 128,
+      "weight": 41
+    },
+    {
+      "from": 158,
+      "to": 90,
+      "weight": 40
+    },
+    {
+      "from": 158,
+      "to": 82,
+      "weight": 56
+    },
+    {
+      "from": 158,
+      "to": 91,
+      "weight": 60
+    },
+    {
+      "from": 91,
+      "to": 157,
+      "weight": 35
+    },
+    {
+      "from": 157,
+      "to": 82,
+      "weight": 75
+    },
+    {
+      "from": 157,
+      "to": 90,
+      "weight": 73
     }
   ],
-  "frames": []
+  "frames": [
+    {
+      "id": 1,
+      "name": "Hauptgebäude -1",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 803,
+      "y": 251,
+      "width": 299,
+      "height": 109
+    },
+    {
+      "id": 2,
+      "name": "Hauptgebäude EG",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 686,
+      "y": 389,
+      "width": 487,
+      "height": 367
+    },
+    {
+      "id": 4,
+      "name": "Hauptgebäude OG1",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 688,
+      "y": 766,
+      "width": 521,
+      "height": 318
+    },
+    {
+      "id": 5,
+      "name": "Hauptgebäude OG2",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 1207,
+      "y": 384,
+      "width": 384,
+      "height": 284
+    },
+    {
+      "id": 6,
+      "name": "Hauptgebäude OG3",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 1209,
+      "y": 673,
+      "width": 406,
+      "height": 207
+    },
+    {
+      "id": 7,
+      "name": "Hauptgebäude OG4",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 1249,
+      "y": 885,
+      "width": 357,
+      "height": 162,
+      "backgroundImage": {
+        "src": "https://img-getpocket.cdn.mozilla.net/296x148/smart/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2F2d937db2-d717-40f0-8e44-6e464a438128.jpeg",
+        "width": 296,
+        "height": 148
+      }
+    }
+  ]
 }

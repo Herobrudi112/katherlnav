@@ -436,9 +436,9 @@
             </div>
           </div>
           <div>
-            <label>Background Image (optional)</label>
+            <label>Background Image URL (optional)</label>
             <div class="row">
-              <input type="file" id="frameBackgroundInput" accept="image/*" style="flex: 1;" />
+              <input type="url" id="frameBackgroundInput" placeholder="https://example.com/image.jpg" style="flex: 1;" />
               <button id="clearBackgroundBtn" class="small">Clear</button>
             </div>
           </div>
@@ -514,7 +514,10 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 window.addEventListener('orientationchange', resize);
-window.addEventListener('load', resize);
+window.addEventListener('load', () => {
+    resize();
+    loadStairsImage();
+});
 requestAnimationFrame(resize);
 
 // State
@@ -542,6 +545,9 @@ let frameIdCounter = 1;
 
 // Image cache for background images
 let imageCache = new Map();
+
+// Stairs image for nodes with "stairs" tag
+let stairsImage = null;
 
 // Undo/Redo system
 let undoStack = [];
@@ -601,12 +607,25 @@ createFrameBtn.addEventListener('click', createFrame);
 deleteFrameBtn.addEventListener('click', deleteFrame);
 
 // Background image event listeners
-frameBackgroundInput.addEventListener('change', handleBackgroundImageUpload);
+frameBackgroundInput.addEventListener('input', handleBackgroundImageUrl);
 clearBackgroundBtn.addEventListener('click', clearBackgroundImage);
 
 // Tag editor event listeners
 addTagBtn.addEventListener('click', addTagToSelected);
 removeTagBtn.addEventListener('click', removeTagFromSelected);
+
+// Load stairs image
+function loadStairsImage() {
+    stairsImage = new Image();
+    stairsImage.onload = function() {
+        console.log('Stairs image loaded successfully');
+        draw(); // Redraw when image loads
+    };
+    stairsImage.onerror = function() {
+        console.error('Failed to load stairs image');
+    };
+    stairsImage.src = 'Stairs.png';
+}
 
 // Helpers
 function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
@@ -678,6 +697,9 @@ function undo() {
         }
     });
     
+    // Reload stairs image
+    loadStairsImage();
+    
     // Clear selections and update UI
     selected.clear();
     selectedFrame = null;
@@ -729,6 +751,9 @@ function redo() {
             img.src = frame.backgroundImage.src;
         }
     });
+    
+    // Reload stairs image
+    loadStairsImage();
     
     // Clear selections and update UI
     selected.clear();
@@ -1050,6 +1075,7 @@ function updateFramesList() {
     item.addEventListener('click', () => {
       const frameId = Number(item.dataset.frameId);
       selectedFrame = frames.find(f => f.id === frameId);
+      updateFrameControls();
       draw();
     });
   });
@@ -1077,35 +1103,58 @@ function removeNodeFromFrame(nodeId, frameId) {
   }
 }
 
-function handleBackgroundImageUpload(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+function handleBackgroundImageUrl(e) {
+  const url = e.target.value.trim();
+  if (!url) return;
   
   if (!selectedFrame) {
     alert('Please select a frame first');
     return;
   }
   
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    const img = new Image();
-    img.onload = function() {
-      selectedFrame.backgroundImage = {
-        src: event.target.result,
-        width: img.width,
-        height: img.height
-      };
-      
-      // Cache the image for better performance
-      imageCache.set(selectedFrame.id, img);
-      
-      draw();
-      saveState();
-      e.target.value = ''; // Clear the input
+  // Validate URL format
+  try {
+    new URL(url);
+  } catch {
+    alert('Please enter a valid URL');
+    return;
+  }
+  
+  const img = new Image();
+  img.crossOrigin = 'anonymous'; // Handle CORS if possible
+  img.onload = function() {
+    selectedFrame.backgroundImage = {
+      src: url,
+      width: img.width,
+      height: img.height
     };
-    img.src = event.target.result;
+    
+    // Cache the image for better performance
+    imageCache.set(selectedFrame.id, img);
+    
+    draw();
+    saveState();
   };
-  reader.readAsDataURL(file);
+  img.onerror = function() {
+    alert('Failed to load image from URL. Please check the URL and try again.');
+  };
+  img.src = url;
+}
+
+function updateFrameControls() {
+  if (selectedFrame) {
+    frameNameInput.value = selectedFrame.name;
+    frameColorInput.value = selectedFrame.color;
+    frameWidthInput.value = selectedFrame.width;
+    frameHeightInput.value = selectedFrame.height;
+    frameBackgroundInput.value = selectedFrame.backgroundImage ? selectedFrame.backgroundImage.src : '';
+  } else {
+    frameNameInput.value = '';
+    frameColorInput.value = '#ffffff';
+    frameWidthInput.value = '200';
+    frameHeightInput.value = '150';
+    frameBackgroundInput.value = '';
+  }
 }
 
 function clearBackgroundImage() {
@@ -1116,6 +1165,7 @@ function clearBackgroundImage() {
   
   selectedFrame.backgroundImage = null;
   imageCache.delete(selectedFrame.id);
+  frameBackgroundInput.value = '';
   draw();
   saveState();
 }
@@ -1281,9 +1331,13 @@ function draw(){
         
         ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
       } else {
-        // Fallback to original image loading if not in cache
+        // Load image from URL if not in cache
         const img = new Image();
+        img.crossOrigin = 'anonymous';
         img.onload = function() {
+          // Cache the loaded image
+          imageCache.set(frame.id, img);
+          
           // Calculate aspect ratio to fit image within frame
           const frameAspect = frame.width / frame.height;
           const imgAspect = img.width / img.height;
@@ -1305,6 +1359,9 @@ function draw(){
           }
           
           ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+        };
+        img.onerror = function() {
+          console.warn('Failed to load background image:', frame.backgroundImage.src);
         };
         img.src = frame.backgroundImage.src;
       }
@@ -1427,11 +1484,18 @@ function draw(){
       }
     }
     
-    // Draw label
-    ctx.fillStyle = isSel ? '#000000' : (isHidden ? '#ff6b6b' : '#ffffff');
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(label, n.x, n.y);
+    // Draw label or stairs image
+    if (n.tags && n.tags.includes('stairs') && stairsImage) {
+        // Draw stairs image instead of text
+        const imageSize = 24; // Size of the stairs icon
+        ctx.drawImage(stairsImage, n.x - imageSize/2, n.y - imageSize/2, imageSize, imageSize);
+    } else {
+        // Draw text label
+        ctx.fillStyle = isSel ? '#000000' : (isHidden ? '#ff6b6b' : '#ffffff');
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, n.x, n.y);
+    }
     
     // Reset line dash
     ctx.setLineDash([]);
@@ -1483,6 +1547,7 @@ canvas.addEventListener('mousedown', e=>{
     } else {
       // Regular click to select frame and start dragging
       selectedFrame = clickedFrame;
+      updateFrameControls();
       dragging = { type: 'frame', frame: clickedFrame };
       dragOffset.x = transformedX - clickedFrame.x;
       dragOffset.y = transformedY - clickedFrame.y;

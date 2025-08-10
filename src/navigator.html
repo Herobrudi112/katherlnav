@@ -724,6 +724,12 @@
         let hoveredNode = null;
         let hoveredFrame = null;
         
+        // Image cache for frame backgrounds
+        const imageCache = new Map();
+        
+        // Stairs image for nodes with "stairs" tag
+        let stairsImage = null;
+        
         // View transformation
         let viewX = 0;
         let viewY = 0;
@@ -751,6 +757,19 @@
         const nodeMenuHeader = document.getElementById('nodeMenuHeader');
         const setAsStartBtn = document.getElementById('setAsStart');
         const setAsEndBtn = document.getElementById('setAsEnd');
+        
+        // Load stairs image
+        function loadStairsImage() {
+            stairsImage = new Image();
+            stairsImage.onload = function() {
+                console.log('Stairs image loaded successfully');
+                draw(); // Redraw when image loads
+            };
+            stairsImage.onerror = function() {
+                console.error('Failed to load stairs image');
+            };
+            stairsImage.src = 'Stairs.png';
+        }
         
         // Canvas setup
         function resize() {
@@ -842,7 +861,10 @@
         
         window.addEventListener('resize', resize);
         window.addEventListener('orientationchange', resize);
-        window.addEventListener('load', resize);
+        window.addEventListener('load', () => {
+            resize();
+            loadStairsImage();
+        });
         requestAnimationFrame(resize);
         
         // Helpers
@@ -1183,7 +1205,53 @@
             ctx.scale(viewScale, viewScale);
             
             // Draw frames first (background)
+            console.log('Drawing frames, total:', frames.length, 'Image cache size:', imageCache.size);
             for (const frame of frames) {
+                // Draw background image if present
+                if (frame.backgroundImage) {
+                    console.log('Frame has background image:', frame.name, 'Cache has image:', imageCache.has(frame.id));
+                    const img = imageCache.get(frame.id);
+                    if (img) {
+                        // console.log('Drawing cached image for frame:', frame.name);
+                        // Calculate aspect ratio to fit image within frame
+                        const frameAspect = frame.width / frame.height;
+                        const imgAspect = frame.backgroundImage.width / frame.backgroundImage.height;
+                        
+                        let drawWidth, drawHeight, drawX, drawY;
+                        
+                        if (imgAspect > frameAspect) {
+                            // Image is wider than frame, fit to width
+                            drawWidth = frame.width;
+                            drawHeight = frame.width / imgAspect;
+                            drawX = frame.x;
+                            drawY = frame.y + (frame.height - drawHeight) / 2;
+                        } else {
+                            // Image is taller than frame, fit to height
+                            drawHeight = frame.height;
+                            drawWidth = frame.height * imgAspect;
+                            drawX = frame.x + (frame.width - drawWidth) / 2;
+                            drawY = frame.y;
+                        }
+                        
+                        ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+                    } else {
+                        // console.log('Image not in cache, loading for frame:', frame.name);
+                        // Load image from URL if not in cache
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+                        img.onload = function() {
+                            // Cache the loaded image
+                            imageCache.set(frame.id, img);
+                            // Trigger a full redraw when image loads
+                            draw();
+                        };
+                        img.onerror = function() {
+                            console.warn('Failed to load background image:', frame.backgroundImage.src);
+                        };
+                        img.src = frame.backgroundImage.src;
+                    }
+                }
+                
                 ctx.fillStyle = frame.color + '10';
                 ctx.strokeStyle = frame.color + '60';
                 ctx.lineWidth = 2;
@@ -1205,7 +1273,7 @@
             // Reset line dash
             ctx.setLineDash([]);
             
-            // Draw edges
+            // Draw edges - only show highlighted edges
             for (const e of edges) {
                 const a = nodes.find(n => n.id === e.from);
                 const b = nodes.find(n => n.id === e.to);
@@ -1216,18 +1284,17 @@
                     (p.from === e.to && p.to === e.from)
                 );
                 
-                ctx.lineWidth = isHighlighted ? 4 : 2;
-                ctx.strokeStyle = isHighlighted ? '#ffffff' : 'rgba(255,255,255,0.3)';
-                ctx.beginPath();
-                ctx.moveTo(a.x, a.y);
-                ctx.lineTo(b.x, b.y);
-                ctx.stroke();
+                // Only draw highlighted edges
+                if (isHighlighted) {
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
                 
-                // weight label
-                const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-                ctx.fillStyle = 'rgba(255,255,255,0.8)';
-                ctx.font = '12px sans-serif';
-                ctx.fillText(e.weight, mx + 6, my - 6);
+                // Weight labels are hidden (removed)
             }
             
             for (const n of nodes) {
@@ -1292,11 +1359,18 @@
         }
     }
 
-    // Draw label
-    ctx.fillStyle = isSel || isInPath ? '#000000' : '#ffffff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(label, n.x, n.y);
+    // Draw label or stairs image
+    if (n.tags && n.tags.includes('stairs') && stairsImage) {
+        // Draw stairs image instead of text
+        const imageSize = 24; // Size of the stairs icon
+        ctx.drawImage(stairsImage, n.x - imageSize/2, n.y - imageSize/2, imageSize, imageSize);
+    } else {
+        // Draw text label
+        ctx.fillStyle = isSel || isInPath ? '#000000' : '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, n.x, n.y);
+    }
 }
 
             
@@ -1416,6 +1490,40 @@
                         nodes = data.nodes.map(n => ({...n}));
                         edges = data.edges.map(e => ({...e}));
                         frames = data.frames ? data.frames.map(f => ({...f})) : [];
+                        
+                        // Clear and rebuild image cache for frames with background images
+                        imageCache.clear();
+                        console.log('Loading frames:', frames.length);
+                        let backgroundImageCount = 0;
+                        for (const frame of frames) {
+                            if (frame.backgroundImage) {
+                                backgroundImageCount++;
+                                console.log('Loading background image for frame:', frame.name, frame.backgroundImage.src);
+                                const img = new Image();
+                                img.crossOrigin = 'anonymous';
+                                img.onload = function() {
+                                    console.log('Image loaded successfully for frame:', frame.name, 'Dimensions:', img.width, 'x', img.height);
+                                    imageCache.set(frame.id, img);
+                                    draw(); // Redraw when image loads
+                                };
+                                img.onerror = function() {
+                                    console.error('Failed to load background image for frame:', frame.name, 'URL:', frame.backgroundImage.src);
+                                };
+                                // Try to decode the URL if it's encoded
+                                let imageUrl = frame.backgroundImage.src;
+                                try {
+                                    imageUrl = decodeURIComponent(imageUrl);
+                                } catch (e) {
+                                    console.log('URL decode failed, using original:', imageUrl);
+                                }
+                                console.log('Final image URL:', imageUrl);
+                                img.src = imageUrl;
+                            }
+                        }
+                        console.log('Total frames with background images:', backgroundImageCount);
+                        
+                        // Reload stairs image
+                        loadStairsImage();
                         
                         // Reset view
                         selectedNode = null;
