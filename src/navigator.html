@@ -324,8 +324,8 @@
         @media (max-width: 768px) {
             .app {
                 flex-direction: column;
-                gap: 8px;
-                padding: 8px;
+                gap: 0;
+                padding: 0;
                 height: 100vh;
             }
             
@@ -333,13 +333,11 @@
                 flex: 1;
                 min-height: 0;
                 padding: 8px;
+                position: relative;
             }
             
             .panel {
-                width: 100%;
-                max-height: 40vh;
-                min-height: 200px;
-                order: 2;
+                display: none; /* Hide the sidebar on mobile */
             }
             
             .search-container {
@@ -364,6 +362,49 @@
                 width: 48px;
                 height: 48px;
                 font-size: 20px;
+            }
+            
+            /* Mobile Find Path Button */
+            .mobile-find-path {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                background: var(--accent);
+                color: var(--bg);
+                border: none;
+                border-radius: 20px;
+                padding: 10px 16px;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                min-width: auto;
+                width: auto;
+            }
+            
+            .mobile-find-path:hover {
+                background: #f0f0f0;
+                transform: translateX(-50%) translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            }
+            
+            .mobile-find-path:active {
+                transform: translateX(-50%) translateY(0);
+            }
+            
+            /* Hide mobile find path button on desktop */
+            .mobile-find-path {
+                display: none;
+            }
+            
+            /* Show mobile find path button only on mobile */
+            @media (max-width: 768px) {
+                .mobile-find-path {
+                    display: block;
+                }
             }
             
             h1 {
@@ -627,6 +668,9 @@
                 <button onclick="zoomOut()">−</button>
                 <button onclick="resetZoom()">⌂</button>
             </div>
+            
+            <!-- Mobile Find Path Button -->
+            <button class="mobile-find-path" onclick="showMobilePathDialog()">Find Path</button>
             
             <!-- Node Selection Menu -->
             <div id="nodeMenu" class="node-menu">
@@ -1736,6 +1780,162 @@
                 hideNodeMenu();
             }
         });
+        
+        // Mobile path finding - uses start and end nodes from the select dropdowns
+        function showMobilePathDialog() {
+            const startId = Number(startNodeSelect.value);
+            const endId = Number(endNodeSelect.value);
+            
+            if (!startId || !endId) {
+                alert('Please select both start and end nodes from the dropdowns first');
+                return;
+            }
+            
+            if (startId === endId) {
+                alert('Start and end nodes must be different');
+                return;
+            }
+            
+            // Get the actual node objects
+            const startNode = nodes.find(n => n.id === startId);
+            const endNode = nodes.find(n => n.id === endId);
+            
+            if (!startNode || !endNode) {
+                alert('Selected nodes not found');
+                return;
+            }
+            
+            // Execute path finding with selected nodes
+            findPathBetweenNodes(startNode, endNode);
+        }
+        
+        function findPathBetweenNodes(startNode, endNode) {
+            // Dijkstra's algorithm
+            const distMap = new Map();
+            const prevMap = new Map();
+            const Q = new Set(nodes.map(n => n.id));
+            
+            nodes.forEach(n => distMap.set(n.id, Infinity));
+            distMap.set(startNode.id, 0);
+            
+            while (Q.size) {
+                // node in Q with smallest dist
+                let u = null, uDist = Infinity;
+                for (const id of Q) {
+                    const d = distMap.get(id);
+                    if (d < uDist) { u = id; uDist = d; }
+                }
+                if (u === null) break;
+                Q.delete(u);
+                if (u === endNode.id) break;
+                
+                const neighbors = edges.filter(e => e.from === u || e.to === u);
+                for (const e of neighbors) {
+                    const v = (e.from === u) ? e.to : e.from;
+                    if (!Q.has(v)) continue;
+                    const alt = distMap.get(u) + e.weight;
+                    if (alt < distMap.get(v)) {
+                        distMap.set(v, alt);
+                        prevMap.set(v, u);
+                    }
+                }
+            }
+            
+            // reconstruct path
+            const pathNodes = [];
+            const pathEdges = [];
+            let current = endNode.id;
+            while (current !== undefined && current !== startNode.id) {
+                pathNodes.unshift(current);
+                const prev = prevMap.get(current);
+                if (prev !== undefined) {
+                    pathEdges.unshift({from: prev, to: current});
+                }
+                current = prev;
+            }
+            
+            if (current === startNode.id) {
+                pathNodes.unshift(startNode.id);
+                highlightedPath.nodes = pathNodes;
+                highlightedPath.edges = pathEdges;
+                
+                // Show success message
+                showMobilePathResult(pathNodes, pathEdges, distMap.get(endNode.id));
+                
+                draw();
+            } else {
+                alert('No path found between the selected nodes');
+                clearPath();
+            }
+        }
+        
+        function showMobilePathResult(pathNodes, pathEdges, totalDist) {
+            const resultDialog = document.createElement('div');
+            resultDialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 2000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: var(--panel);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 20px;
+                width: 100%;
+                max-width: 400px;
+                max-height: 80vh;
+                overflow-y: auto;
+            `;
+            
+            let pathStepsHtml = '';
+            pathNodes.forEach((nodeId, index) => {
+                const node = nodes.find(n => n.id === nodeId);
+                if (node) {
+                    const buildingInfo = node.building ? ` (${node.building})` : '';
+                    const tagsInfo = node.tags && node.tags.length > 0 ? ` [${node.tags.join(', ')}]` : '';
+                    pathStepsHtml += `<div style="padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--accent);">${index + 1}. ${node.name}${buildingInfo}${tagsInfo}</div>`;
+                }
+            });
+            
+            content.innerHTML = `
+                <h3 style="margin: 0 0 16px 0; color: var(--accent);">Path Found</h3>
+                <div style="margin-bottom: 16px; color: var(--muted);">
+                    <strong>Total Distance:</strong> ${totalDist} units
+                </div>
+                <div style="margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
+                    ${pathStepsHtml}
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeMobilePathResult()" style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--accent); cursor: pointer;">Close</button>
+                    <button onclick="clearPathAndClose()" style="flex: 1; padding: 12px; border: none; border-radius: 6px; background: var(--accent); color: var(--bg); cursor: pointer; font-weight: 600;">Clear Path</button>
+                </div>
+            `;
+            
+            resultDialog.appendChild(content);
+            document.body.appendChild(resultDialog);
+        }
+        
+        function closeMobilePathResult() {
+            const dialog = document.querySelector('div[style*="z-index: 2000"]');
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+        
+        function clearPathAndClose() {
+            clearPath();
+            closeMobilePathResult();
+        }
         
         // Initialize
         updateNodeInfo();
