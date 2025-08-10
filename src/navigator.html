@@ -748,6 +748,7 @@
                     <p><strong>Click node:</strong> Select and view details</p>
                     <p><strong>Search:</strong> Use the search bar to find nodes</p>
                     <p><strong>Zoom buttons:</strong> Use +/−/⌂ for zoom control</p>
+                    <p><strong>Mobile:</strong> Pinch with two fingers to zoom</p>
                 </div>
             </div>
         </div>
@@ -1591,7 +1592,12 @@
                             const padding = 100;
                             const scaleX = (canvas.width / DPR - padding * 2) / (maxX - minX);
                             const scaleY = (canvas.height / DPR - padding * 2) / (maxY - minY);
-                            const scale = Math.min(scaleX, scaleY, 1);
+                            let scale = Math.min(scaleX, scaleY, 1);
+                            
+                            // On mobile, zoom in more by default
+                            if (window.innerWidth <= 768) {
+                                scale = Math.min(scale * 1.5, 1); // Zoom in 1.5x more on mobile
+                            }
                             
                             viewScale = scale;
                             viewX = (canvas.width / DPR - (maxX + minX) * scale) / 2;
@@ -1665,40 +1671,101 @@
         let isPanning = false;
         let touchStartTime = 0;
         
+        // Pinch-to-zoom variables
+        let initialDistance = 0;
+        let initialScale = 1;
+        let isZooming = false;
+        
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            const touch = e.touches[0];
-            touchStartX = touch.clientX;
-            touchStartY = touch.clientY;
-            touchStartTime = Date.now();
-            isPanning = false;
+            
+            if (e.touches.length === 1) {
+                // Single finger - handle panning/tapping
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+                touchStartTime = Date.now();
+                isPanning = false;
+                isZooming = false;
+            } else if (e.touches.length === 2) {
+                // Two fingers - handle pinch-to-zoom
+                isZooming = true;
+                isPanning = false;
+                
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                
+                // Calculate initial distance between fingers
+                initialDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+                initialScale = viewScale;
+                
+                // Calculate center point between fingers
+                const centerX = (touch1.clientX + touch2.clientX) / 2;
+                const centerY = (touch1.clientY + touch2.clientY) / 2;
+                
+                // Store center point for zooming towards
+                touchStartX = centerX;
+                touchStartY = centerY;
+            }
         }, { passive: false });
         
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            const x = (touch.clientX - rect.left);
-            const y = (touch.clientY - rect.top);
             
-            // Check if this is a pan gesture (movement > threshold)
-            const deltaX = Math.abs(x - touchStartX);
-            const deltaY = Math.abs(y - touchStartY);
-            if (deltaX > 10 || deltaY > 10) {
-                isPanning = true;
+            if (e.touches.length === 1 && !isZooming) {
+                // Single finger panning
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = (touch.clientX - rect.left);
+                const y = (touch.clientY - rect.top);
+                
+                // Check if this is a pan gesture (movement > threshold)
+                const deltaX = Math.abs(x - touchStartX);
+                const deltaY = Math.abs(y - touchStartY);
+                if (deltaX > 10 || deltaY > 10) {
+                    isPanning = true;
+                }
+                
+                // Pan the view
+                viewX += x - touchStartX;
+                viewY += y - touchStartY;
+                touchStartX = x;
+                touchStartY = y;
+                
+                draw();
+            } else if (e.touches.length === 2 && isZooming) {
+                // Two finger pinch-to-zoom
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                
+                // Calculate current distance between fingers
+                const currentDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+                
+                // Calculate zoom factor
+                const zoomFactor = currentDistance / initialDistance;
+                const newScale = Math.max(0.1, Math.min(5, initialScale * zoomFactor));
+                
+                // Calculate center point between fingers
+                const rect = canvas.getBoundingClientRect();
+                const centerX = (touch1.clientX + touch2.clientX) / 2 - rect.left;
+                const centerY = (touch1.clientY + touch2.clientY) / 2 - rect.top;
+                
+                // Zoom towards the center point
+                const scaleRatio = newScale / viewScale;
+                viewX = centerX - scaleRatio * (centerX - viewX);
+                viewY = centerY - scaleRatio * (centerY - viewY);
+                viewScale = newScale;
+                
+                draw();
             }
-            
-            // Pan the view
-            viewX += x - touchStartX;
-            viewY += y - touchStartY;
-            touchStartX = x;
-            touchStartY = y;
-            
-            draw();
         }, { passive: false });
         
         canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
+            
+            // Reset zooming state
+            isZooming = false;
+            
             const touchEndTime = Date.now();
             const touchDuration = touchEndTime - touchStartTime;
             
