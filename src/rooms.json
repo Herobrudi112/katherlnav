@@ -4,14 +4,16 @@
         "name": "Ph1",
         "longName": "Physik-Saal 1 (R136)",
         "active": true,
-        "building": "Hauptgebäude"
+        "building": "Hauptgebäude",
+        "tags": ["physics", "science", "lab"]
     },
     {
         "id": 9,
         "name": "Ph2",
         "longName": "Physik-Saal 2 (R133)",
         "active": true,
-        "building": "Hauptgebäude"
+        "building": "Hauptgebäude",
+        "tags": ["physics", "science", "lab"]
     },
     {
         "id": 14,
@@ -25,7 +27,8 @@
         "name": "Comp1",
         "longName": "Computerraum 1 (Erdgeschoß)",
         "active": true,
-        "building": "Hauptgebäude"
+        "building": "Hauptgebäude",
+        "tags": ["computer", "technology", "lab"]
     },
     {
         "id": 24,
@@ -39,21 +42,22 @@
         "name": "Comp3",
         "longName": "Computerraum 3 (EW)",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 34,
         "name": "NuT",
         "longName": "Natur und Technik (EW)",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 39,
         "name": "C1",
         "longName": "Chemie-Saal 1 (R140)",
         "active": true,
-        "building": "Hauptgebäude"
+        "building": "Hauptgebäude",
+        "tags": ["chemistry", "science", "lab"]
     },
     {
         "id": 44,
@@ -81,28 +85,29 @@
         "name": "Bio1",
         "longName": "Biologie 1 (EW)",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 64,
         "name": "Bio2",
         "longName": "Biologie 2 (EW)",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 69,
         "name": "Bio-Üb",
         "longName": "Biologie-Übung (EW)",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 74,
         "name": "Mus1",
         "longName": "Musiksaal 1 (R227)",
         "active": true,
-        "building": "Hauptgebäude"
+        "building": "Hauptgebäude",
+        "tags": ["music", "arts", "performance"]
     },
     {
         "id": 79,
@@ -221,14 +226,14 @@
         "name": "EW1",
         "longName": "Erweiterungsbau 1 (EW)",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 164,
         "name": "EW2",
         "longName": "Erweiterungsbau 2 (EW)",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 189,
@@ -424,7 +429,7 @@
         "name": "R10b",
         "longName": "EW3",
         "active": true,
-        "building": "EW"
+        "building": "Erweiterung"
     },
     {
         "id": 344,
@@ -480,7 +485,7 @@
         "name": "REUCH",
         "longName": "Reuchlin",
         "active": true,
-        "building": ""
+        "building": "Extern"
     },
     {
         "id": 384,
@@ -494,7 +499,7 @@
         "name": "GNA",
         "longName": "Gnadenthal",
         "active": true,
-        "building": ""
+        "building": "Extern"
     },
     {
         "id": 394,
@@ -522,7 +527,7 @@
         "name": "CSG",
         "longName": "Scheiner",
         "active": true,
-        "building": ""
+        "building": "Extern"
     },
     {
         "id": 425,
@@ -585,7 +590,7 @@
         "name": "R135",
         "longName": "Physik Vorbereitung",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 477,
@@ -599,7 +604,7 @@
         "name": "R001",
         "longName": "StayIn (R001)",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 487,
@@ -618,7 +623,7 @@
     {
         "id": 502,
         "name": "OS-Sek",
-        "longName": "Sekretariat Oberstufe (KG)",
+        "longName": "Sekretariat Oberstufe",
         "active": true,
         "building": "KG"
     },
@@ -627,7 +632,7 @@
         "name": "R125a",
         "longName": "Elternsprechzimmer",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 510,
@@ -648,77 +653,77 @@
         "name": "R9f",
         "longName": "317",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 532,
         "name": "R10g",
         "longName": "408",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 537,
         "name": "R10h",
         "longName": "322",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 542,
         "name": "THE",
         "longName": "Eishalle",
         "active": true,
-        "building": ""
+        "building": "Extern"
     },
     {
         "id": 545,
         "name": "K4",
         "longName": "Aufenthaltsraum Q11/12",
         "active": true,
-        "building": ""
+        "building": "Kolleg"
     },
     {
         "id": 550,
         "name": "Soz",
         "longName": "K6  (JAS Mohr)",
         "active": true,
-        "building": "KG"
+        "building": "Kolleg"
     },
     {
         "id": 560,
         "name": "C-Vorb",
         "longName": "Chemie Vorbereitung (R141)",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 565,
         "name": "Ph-Vorb1",
         "longName": "Physik Vorbereitung 1 (R134)",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 570,
         "name": "Ph-Vorb2",
         "longName": "Physik Vorbereitung 2 (R135)",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 575,
         "name": "Bio-Vorb",
         "longName": "Biologie Vorbereitung (EW)",
         "active": true,
-        "building": ""
+        "building": "Erweiterung"
     },
     {
         "id": 582,
         "name": "C-Sammlung",
         "longName": "Chemie Sammlung (R130)",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 586,
@@ -732,70 +737,70 @@
         "name": "Gla",
         "longName": "Glacis",
         "active": true,
-        "building": ""
+        "building": "Extern"
     },
     {
         "id": 594,
         "name": "Ph-Sammlung",
         "longName": "Physik Sammlung (R131)",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 603,
         "name": "R6f",
         "longName": "202",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 608,
         "name": "R6g",
         "longName": "203",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 613,
         "name": "R6h",
         "longName": "204",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 618,
         "name": "R11a",
         "longName": "026",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 623,
         "name": "R11b",
         "longName": "405",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 628,
         "name": "R11c",
         "longName": "406",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 633,
         "name": "R11d",
         "longName": "407",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 638,
         "name": "KLH",
         "longName": "Kletterhalle",
         "active": true,
-        "building": ""
+        "building": "Extern"
     },
     {
         "id": 644,
@@ -830,7 +835,7 @@
         "name": "Cafeteria",
         "longName": "Cafeteria",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 669,
@@ -865,7 +870,7 @@
         "name": "K7",
         "longName": "Aufenthaltsraum Q11/12",
         "active": true,
-        "building": ""
+        "building": "Kolleg"
     },
     {
         "id": 694,
@@ -879,28 +884,28 @@
         "name": "THD",
         "longName": "Turnhalle D MTV",
         "active": true,
-        "building": ""
+        "building": "Extern"
     },
     {
         "id": 700,
         "name": "R7g",
         "longName": "303",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 703,
         "name": "R7h",
         "longName": "304",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 706,
         "name": "R11e",
         "longName": "408",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     },
     {
         "id": 708,
@@ -933,15 +938,15 @@
     {
         "id": 719,
         "name": "NuT-Vorb",
-        "longName": "NuT-Vorbereitung (EW)",
+        "longName": "NuT-Vorbereitung",
         "active": true,
-        "building": ""
+        "building": "Erweiterung"
     },
     {
         "id": 722,
         "name": "LMB",
-        "longName": "Lernmittelbibliothek (HG EG)",
+        "longName": "Lernmittelbibliothek",
         "active": true,
-        "building": ""
+        "building": "Hauptgebäude"
     }
 ]

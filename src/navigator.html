@@ -528,7 +528,8 @@
             searchResults = nodes.filter(node => 
                 node.name.toLowerCase().includes(searchTerm) ||
                 node.longName.toLowerCase().includes(searchTerm) ||
-                (node.building && node.building.toLowerCase().includes(searchTerm))
+                (node.building && node.building.toLowerCase().includes(searchTerm)) ||
+                (node.tags && node.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
             );
             
             updateSearchResults();
@@ -548,9 +549,11 @@
             searchResults.forEach(node => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'search-result-item';
+                
+                const tagsText = node.tags && node.tags.length > 0 ? node.tags.join(', ') : 'No tags';
                 resultItem.innerHTML = `
                     <div class="node-name">${node.name}</div>
-                    <div class="node-details">${node.building || 'No building'}</div>
+                    <div class="node-details">${node.building || 'No building'} • ${tagsText}</div>
                 `;
                 
                 resultItem.addEventListener('click', () => {
@@ -607,10 +610,12 @@
         
         function updateNodeInfo() {
             if (selectedNode) {
+                const tagsText = selectedNode.tags && selectedNode.tags.length > 0 ? selectedNode.tags.join(', ') : 'No tags';
                 nodeInfo.innerHTML = `
                     <p><strong>Name:</strong> ${selectedNode.name}</p>
                     <p><strong>Description:</strong> ${selectedNode.longName || 'No description'}</p>
                     <p><strong>Building:</strong> ${selectedNode.building || 'No building'}</p>
+                    <p><strong>Tags:</strong> ${tagsText}</p>
                     <p><strong>Position:</strong> (${Math.round(selectedNode.x)}, ${Math.round(selectedNode.y)})</p>
                 `;
             } else {
@@ -623,14 +628,18 @@
             endNodeSelect.innerHTML = '<option value="">Select end node</option>';
             
             nodes.forEach(node => {
+                const buildingInfo = node.building ? ` (${node.building})` : '';
+                const tagsInfo = node.tags && node.tags.length > 0 ? ` [${node.tags.join(', ')}]` : '';
+                const displayText = `${node.name}${buildingInfo}${tagsInfo}`;
+                
                 const startOption = document.createElement('option');
                 startOption.value = node.id;
-                startOption.textContent = node.name;
+                startOption.textContent = displayText;
                 startNodeSelect.appendChild(startOption);
                 
                 const endOption = document.createElement('option');
                 endOption.value = node.id;
-                endOption.textContent = node.name;
+                endOption.textContent = displayText;
                 endNodeSelect.appendChild(endOption);
             });
         }
@@ -718,7 +727,9 @@
                 const node = nodes.find(n => n.id === nodeId);
                 if (node) {
                     const li = document.createElement('li');
-                    li.textContent = `${index + 1}. ${node.name}`;
+                    const buildingInfo = node.building ? ` (${node.building})` : '';
+                    const tagsInfo = node.tags && node.tags.length > 0 ? ` [${node.tags.join(', ')}]` : '';
+                    li.textContent = `${index + 1}. ${node.name}${buildingInfo}${tagsInfo}`;
                     if (index === 0) li.className = 'current';
                     pathSteps.appendChild(li);
                 }

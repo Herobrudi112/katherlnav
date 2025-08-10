@@ -327,7 +327,8 @@ function searchNodes(query) {
     searchResults = nodes.filter(node => 
         node.name.toLowerCase().includes(searchTerm) ||
         node.longName.toLowerCase().includes(searchTerm) ||
-        (node.building && node.building.toLowerCase().includes(searchTerm))
+        (node.building && node.building.toLowerCase().includes(searchTerm)) ||
+        (node.tags && node.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
     );
     
     updateSearchResults();
@@ -344,23 +345,25 @@ function updateSearchResults() {
     
     resultsContainer.style.display = 'block';
     
-    searchResults.forEach(node => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'search-result-item';
-        resultItem.innerHTML = `
-            <div class="search-result-name">${node.name}</div>
-            <div class="search-result-building">${node.building || 'No building'}</div>
-        `;
-        
-        resultItem.addEventListener('click', () => {
-            selectNode(node.id);
-            centerOnNode(node.id);
-            document.getElementById('nodeSearch').value = '';
-            resultsContainer.style.display = 'none';
+            searchResults.forEach(node => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            
+            const tagsText = node.tags && node.tags.length > 0 ? node.tags.join(', ') : 'No tags';
+            resultItem.innerHTML = `
+                <div class="search-result-name">${node.name}</div>
+                <div class="search-result-building">${node.building || 'No building'} • ${tagsText}</div>
+            `;
+            
+            resultItem.addEventListener('click', () => {
+                selectNode(node.id);
+                centerOnNode(node.id);
+                document.getElementById('nodeSearch').value = '';
+                resultsContainer.style.display = 'none';
+            });
+            
+            resultsContainer.appendChild(resultItem);
         });
-        
-        resultsContainer.appendChild(resultItem);
-    });
 }
 
 function centerOnNode(nodeId) {
@@ -438,7 +441,15 @@ function getEdgeAt(x,y){
 }
 
 function addNode(x,y,name,longName){ 
-  const n={id:nodeIdCounter++,x,y,name: name||('Room '+(nodeIdCounter-1)), longName: (longName && String(longName).trim()) || (name && String(name).trim()) || ('Room '+(nodeIdCounter-1))}; 
+  const n={
+    id: nodeIdCounter++,
+    x: x,
+    y: y,
+    name: name || ('Room '+(nodeIdCounter-1)), 
+    longName: (longName && String(longName).trim()) || (name && String(name).trim()) || ('Room '+(nodeIdCounter-1)),
+    building: null,
+    tags: []
+  }; 
   nodes.push(n); 
   rebuildSelects(); 
   draw(); 
@@ -498,7 +509,9 @@ function updateSelectedList(){
   selectedList.innerHTML = Array.from(selected).map(id=>{ 
     const n=nodes.find(x=>x.id===id); 
     const label = n.longName || n.name; 
-    return `<div>${label} <small style="color:var(--muted)">(id:${n.id})</small></div>` 
+    const buildingInfo = n.building ? ` • ${n.building}` : '';
+    const tagsInfo = n.tags && n.tags.length > 0 ? ` • [${n.tags.join(', ')}]` : '';
+    return `<div>${label} <small style="color:var(--muted)">(id:${n.id})${buildingInfo}${tagsInfo}</small></div>` 
   }).join(''); 
 }
 
@@ -930,7 +943,18 @@ function importRoomsFromArray(arr){
       x = Math.round(padding + c*cellW + cellW/2);
       y = Math.round(padding + r*cellH + cellH/2);
     }
-    addNode(x, y, name, longName);
+    const node = addNode(x, y, name, longName);
+    
+    // Import building data if available
+    if (item && item.building) {
+      node.building = String(item.building);
+    }
+    
+    // Import tags data if available
+    if (item && item.tags) {
+      node.tags = Array.isArray(item.tags) ? [...item.tags] : [String(item.tags)];
+    }
+    
     i++;
   }
   infoBox.textContent = `Loaded ${count} rooms from rooms.json.`;
