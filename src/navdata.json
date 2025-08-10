@@ -1,0 +1,2864 @@
+{
+  "nodes": [
+    {
+      "id": 1,
+      "x": 803,
+      "y": 801,
+      "name": "Ph1",
+      "longName": "Physik-Saal 1 (R136)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 2,
+      "x": 716,
+      "y": 840,
+      "name": "Ph2",
+      "longName": "Physik-Saal 2 (R133)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 3,
+      "x": 719,
+      "y": 882,
+      "name": "Ph-Üb",
+      "longName": "Physik-Übung (R132)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 4,
+      "x": 771,
+      "y": 504,
+      "name": "Comp1",
+      "longName": "Computerraum 1 (Erdgeschoß)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 5,
+      "x": 1414,
+      "y": 852,
+      "name": "Comp2",
+      "longName": "Computerraum 2 (R313)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 6,
+      "x": 1162.3615187937019,
+      "y": 276.95890016365416,
+      "name": "Comp3",
+      "longName": "Computerraum 3 (EW)",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 7,
+      "x": 1172.138172363842,
+      "y": 277.8101716156049,
+      "name": "NuT",
+      "longName": "Natur und Technik (EW)",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 8,
+      "x": 777,
+      "y": 874,
+      "name": "C1",
+      "longName": "Chemie-Saal 1 (R140)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 9,
+      "x": 718,
+      "y": 1004,
+      "name": "C2",
+      "longName": "Chemie-Saal 2 (R129)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 10,
+      "x": 776,
+      "y": 960,
+      "name": "C-Üb",
+      "longName": "Chemie-Übung (R142)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 11,
+      "x": 1269.0865163432893,
+      "y": 280.65008894081956,
+      "name": "C-Lab",
+      "longName": "C-Labor",
+      "building": "KG",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 12,
+      "x": 1177.0638080898173,
+      "y": 283.65008894081956,
+      "name": "Bio1",
+      "longName": "Biologie 1 (EW)",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 13,
+      "x": 1181.3463923311115,
+      "y": 278.1078823194892,
+      "name": "Bio2",
+      "longName": "Biologie 2 (EW)",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 14,
+      "x": 1168.9596981061832,
+      "y": 271.289621697432,
+      "name": "Bio-Üb",
+      "longName": "Biologie-Übung (EW)",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 15,
+      "x": 1316,
+      "y": 404,
+      "name": "Mus1",
+      "longName": "Musiksaal 1 (R227)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 16,
+      "x": 1248,
+      "y": 430,
+      "name": "Mus2",
+      "longName": "Musiksaal 2 (R225)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 17,
+      "x": 1351,
+      "y": 634,
+      "name": "Mus3",
+      "longName": "Musiksaal 3 (R217)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 18,
+      "x": 1404,
+      "y": 1017,
+      "name": "Zei1",
+      "longName": "Zeichensaal 1 (R401)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 19,
+      "x": 1316,
+      "y": 1020,
+      "name": "Zei2",
+      "longName": "Zeichensaal 2 (R403)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 20,
+      "x": 1403,
+      "y": 633,
+      "name": "Zei3",
+      "longName": "Zeichensaal 3 (R216)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 22,
+      "x": 714,
+      "y": 499,
+      "name": "Werk2",
+      "longName": "Keramikraum (R028)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 23,
+      "x": 1022,
+      "y": 332,
+      "name": "TH1",
+      "longName": "Spo-West",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 24,
+      "x": 881,
+      "y": 331,
+      "name": "TH2",
+      "longName": "Spo-Ost",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 25,
+      "x": 1423.837523497629,
+      "y": 271.3980483516643,
+      "name": "THA",
+      "longName": "MTVA",
+      "building": "TH extern",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 26,
+      "x": 1426.807777788019,
+      "y": 276.23092822074085,
+      "name": "THB",
+      "longName": "MTVB",
+      "building": "TH extern",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 27,
+      "x": 1420.4026919802168,
+      "y": 276.5913954641285,
+      "name": "THC",
+      "longName": "MTVC",
+      "building": "TH extern",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 28,
+      "x": 1410.5960390926807,
+      "y": 278.8031341594667,
+      "name": "THS",
+      "longName": "Schwimmbad",
+      "building": "TH extern",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 29,
+      "x": 1274.5178291326324,
+      "y": 279.3307215337777,
+      "name": "K1",
+      "longName": "Kolleg 1 (KG)",
+      "building": "KG",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 30,
+      "x": 1268.922914940435,
+      "y": 271.0630101472888,
+      "name": "K2",
+      "longName": "Kolleg 2 (KG)",
+      "building": "KG",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 31,
+      "x": 1271.4732105682176,
+      "y": 267.8845358896295,
+      "name": "K3",
+      "longName": "Kolleg 3 (KG)",
+      "building": "KG",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 32,
+      "x": 1174.8258424129385,
+      "y": 282.4050858078024,
+      "name": "EW1",
+      "longName": "Erweiterungsbau 1 (EW)",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 33,
+      "x": 1173.5694851531853,
+      "y": 287.1076287117036,
+      "name": "EW2",
+      "longName": "Erweiterungsbau 2 (EW)",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 34,
+      "x": 848,
+      "y": 626,
+      "name": "R5a",
+      "longName": "002",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 35,
+      "x": 902,
+      "y": 650,
+      "name": "R5b",
+      "longName": "003",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 36,
+      "x": 995,
+      "y": 665,
+      "name": "R5c",
+      "longName": "004",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 37,
+      "x": 1045,
+      "y": 665,
+      "name": "R5d",
+      "longName": "005",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 38,
+      "x": 1088,
+      "y": 669,
+      "name": "R5e",
+      "longName": "006",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 39,
+      "x": 858,
+      "y": 972,
+      "name": "R6a",
+      "longName": "102",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 40,
+      "x": 901,
+      "y": 989,
+      "name": "R6b",
+      "longName": "103",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 41,
+      "x": 941,
+      "y": 1006,
+      "name": "R6c",
+      "longName": "104",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 42,
+      "x": 1072,
+      "y": 1015,
+      "name": "R6d",
+      "longName": "107",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 43,
+      "x": 1123,
+      "y": 1017,
+      "name": "R6e",
+      "longName": "108",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 44,
+      "x": 1357,
+      "y": 545,
+      "name": "R7a",
+      "longName": "203",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 45,
+      "x": 1402,
+      "y": 555,
+      "name": "R7b",
+      "longName": "204",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 46,
+      "x": 1483,
+      "y": 569,
+      "name": "R7c",
+      "longName": "206",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 47,
+      "x": 1531,
+      "y": 568,
+      "name": "R7d",
+      "longName": "207",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 48,
+      "x": 1566,
+      "y": 567,
+      "name": "R7e",
+      "longName": "208",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 49,
+      "x": 1299,
+      "y": 739,
+      "name": "R7f",
+      "longName": "302",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 50,
+      "x": 1463,
+      "y": 780,
+      "name": "R8a",
+      "longName": "306",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 51,
+      "x": 1471,
+      "y": 853,
+      "name": "R8b",
+      "longName": "323",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 52,
+      "x": 1029,
+      "y": 1015,
+      "name": "R8c",
+      "longName": "106",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 53,
+      "x": 1507,
+      "y": 782,
+      "name": "R8d",
+      "longName": "307",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 54,
+      "x": 1491,
+      "y": 636,
+      "name": "R8e",
+      "longName": "213",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 55,
+      "x": 1549,
+      "y": 778,
+      "name": "R9a",
+      "longName": "308",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 56,
+      "x": 1591,
+      "y": 777,
+      "name": "R9b",
+      "longName": "309",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 57,
+      "x": 1178,
+      "y": 1012,
+      "name": "R9c",
+      "longName": "109",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 58,
+      "x": 1229,
+      "y": 783,
+      "name": "R9d",
+      "longName": "317",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 59,
+      "x": 1233,
+      "y": 698,
+      "name": "R9e",
+      "longName": "320",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 60,
+      "x": 1232,
+      "y": 735,
+      "name": "R10a",
+      "longName": "318",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 61,
+      "x": 1171.391010895526,
+      "y": 279.7769071779259,
+      "name": "R10b",
+      "longName": "EW3",
+      "building": "EW",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 62,
+      "x": 1241,
+      "y": 479,
+      "name": "R10c",
+      "longName": "224",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 63,
+      "x": 1516,
+      "y": 854,
+      "name": "R10d",
+      "longName": "322",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 64,
+      "x": 1556,
+      "y": 853,
+      "name": "R10e",
+      "longName": "321",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 67,
+      "x": 993,
+      "y": 274,
+      "name": "BAND",
+      "longName": "Bandraum",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 68,
+      "x": 923,
+      "y": 288,
+      "name": "TECH",
+      "longName": "Bühnentechnik",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 69,
+      "x": 1236.7674758942019,
+      "y": 346.6289765724051,
+      "name": "REUCH",
+      "longName": "Reuchlin",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 70,
+      "x": 928,
+      "y": 1065,
+      "name": "Lezi",
+      "longName": "Lehrerzimmer",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 71,
+      "x": 1237.945950151861,
+      "y": 341.5957121347262,
+      "name": "GNA",
+      "longName": "Gnadenthal",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 72,
+      "x": 1535,
+      "y": 635,
+      "name": "Web",
+      "longName": "Webraum (R212)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 73,
+      "x": 1236,
+      "y": 544,
+      "name": "Filmsaal",
+      "longName": "Filmsaal (R222)",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 74,
+      "x": 1265.4434648586077,
+      "y": 276.16360140285434,
+      "name": "Bib",
+      "longName": "Bibliothek (KG)",
+      "building": "KG",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 75,
+      "x": 1240.4848916529081,
+      "y": 346.2090179097978,
+      "name": "CSG",
+      "longName": "Scheiner",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 77,
+      "x": 1425,
+      "y": 781,
+      "name": "Rob3D",
+      "longName": "R305",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 78,
+      "x": 1159,
+      "y": 1063,
+      "name": "R115",
+      "longName": "Büro Fr. Jacob/Hr. Geisler",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 79,
+      "x": 1122,
+      "y": 1064,
+      "name": "R116",
+      "longName": "Büro Hr. Schöner",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 80,
+      "x": 1033,
+      "y": 1065,
+      "name": "R118",
+      "longName": "Büro Hr. Dr. Schickel",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 81,
+      "x": 1088,
+      "y": 1065,
+      "name": "R117",
+      "longName": "Sekretariat",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 82,
+      "x": 1234,
+      "y": 646,
+      "name": "R124",
+      "longName": "Schulberatung",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 83,
+      "x": 1190,
+      "y": 1065,
+      "name": "R114",
+      "longName": "Büro Fr. Benning",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 86,
+      "x": 775,
+      "y": 589,
+      "name": "R001",
+      "longName": "StayIn (R001)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 87,
+      "x": 1440,
+      "y": 567,
+      "name": "R205",
+      "longName": "Geo-Raum",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 88,
+      "x": 1358,
+      "y": 852,
+      "name": "R312",
+      "longName": "Lehrer-Arbeitszimmer",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 89,
+      "x": 1275.714694973166,
+      "y": 282.8363985971457,
+      "name": "OS-Sek",
+      "longName": "Sekretariat Oberstufe (KG)",
+      "building": "KG",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 90,
+      "x": 1222,
+      "y": 620,
+      "name": "R125a",
+      "longName": "Elternsprechzimmer",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 91,
+      "x": 1298,
+      "y": 655,
+      "name": "R221",
+      "longName": "Besprechungszimmer",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 92,
+      "x": 1138,
+      "y": 668,
+      "name": "R5f",
+      "longName": "007",
+      "building": "Hauptgebäude",
+      "tags": []
+    },
+    {
+      "id": 96,
+      "x": 1421.8821420620438,
+      "y": 287.5432581716446,
+      "name": "THE",
+      "longName": "Eishalle",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 97,
+      "x": 1276.9972792144597,
+      "y": 266.7025429039012,
+      "name": "K4",
+      "longName": "Aufenthaltsraum Q11/12",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 98,
+      "x": 1272.7855405191212,
+      "y": 271.92563572597527,
+      "name": "Soz",
+      "longName": "K6  (JAS Mohr)",
+      "building": "KG",
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 99,
+      "x": 774,
+      "y": 920,
+      "name": "C-Vorb",
+      "longName": "Chemie Vorbereitung (R141)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 100,
+      "x": 756,
+      "y": 796,
+      "name": "Ph-Vorb1",
+      "longName": "Physik Vorbereitung 1 (R134)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 101,
+      "x": 714,
+      "y": 803,
+      "name": "Ph-Vorb2",
+      "longName": "Physik Vorbereitung 2 (R135)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 102,
+      "x": 1167.3796567687903,
+      "y": 287.3158486789727,
+      "name": "Bio-Vorb",
+      "longName": "Biologie Vorbereitung (EW)",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 103,
+      "x": 719,
+      "y": 967,
+      "name": "C-Sammlung",
+      "longName": "Chemie Sammlung (R130)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 104,
+      "x": 829,
+      "y": 571,
+      "name": "Hof",
+      "longName": "Pausenhof",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 105,
+      "x": 1243.306417395249,
+      "y": 342.0418977788744,
+      "name": "Gla",
+      "longName": "Glacis",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 106,
+      "x": 716,
+      "y": 930,
+      "name": "Ph-Sammlung",
+      "longName": "Physik Sammlung (R131)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 107,
+      "x": 1312,
+      "y": 528,
+      "name": "R6f",
+      "longName": "202",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 110,
+      "x": 716,
+      "y": 562,
+      "name": "R11a",
+      "longName": "026",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 111,
+      "x": 1446,
+      "y": 950,
+      "name": "R11b",
+      "longName": "405",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 112,
+      "x": 1488,
+      "y": 950,
+      "name": "R11c",
+      "longName": "406",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 113,
+      "x": 1533,
+      "y": 951,
+      "name": "R11d",
+      "longName": "407",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 114,
+      "x": 1413.7745133503402,
+      "y": 282.3201653495705,
+      "name": "KLH",
+      "longName": "Kletterhalle",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 115,
+      "x": 1337.1314618656586,
+      "y": 342.4959188216893,
+      "name": "PA0",
+      "longName": "PA 0",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 116,
+      "x": 1335.1612075752685,
+      "y": 338.9456231939066,
+      "name": "PA1",
+      "longName": "PA 1",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 117,
+      "x": 1338.1017161560487,
+      "y": 341.33583614690406,
+      "name": "PA2",
+      "longName": "PA 2",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 118,
+      "x": 1336.7263760578562,
+      "y": 341.72253037183253,
+      "name": "PA3/4",
+      "longName": "PA 3/4",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 119,
+      "x": 799,
+      "y": 420,
+      "name": "Cafeteria",
+      "longName": "Cafeteria",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 120,
+      "x": 872.9613862793118,
+      "y": 531.0695523801501,
+      "name": "Hof1",
+      "longName": "Hof 1",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 121,
+      "x": 834,
+      "y": 527,
+      "name": "Hof2",
+      "longName": "Hof 2",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 122,
+      "x": 1167.0227082534718,
+      "y": 280.8136903436739,
+      "name": "Haus_NuT",
+      "longName": "Haus NuT",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 123,
+      "x": 850,
+      "y": 1059,
+      "name": "Früh",
+      "longName": "Frühaufsicht",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 124,
+      "x": 1274.8336778116052,
+      "y": 268.4383502454814,
+      "name": "K7",
+      "longName": "Aufenthaltsraum Q11/12",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 125,
+      "x": 767,
+      "y": 732,
+      "name": "OGS-Räume",
+      "longName": "OGS (ehemalige Hausmeisterwohnung)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 126,
+      "x": 1412.7929049332142,
+      "y": 274.7401240121779,
+      "name": "THD",
+      "longName": "Turnhalle D MTV",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 127,
+      "x": 1345,
+      "y": 752,
+      "name": "R7g",
+      "longName": "303",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 128,
+      "x": 1385,
+      "y": 770,
+      "name": "R7h",
+      "longName": "304",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 129,
+      "x": 1576,
+      "y": 950,
+      "name": "R11e",
+      "longName": "408",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 134,
+      "x": 1192.6508868833482,
+      "y": 287.23013027821224,
+      "name": "NuT-Vorb",
+      "longName": "NuT-Vorbereitung (EW)",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 135,
+      "x": 1064,
+      "y": 702,
+      "name": "LMB",
+      "longName": "Lernmittelbibliothek (HG EG)",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 138,
+      "x": 714,
+      "y": 465,
+      "name": "Werk1",
+      "longName": "Werk1",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 139,
+      "x": 1444,
+      "y": 636,
+      "name": "R214",
+      "longName": "R214",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 140,
+      "x": 714,
+      "y": 528,
+      "name": "SMV",
+      "longName": "SMV",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 141,
+      "x": 716,
+      "y": 602,
+      "name": "Sani",
+      "longName": "Sani",
+      "building": null,
+      "tags": []
+    },
+    {
+      "id": 142,
+      "x": 931,
+      "y": 693,
+      "name": "UGHW1",
+      "longName": "UGHW1",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 143,
+      "x": 752,
+      "y": 623,
+      "name": "UGHW2",
+      "longName": "UGHW2",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 144,
+      "x": 745,
+      "y": 471,
+      "name": "UGHW3",
+      "longName": "UGHW3",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 145,
+      "x": 1420,
+      "y": 601,
+      "name": "2GHW1",
+      "longName": "2GHW1",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 146,
+      "x": 1273,
+      "y": 546,
+      "name": "2GHW2",
+      "longName": "2GHW2",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 147,
+      "x": 1285,
+      "y": 463,
+      "name": "2GHW3",
+      "longName": "2GHW3",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 148,
+      "x": 1402,
+      "y": 809,
+      "name": "3GHW1",
+      "longName": "3GHW1",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 149,
+      "x": 1264,
+      "y": 752,
+      "name": "3GHW2",
+      "longName": "3GHW2",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 150,
+      "x": 979.7004854083737,
+      "y": 1043,
+      "name": "1GHW1",
+      "longName": "1GHW1",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 151,
+      "x": 760,
+      "y": 994,
+      "name": "1GHW2",
+      "longName": "1GHW2",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 152,
+      "x": 749,
+      "y": 845,
+      "name": "1GHW2",
+      "longName": "1GHW2",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 153,
+      "x": 1279,
+      "y": 970,
+      "name": "4MTH1",
+      "longName": "4MTH1",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 154,
+      "x": 1281,
+      "y": 912,
+      "name": "4MTH2",
+      "longName": "4MTH2",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 155,
+      "x": 1313,
+      "y": 835,
+      "name": "3MTH1",
+      "longName": "3MTH1",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 156,
+      "x": 1266.6086963323469,
+      "y": 813.391303667653,
+      "name": "3MTH2",
+      "longName": "3MTH2",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 157,
+      "x": 1305,
+      "y": 621,
+      "name": "2MTH1",
+      "longName": "2MTH1",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 158,
+      "x": 1269,
+      "y": 602,
+      "name": "2MTH2",
+      "longName": "2MTH2",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 159,
+      "x": 787,
+      "y": 696,
+      "name": "UMTH1",
+      "longName": "UMTH1",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 160,
+      "x": 750.4974508090544,
+      "y": 670.8984704854327,
+      "name": "UMTH2",
+      "longName": "UMTH2",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 161,
+      "x": 764,
+      "y": 1033,
+      "name": "1MTH2",
+      "longName": "1MTH2",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 163,
+      "x": 768,
+      "y": 444,
+      "name": "UCTH",
+      "longName": "UCTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 164,
+      "x": 767,
+      "y": 820,
+      "name": "1CTH",
+      "longName": "1CTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 165,
+      "x": 1287,
+      "y": 436,
+      "name": "2CTH",
+      "longName": "2CTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 166,
+      "x": 826,
+      "y": 298,
+      "name": "-1MTH1",
+      "longName": "-1MTH1",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 167,
+      "x": 1081,
+      "y": 310,
+      "name": "-1BTH",
+      "longName": "-1BTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 168,
+      "x": 1142,
+      "y": 716,
+      "name": "UBTH",
+      "longName": "UBTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 169,
+      "x": 1200,
+      "y": 1036,
+      "name": "1BTH",
+      "longName": "1BTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 170,
+      "x": 1589,
+      "y": 1016,
+      "name": "4BTH",
+      "longName": "4BTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 171,
+      "x": 1593,
+      "y": 831,
+      "name": "3BTH",
+      "longName": "3BTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 172,
+      "x": 1568,
+      "y": 622,
+      "name": "2BTH",
+      "longName": "2BTH",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 174,
+      "x": 812,
+      "y": 1048,
+      "name": "1MTH1",
+      "longName": "1MTH1",
+      "building": null,
+      "tags": [
+        "stairs"
+      ]
+    },
+    {
+      "id": 175,
+      "x": 1389,
+      "y": 978,
+      "name": "4GHW1",
+      "longName": "4GHW1",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 176,
+      "x": 1343,
+      "y": 936,
+      "name": "4GHW2",
+      "longName": "4GHW2",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 177,
+      "x": 1330,
+      "y": 979,
+      "name": "4GHW3",
+      "longName": "4GHW3",
+      "building": null,
+      "tags": [
+        "hidden"
+      ]
+    },
+    {
+      "id": 180,
+      "x": 742.8337136313967,
+      "y": 1018.7661316590467,
+      "name": "EV1",
+      "longName": "EV1",
+      "building": null,
+      "tags": [
+        "elevator"
+      ]
+    },
+    {
+      "id": 181,
+      "x": 1264.6633590302,
+      "y": 900.8182614116962,
+      "name": "EV4",
+      "longName": "EV4",
+      "building": null,
+      "tags": [
+        "elevator"
+      ]
+    },
+    {
+      "id": 182,
+      "x": 1240.729737526173,
+      "y": 804.3358497235872,
+      "name": "EV3",
+      "longName": "EV3",
+      "building": null,
+      "tags": [
+        "elevator"
+      ]
+    },
+    {
+      "id": 183,
+      "x": 1242.3597874044515,
+      "y": 582.5498605093248,
+      "name": "EV2",
+      "longName": "EV2",
+      "building": null,
+      "tags": [
+        "elevator"
+      ]
+    },
+    {
+      "id": 184,
+      "x": 815.7902110252169,
+      "y": 271.78773948228553,
+      "name": "EV-1",
+      "longName": "EV-1",
+      "building": null,
+      "tags": [
+        "elevator"
+      ]
+    },
+    {
+      "id": 185,
+      "x": 727.8017697644851,
+      "y": 645.9803413273752,
+      "name": "EVU",
+      "longName": "EVU",
+      "building": null,
+      "tags": [
+        "elevator"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": 167,
+      "to": 168,
+      "weight": 99999
+    },
+    {
+      "from": 169,
+      "to": 168,
+      "weight": 99999
+    },
+    {
+      "from": 169,
+      "to": 172,
+      "weight": 99999
+    },
+    {
+      "from": 171,
+      "to": 172,
+      "weight": 99999
+    },
+    {
+      "from": 171,
+      "to": 170,
+      "weight": 99999
+    },
+    {
+      "from": 163,
+      "to": 164,
+      "weight": 99999
+    },
+    {
+      "from": 165,
+      "to": 164,
+      "weight": 99999
+    },
+    {
+      "from": 166,
+      "to": 159,
+      "weight": 99999
+    },
+    {
+      "from": 174,
+      "to": 159,
+      "weight": 99999
+    },
+    {
+      "from": 174,
+      "to": 157,
+      "weight": 99999
+    },
+    {
+      "from": 155,
+      "to": 157,
+      "weight": 99999
+    },
+    {
+      "from": 155,
+      "to": 153,
+      "weight": 99999
+    },
+    {
+      "from": 156,
+      "to": 154,
+      "weight": 99999
+    },
+    {
+      "from": 156,
+      "to": 158,
+      "weight": 99999
+    },
+    {
+      "from": 161,
+      "to": 158,
+      "weight": 99999
+    },
+    {
+      "from": 161,
+      "to": 160,
+      "weight": 99999
+    },
+    {
+      "from": 166,
+      "to": 160,
+      "weight": 99999
+    },
+    {
+      "from": 129,
+      "to": 170,
+      "weight": 67
+    },
+    {
+      "from": 170,
+      "to": 113,
+      "weight": 86
+    },
+    {
+      "from": 170,
+      "to": 112,
+      "weight": 121
+    },
+    {
+      "from": 170,
+      "to": 111,
+      "weight": 154
+    },
+    {
+      "from": 170,
+      "to": 175,
+      "weight": 203
+    },
+    {
+      "from": 170,
+      "to": 18,
+      "weight": 185
+    },
+    {
+      "from": 129,
+      "to": 175,
+      "weight": 188
+    },
+    {
+      "from": 113,
+      "to": 175,
+      "weight": 146
+    },
+    {
+      "from": 112,
+      "to": 175,
+      "weight": 103
+    },
+    {
+      "from": 111,
+      "to": 175,
+      "weight": 64
+    },
+    {
+      "from": 175,
+      "to": 18,
+      "weight": 42
+    },
+    {
+      "from": 19,
+      "to": 177,
+      "weight": 36
+    },
+    {
+      "from": 175,
+      "to": 177,
+      "weight": 73
+    },
+    {
+      "from": 177,
+      "to": 176,
+      "weight": 45
+    },
+    {
+      "from": 176,
+      "to": 154,
+      "weight": 66
+    },
+    {
+      "from": 177,
+      "to": 153,
+      "weight": 52
+    },
+    {
+      "from": 169,
+      "to": 57,
+      "weight": 48
+    },
+    {
+      "from": 169,
+      "to": 83,
+      "weight": 25
+    },
+    {
+      "from": 169,
+      "to": 78,
+      "weight": 57
+    },
+    {
+      "from": 169,
+      "to": 79,
+      "weight": 93
+    },
+    {
+      "from": 169,
+      "to": 81,
+      "weight": 127
+    },
+    {
+      "from": 169,
+      "to": 80,
+      "weight": 181
+    },
+    {
+      "from": 169,
+      "to": 43,
+      "weight": 94
+    },
+    {
+      "from": 169,
+      "to": 42,
+      "weight": 144
+    },
+    {
+      "from": 169,
+      "to": 52,
+      "weight": 185
+    },
+    {
+      "from": 169,
+      "to": 150,
+      "weight": 233
+    },
+    {
+      "from": 150,
+      "to": 52,
+      "weight": 51
+    },
+    {
+      "from": 150,
+      "to": 42,
+      "weight": 90
+    },
+    {
+      "from": 150,
+      "to": 43,
+      "weight": 139
+    },
+    {
+      "from": 150,
+      "to": 57,
+      "weight": 194
+    },
+    {
+      "from": 150,
+      "to": 83,
+      "weight": 204
+    },
+    {
+      "from": 150,
+      "to": 78,
+      "weight": 173
+    },
+    {
+      "from": 150,
+      "to": 79,
+      "weight": 136
+    },
+    {
+      "from": 150,
+      "to": 81,
+      "weight": 103
+    },
+    {
+      "from": 150,
+      "to": 80,
+      "weight": 50
+    },
+    {
+      "from": 150,
+      "to": 41,
+      "weight": 60
+    },
+    {
+      "from": 150,
+      "to": 70,
+      "weight": 64
+    },
+    {
+      "from": 150,
+      "to": 40,
+      "weight": 103
+    },
+    {
+      "from": 150,
+      "to": 123,
+      "weight": 139
+    },
+    {
+      "from": 150,
+      "to": 39,
+      "weight": 149
+    },
+    {
+      "from": 150,
+      "to": 174,
+      "weight": 174
+    },
+    {
+      "from": 150,
+      "to": 161,
+      "weight": 228
+    },
+    {
+      "from": 150,
+      "to": 151,
+      "weight": 240
+    },
+    {
+      "from": 151,
+      "to": 161,
+      "weight": 40
+    },
+    {
+      "from": 151,
+      "to": 174,
+      "weight": 86
+    },
+    {
+      "from": 151,
+      "to": 39,
+      "weight": 106
+    },
+    {
+      "from": 151,
+      "to": 40,
+      "weight": 146
+    },
+    {
+      "from": 151,
+      "to": 41,
+      "weight": 187
+    },
+    {
+      "from": 151,
+      "to": 70,
+      "weight": 188
+    },
+    {
+      "from": 151,
+      "to": 123,
+      "weight": 113
+    },
+    {
+      "from": 151,
+      "to": 9,
+      "weight": 43
+    },
+    {
+      "from": 151,
+      "to": 10,
+      "weight": 38
+    },
+    {
+      "from": 151,
+      "to": 103,
+      "weight": 49
+    },
+    {
+      "from": 151,
+      "to": 99,
+      "weight": 75
+    },
+    {
+      "from": 151,
+      "to": 106,
+      "weight": 78
+    },
+    {
+      "from": 151,
+      "to": 8,
+      "weight": 121
+    },
+    {
+      "from": 151,
+      "to": 3,
+      "weight": 119
+    },
+    {
+      "from": 151,
+      "to": 152,
+      "weight": 152
+    },
+    {
+      "from": 152,
+      "to": 103,
+      "weight": 129
+    },
+    {
+      "from": 152,
+      "to": 10,
+      "weight": 121
+    },
+    {
+      "from": 152,
+      "to": 106,
+      "weight": 94
+    },
+    {
+      "from": 152,
+      "to": 99,
+      "weight": 81
+    },
+    {
+      "from": 152,
+      "to": 3,
+      "weight": 48
+    },
+    {
+      "from": 152,
+      "to": 8,
+      "weight": 40
+    },
+    {
+      "from": 152,
+      "to": 2,
+      "weight": 29
+    },
+    {
+      "from": 152,
+      "to": 164,
+      "weight": 31
+    },
+    {
+      "from": 152,
+      "to": 101,
+      "weight": 52
+    },
+    {
+      "from": 152,
+      "to": 100,
+      "weight": 49
+    },
+    {
+      "from": 152,
+      "to": 1,
+      "weight": 69
+    },
+    {
+      "from": 164,
+      "to": 1,
+      "weight": 40
+    },
+    {
+      "from": 164,
+      "to": 100,
+      "weight": 25
+    },
+    {
+      "from": 100,
+      "to": 101,
+      "weight": 47
+    },
+    {
+      "from": 174,
+      "to": 40,
+      "weight": 110
+    },
+    {
+      "from": 174,
+      "to": 41,
+      "weight": 137
+    },
+    {
+      "from": 174,
+      "to": 123,
+      "weight": 40
+    },
+    {
+      "from": 123,
+      "to": 70,
+      "weight": 78
+    },
+    {
+      "from": 171,
+      "to": 56,
+      "weight": 57
+    },
+    {
+      "from": 171,
+      "to": 55,
+      "weight": 72
+    },
+    {
+      "from": 171,
+      "to": 64,
+      "weight": 43
+    },
+    {
+      "from": 171,
+      "to": 53,
+      "weight": 102
+    },
+    {
+      "from": 171,
+      "to": 63,
+      "weight": 81
+    },
+    {
+      "from": 171,
+      "to": 50,
+      "weight": 143
+    },
+    {
+      "from": 171,
+      "to": 51,
+      "weight": 125
+    },
+    {
+      "from": 171,
+      "to": 77,
+      "weight": 178
+    },
+    {
+      "from": 171,
+      "to": 5,
+      "weight": 182
+    },
+    {
+      "from": 171,
+      "to": 148,
+      "weight": 191
+    },
+    {
+      "from": 148,
+      "to": 77,
+      "weight": 39
+    },
+    {
+      "from": 148,
+      "to": 5,
+      "weight": 39
+    },
+    {
+      "from": 148,
+      "to": 50,
+      "weight": 67
+    },
+    {
+      "from": 148,
+      "to": 51,
+      "weight": 77
+    },
+    {
+      "from": 148,
+      "to": 53,
+      "weight": 107
+    },
+    {
+      "from": 148,
+      "to": 63,
+      "weight": 118
+    },
+    {
+      "from": 148,
+      "to": 55,
+      "weight": 148
+    },
+    {
+      "from": 148,
+      "to": 64,
+      "weight": 159
+    },
+    {
+      "from": 148,
+      "to": 56,
+      "weight": 189
+    },
+    {
+      "from": 148,
+      "to": 128,
+      "weight": 47
+    },
+    {
+      "from": 148,
+      "to": 88,
+      "weight": 62
+    },
+    {
+      "from": 148,
+      "to": 127,
+      "weight": 81
+    },
+    {
+      "from": 148,
+      "to": 155,
+      "weight": 93
+    },
+    {
+      "from": 148,
+      "to": 49,
+      "weight": 125
+    },
+    {
+      "from": 148,
+      "to": 149,
+      "weight": 157
+    },
+    {
+      "from": 149,
+      "to": 156,
+      "weight": 64
+    },
+    {
+      "from": 155,
+      "to": 128,
+      "weight": 97
+    },
+    {
+      "from": 155,
+      "to": 127,
+      "weight": 89
+    },
+    {
+      "from": 156,
+      "to": 49,
+      "weight": 81
+    },
+    {
+      "from": 149,
+      "to": 58,
+      "weight": 43
+    },
+    {
+      "from": 156,
+      "to": 58,
+      "weight": 48
+    },
+    {
+      "from": 149,
+      "to": 49,
+      "weight": 43
+    },
+    {
+      "from": 149,
+      "to": 127,
+      "weight": 86
+    },
+    {
+      "from": 149,
+      "to": 128,
+      "weight": 127
+    },
+    {
+      "from": 149,
+      "to": 60,
+      "weight": 33
+    },
+    {
+      "from": 149,
+      "to": 59,
+      "weight": 62
+    },
+    {
+      "from": 172,
+      "to": 48,
+      "weight": 55
+    },
+    {
+      "from": 172,
+      "to": 47,
+      "weight": 65
+    },
+    {
+      "from": 172,
+      "to": 72,
+      "weight": 35
+    },
+    {
+      "from": 172,
+      "to": 54,
+      "weight": 78
+    },
+    {
+      "from": 172,
+      "to": 46,
+      "weight": 100
+    },
+    {
+      "from": 172,
+      "to": 87,
+      "weight": 139
+    },
+    {
+      "from": 172,
+      "to": 139,
+      "weight": 125
+    },
+    {
+      "from": 172,
+      "to": 145,
+      "weight": 149
+    },
+    {
+      "from": 145,
+      "to": 48,
+      "weight": 150
+    },
+    {
+      "from": 145,
+      "to": 72,
+      "weight": 120
+    },
+    {
+      "from": 145,
+      "to": 47,
+      "weight": 116
+    },
+    {
+      "from": 145,
+      "to": 54,
+      "weight": 79
+    },
+    {
+      "from": 145,
+      "to": 46,
+      "weight": 71
+    },
+    {
+      "from": 145,
+      "to": 139,
+      "weight": 42
+    },
+    {
+      "from": 145,
+      "to": 87,
+      "weight": 39
+    },
+    {
+      "from": 145,
+      "to": 20,
+      "weight": 36
+    },
+    {
+      "from": 145,
+      "to": 45,
+      "weight": 49
+    },
+    {
+      "from": 145,
+      "to": 17,
+      "weight": 76
+    },
+    {
+      "from": 145,
+      "to": 44,
+      "weight": 84
+    },
+    {
+      "from": 145,
+      "to": 107,
+      "weight": 130
+    },
+    {
+      "from": 145,
+      "to": 157,
+      "weight": 117
+    },
+    {
+      "from": 145,
+      "to": 146,
+      "weight": 166
+    },
+    {
+      "from": 157,
+      "to": 44,
+      "weight": 92
+    },
+    {
+      "from": 157,
+      "to": 45,
+      "weight": 117
+    },
+    {
+      "from": 157,
+      "to": 17,
+      "weight": 48
+    },
+    {
+      "from": 158,
+      "to": 146,
+      "weight": 65
+    },
+    {
+      "from": 146,
+      "to": 107,
+      "weight": 43
+    },
+    {
+      "from": 146,
+      "to": 73,
+      "weight": 37
+    },
+    {
+      "from": 146,
+      "to": 62,
+      "weight": 74
+    },
+    {
+      "from": 146,
+      "to": 147,
+      "weight": 191
+    },
+    {
+      "from": 147,
+      "to": 165,
+      "weight": 20
+    },
+    {
+      "from": 147,
+      "to": 15,
+      "weight": 61
+    },
+    {
+      "from": 147,
+      "to": 16,
+      "weight": 42
+    },
+    {
+      "from": 168,
+      "to": 92,
+      "weight": 49
+    },
+    {
+      "from": 168,
+      "to": 38,
+      "weight": 72
+    },
+    {
+      "from": 168,
+      "to": 135,
+      "weight": 79
+    },
+    {
+      "from": 168,
+      "to": 37,
+      "weight": 110
+    },
+    {
+      "from": 168,
+      "to": 36,
+      "weight": 156
+    },
+    {
+      "from": 168,
+      "to": 142,
+      "weight": 210
+    },
+    {
+      "from": 142,
+      "to": 36,
+      "weight": 66
+    },
+    {
+      "from": 142,
+      "to": 37,
+      "weight": 114
+    },
+    {
+      "from": 142,
+      "to": 38,
+      "weight": 155
+    },
+    {
+      "from": 142,
+      "to": 135,
+      "weight": 131
+    },
+    {
+      "from": 142,
+      "to": 92,
+      "weight": 205
+    },
+    {
+      "from": 142,
+      "to": 35,
+      "weight": 51
+    },
+    {
+      "from": 142,
+      "to": 34,
+      "weight": 107
+    },
+    {
+      "from": 142,
+      "to": 159,
+      "weight": 147
+    },
+    {
+      "from": 142,
+      "to": 143,
+      "weight": 197
+    },
+    {
+      "from": 143,
+      "to": 160,
+      "weight": 48
+    },
+    {
+      "from": 143,
+      "to": 34,
+      "weight": 97
+    },
+    {
+      "from": 143,
+      "to": 35,
+      "weight": 153
+    },
+    {
+      "from": 143,
+      "to": 141,
+      "weight": 42
+    },
+    {
+      "from": 143,
+      "to": 86,
+      "weight": 43
+    },
+    {
+      "from": 143,
+      "to": 110,
+      "weight": 72
+    },
+    {
+      "from": 143,
+      "to": 140,
+      "weight": 104
+    },
+    {
+      "from": 143,
+      "to": 4,
+      "weight": 123
+    },
+    {
+      "from": 143,
+      "to": 22,
+      "weight": 131
+    },
+    {
+      "from": 143,
+      "to": 138,
+      "weight": 163
+    },
+    {
+      "from": 143,
+      "to": 144,
+      "weight": 161
+    },
+    {
+      "from": 144,
+      "to": 86,
+      "weight": 129
+    },
+    {
+      "from": 144,
+      "to": 4,
+      "weight": 47
+    },
+    {
+      "from": 144,
+      "to": 141,
+      "weight": 144
+    },
+    {
+      "from": 144,
+      "to": 110,
+      "weight": 106
+    },
+    {
+      "from": 144,
+      "to": 140,
+      "weight": 75
+    },
+    {
+      "from": 144,
+      "to": 22,
+      "weight": 42
+    },
+    {
+      "from": 144,
+      "to": 138,
+      "weight": 30
+    },
+    {
+      "from": 144,
+      "to": 163,
+      "weight": 35
+    },
+    {
+      "from": 163,
+      "to": 119,
+      "weight": 39
+    },
+    {
+      "from": 144,
+      "to": 119,
+      "weight": 74
+    },
+    {
+      "from": 159,
+      "to": 125,
+      "weight": 41
+    },
+    {
+      "from": 166,
+      "to": 24,
+      "weight": 64
+    },
+    {
+      "from": 166,
+      "to": 68,
+      "weight": 98
+    },
+    {
+      "from": 24,
+      "to": 23,
+      "weight": 141
+    },
+    {
+      "from": 24,
+      "to": 68,
+      "weight": 60
+    },
+    {
+      "from": 68,
+      "to": 67,
+      "weight": 72
+    },
+    {
+      "from": 67,
+      "to": 167,
+      "weight": 95
+    },
+    {
+      "from": 23,
+      "to": 67,
+      "weight": 65
+    },
+    {
+      "from": 23,
+      "to": 167,
+      "weight": 63
+    },
+    {
+      "from": 138,
+      "to": 22,
+      "weight": 33
+    },
+    {
+      "from": 77,
+      "to": 128,
+      "weight": 41
+    },
+    {
+      "from": 158,
+      "to": 90,
+      "weight": 40
+    },
+    {
+      "from": 158,
+      "to": 82,
+      "weight": 56
+    },
+    {
+      "from": 158,
+      "to": 91,
+      "weight": 60
+    },
+    {
+      "from": 91,
+      "to": 157,
+      "weight": 35
+    },
+    {
+      "from": 157,
+      "to": 82,
+      "weight": 75
+    },
+    {
+      "from": 157,
+      "to": 90,
+      "weight": 73
+    },
+    {
+      "from": 184,
+      "to": 185,
+      "weight": 9999
+    },
+    {
+      "from": 180,
+      "to": 185,
+      "weight": 9999
+    },
+    {
+      "from": 180,
+      "to": 183,
+      "weight": 9999
+    },
+    {
+      "from": 182,
+      "to": 183,
+      "weight": 9999
+    },
+    {
+      "from": 182,
+      "to": 181,
+      "weight": 9999
+    },
+    {
+      "from": 166,
+      "to": 184,
+      "weight": 28
+    },
+    {
+      "from": 185,
+      "to": 160,
+      "weight": 34
+    },
+    {
+      "from": 185,
+      "to": 143,
+      "weight": 33
+    },
+    {
+      "from": 180,
+      "to": 151,
+      "weight": 30
+    },
+    {
+      "from": 183,
+      "to": 146,
+      "weight": 48
+    },
+    {
+      "from": 183,
+      "to": 158,
+      "weight": 33
+    },
+    {
+      "from": 180,
+      "to": 161,
+      "weight": 26
+    },
+    {
+      "from": 182,
+      "to": 149,
+      "weight": 57
+    },
+    {
+      "from": 182,
+      "to": 156,
+      "weight": 28
+    },
+    {
+      "from": 181,
+      "to": 154,
+      "weight": 20
+    },
+    {
+      "from": 181,
+      "to": 176,
+      "weight": 86
+    },
+    {
+      "from": 143,
+      "to": 104,
+      "weight": 93
+    },
+    {
+      "from": 104,
+      "to": 121,
+      "weight": 44
+    },
+    {
+      "from": 121,
+      "to": 120,
+      "weight": 39
+    }
+  ],
+  "frames": [
+    {
+      "id": 1,
+      "name": "Hauptgebäude -1",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 803,
+      "y": 251,
+      "width": 299,
+      "height": 109
+    },
+    {
+      "id": 2,
+      "name": "Hauptgebäude EG",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 686,
+      "y": 389,
+      "width": 487,
+      "height": 367
+    },
+    {
+      "id": 4,
+      "name": "Hauptgebäude OG1",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 688,
+      "y": 766,
+      "width": 521,
+      "height": 318
+    },
+    {
+      "id": 6,
+      "name": "Hauptgebäude OG3",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 1209,
+      "y": 673,
+      "width": 406,
+      "height": 207
+    },
+    {
+      "id": 7,
+      "name": "Hauptgebäude OG4",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 1249,
+      "y": 885,
+      "width": 357,
+      "height": 162
+    },
+    {
+      "id": 8,
+      "name": "Hauptgebäude OG2",
+      "color": "#3b82f6",
+      "nodes": [],
+      "x": 1200,
+      "y": 379,
+      "width": 396,
+      "height": 288
+    }
+  ]
+}
