@@ -29,8 +29,8 @@
     },
     {
       "id": 4,
-      "x": 771,
-      "y": 504,
+      "x": 775,
+      "y": 495,
       "name": "Comp1",
       "longName": "Computerraum 1 (Erdgeschoß)",
       "building": "Hauptgebäude",
@@ -194,8 +194,8 @@
     },
     {
       "id": 22,
-      "x": 714,
-      "y": 499,
+      "x": 710,
+      "y": 495,
       "name": "Werk2",
       "longName": "Keramikraum (R028)",
       "building": "Hauptgebäude",
@@ -203,8 +203,8 @@
     },
     {
       "id": 23,
-      "x": 1022,
-      "y": 332,
+      "x": 1025,
+      "y": 330,
       "name": "TH1",
       "longName": "Spo-West",
       "building": "Hauptgebäude",
@@ -212,8 +212,8 @@
     },
     {
       "id": 24,
-      "x": 881,
-      "y": 331,
+      "x": 880,
+      "y": 330,
       "name": "TH2",
       "longName": "Spo-Ost",
       "building": "Hauptgebäude",
@@ -320,8 +320,8 @@
     },
     {
       "id": 34,
-      "x": 848,
-      "y": 626,
+      "x": 850,
+      "y": 620,
       "name": "R5a",
       "longName": "002",
       "building": "Hauptgebäude",
@@ -329,8 +329,8 @@
     },
     {
       "id": 35,
-      "x": 902,
-      "y": 650,
+      "x": 900,
+      "y": 645,
       "name": "R5b",
       "longName": "003",
       "building": "Hauptgebäude",
@@ -356,8 +356,8 @@
     },
     {
       "id": 38,
-      "x": 1088,
-      "y": 669,
+      "x": 1095,
+      "y": 665,
       "name": "R5e",
       "longName": "006",
       "building": "Hauptgebäude",
@@ -601,8 +601,8 @@
     },
     {
       "id": 67,
-      "x": 993,
-      "y": 274,
+      "x": 990,
+      "y": 275,
       "name": "BAND",
       "longName": "Bandraum",
       "building": "Hauptgebäude",
@@ -610,8 +610,8 @@
     },
     {
       "id": 68,
-      "x": 923,
-      "y": 288,
+      "x": 920,
+      "y": 290,
       "name": "TECH",
       "longName": "Bühnentechnik",
       "building": "Hauptgebäude",
@@ -754,7 +754,7 @@
     {
       "id": 86,
       "x": 775,
-      "y": 589,
+      "y": 585,
       "name": "R001",
       "longName": "StayIn (R001)",
       "building": null,
@@ -809,8 +809,8 @@
     },
     {
       "id": 92,
-      "x": 1138,
-      "y": 668,
+      "x": 1145,
+      "y": 665,
       "name": "R5f",
       "longName": "007",
       "building": "Hauptgebäude",
@@ -898,8 +898,8 @@
     },
     {
       "id": 104,
-      "x": 829,
-      "y": 571,
+      "x": 830,
+      "y": 565,
       "name": "Hof",
       "longName": "Pausenhof",
       "building": null,
@@ -936,8 +936,8 @@
     },
     {
       "id": 110,
-      "x": 716,
-      "y": 562,
+      "x": 710,
+      "y": 560,
       "name": "R11a",
       "longName": "026",
       "building": null,
@@ -1027,8 +1027,8 @@
     },
     {
       "id": 119,
-      "x": 799,
-      "y": 420,
+      "x": 795,
+      "y": 415,
       "name": "Cafeteria",
       "longName": "Cafeteria",
       "building": null,
@@ -1036,8 +1036,8 @@
     },
     {
       "id": 120,
-      "x": 872.9613862793118,
-      "y": 531.0695523801501,
+      "x": 870,
+      "y": 525,
       "name": "Hof1",
       "longName": "Hof 1",
       "building": null,
@@ -1045,8 +1045,8 @@
     },
     {
       "id": 121,
-      "x": 834,
-      "y": 527,
+      "x": 830,
+      "y": 525,
       "name": "Hof2",
       "longName": "Hof 2",
       "building": null,
@@ -1143,8 +1143,8 @@
     },
     {
       "id": 135,
-      "x": 1064,
-      "y": 702,
+      "x": 1060,
+      "y": 715,
       "name": "LMB",
       "longName": "Lernmittelbibliothek (HG EG)",
       "building": null,
@@ -1152,8 +1152,8 @@
     },
     {
       "id": 138,
-      "x": 714,
-      "y": 465,
+      "x": 710,
+      "y": 460,
       "name": "Werk1",
       "longName": "Werk1",
       "building": null,
@@ -1170,8 +1170,8 @@
     },
     {
       "id": 140,
-      "x": 714,
-      "y": 528,
+      "x": 710,
+      "y": 520,
       "name": "SMV",
       "longName": "SMV",
       "building": null,
@@ -1179,8 +1179,8 @@
     },
     {
       "id": 141,
-      "x": 716,
-      "y": 602,
+      "x": 710,
+      "y": 595,
       "name": "Sani",
       "longName": "Sani",
       "building": null,
@@ -1408,8 +1408,8 @@
     },
     {
       "id": 163,
-      "x": 768,
-      "y": 444,
+      "x": 770,
+      "y": 450,
       "name": "UCTH",
       "longName": "UCTH",
       "building": null,
@@ -1441,8 +1441,8 @@
     },
     {
       "id": 166,
-      "x": 826,
-      "y": 298,
+      "x": 825,
+      "y": 300,
       "name": "-1MTH1",
       "longName": "-1MTH1",
       "building": null,
@@ -1452,7 +1452,7 @@
     },
     {
       "id": 167,
-      "x": 1081,
+      "x": 1080,
       "y": 310,
       "name": "-1BTH",
       "longName": "-1BTH",
@@ -1617,8 +1617,8 @@
     },
     {
       "id": 185,
-      "x": 727.8017697644851,
-      "y": 645.9803413273752,
+      "x": 750,
+      "y": 655,
       "name": "EVU",
       "longName": "EVU",
       "building": null,
@@ -2818,7 +2818,12 @@
       "x": 686,
       "y": 389,
       "width": 487,
-      "height": 367
+      "height": 367,
+      "backgroundImage": {
+        "src": "https://static.mosstuff.de/katherlnav/img/ug.png",
+        "width": 478,
+        "height": 361
+      }
     },
     {
       "id": 4,
